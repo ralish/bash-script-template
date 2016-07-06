@@ -1,0 +1,31 @@
+# OS X files
+.AppleDB/
+.AppleDesktop/
+.AppleDouble/
+.DocumentRevisions-V100/
+.fseventsd/
+.Spotlight-V100/
+.TemporaryItems/
+.Trashes/
+Network Trash Folder/
+Temporary Items/
+._*
+.apdisk
+.com.apple.timemachine.donotpresent
+.DS_Store
+.LSOverride
+.VolumeIcon.icns
+# Icon must end with two carriage returns (\r)
+Icon
+
+# Windows files
+$RECYCLE.BIN/
+Desktop.ini
+ehthumbs.db
+Thumbs.db
+
+# Vim files
+*~
+*.swp
+
+# vim: syntax=conf cc=80 tw=79 ts=4 sw=4 sts=4 et sr
