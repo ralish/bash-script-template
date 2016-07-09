@@ -175,7 +175,7 @@ function check_superuser() {
                 verbose_print "Sudo: Couldn't acquire credentials..." "$fg_red"
             else
                 # shellcheck disable=SC2016
-                test_euid="$(sudo "$BASH" -c 'echo $EUID')"
+                test_euid="$(sudo -H -- "$BASH" -c 'echo $EUID')"
                 if [[ $test_euid -eq 0 ]]; then
                     superuser="true"
                 fi
@@ -210,7 +210,7 @@ function run_as_root() {
     if [[ $EUID -eq 0 ]]; then
         "$@"
     elif [[ -z ${try_sudo-} ]]; then
-        sudo "$@"
+        sudo -H -- "$@"
     else
         script_exit "Unable to run requested command as root: $*" 1
     fi
