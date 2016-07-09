@@ -127,7 +127,7 @@ function pretty_print() {
 
 
 # DESC: Only pretty_print() the provided string if verbose mode is enabled
-# ARGS: $@ (args passed through to pretty_pretty() function)
+# ARGS: $@ (required): Passed through to pretty_pretty() function
 function verbose_print() {
     if [[ -n ${verbose-} ]]; then
         pretty_print "$@"
@@ -228,7 +228,7 @@ function script_usage() {
 
 
 # DESC: Parameter parser
-# ARGS: $@ (args provided to the script)
+# ARGS: $@ (optional): Arguments provided to the script
 function parse_params() {
     local param
     while [[ $# -gt 0 ]]; do
@@ -254,7 +254,7 @@ function parse_params() {
 
 
 # DESC: Main control flow
-# ARGS: $@ (args provided to the script)
+# ARGS: $@ (optional): Arguments provided to the script
 function main() {
     trap "script_trap_err" ERR
     trap "script_trap_exit" EXIT
