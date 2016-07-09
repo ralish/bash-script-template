@@ -193,6 +193,30 @@ function check_superuser() {
 }
 
 
+# DESC: Run the requested command as root (via sudo if requested)
+# ARGS: $1 (optional): Set to zero to not attempt execution via sudo
+#       $@ (required): Passed through for execution as root user
+function run_as_root() {
+    local try_sudo
+    if [[ ${1-} =~ ^0$ ]]; then
+        try_sudo="true"
+        shift
+    fi
+
+    if [[ $# -eq 0 ]]; then
+        script_exit "Invalid arguments passed to run_as_root()!" 2
+    fi
+
+    if [[ $EUID -eq 0 ]]; then
+        "$@"
+    elif [[ -z ${try_sudo-} ]]; then
+        sudo "$@"
+    else
+        script_exit "Unable to run requested command as root: $*" 1
+    fi
+}
+
+
 # DESC: Usage help
 # ARGS: None
 function script_usage() {
