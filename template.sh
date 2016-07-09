@@ -105,7 +105,7 @@ function script_init() {
 #       $2 (optional): Colour to print the message with. This can be an ANSI
 #                      escape code or one of the prepopulated colour variables.
 function pretty_print() {
-    if [[ $# -eq 0 || $# -ge 2 ]]; then
+    if [[ $# -eq 0 || $# -gt 2 ]]; then
         script_exit "Invalid arguments passed to pretty_print()!" 2
     fi
 
