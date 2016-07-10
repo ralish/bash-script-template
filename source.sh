@@ -1,15 +1,11 @@
 #!/usr/bin/env bash
 
 # A best practices Bash script template with many useful functions. This file
-# combines the source.sh & script.sh files into a single script. If you want
-# your script to be entirely self-contained then this should be what you want!
-
-# A better class of script...
-set -o errexit          # Exit on most errors (see the manual)
-set -o errtrace         # Make sure any error trap is inherited
-set -o nounset          # Disallow expansion of unset variables
-set -o pipefail         # Use last non-zero exit code in a pipeline
-#set -o xtrace          # Trace the execution of the script (debug)
+# is suitable for sourcing into other scripts and so only contains functions
+# which are unlikely to need modification. It omits the following functions:
+# - main()
+# - parse_params()
+# - script_usage()
 
 # DESC: Handler for unexpected errors
 # ARGS: $1 (optional): Exit code (defaults to 1)
@@ -217,56 +213,5 @@ function run_as_root() {
         script_exit "Unable to run requested command as root: $*" 1
     fi
 }
-
-
-# DESC: Usage help
-# ARGS: None
-function script_usage() {
-    echo 'Usage:
-     -h|--help                  Displays this help
-     -v|--verbose               Displays verbose output
-    -nc|--no-colour             Disables colour output'
-}
-
-
-# DESC: Parameter parser
-# ARGS: $@ (optional): Arguments provided to the script
-function parse_params() {
-    local param
-    while [[ $# -gt 0 ]]; do
-        param="$1"
-        shift
-        case $param in
-            -h|--help)
-                script_usage
-                exit 0
-                ;;
-            -v|--verbose)
-                verbose="true"
-                ;;
-            -nc|--no-colour)
-                no_colour="true"
-                ;;
-            *)
-                script_exit "Invalid parameter was provided: $param" 2
-                ;;
-            esac
-    done
-}
-
-
-# DESC: Main control flow
-# ARGS: $@ (optional): Arguments provided to the script
-function main() {
-    trap "script_trap_err" ERR
-    trap "script_trap_exit" EXIT
-
-    script_init
-    parse_params "$@"
-}
-
-
-# Make it rain
-main "$@"
 
 # vim: syntax=sh cc=80 tw=79 ts=4 sw=4 sts=4 et sr
