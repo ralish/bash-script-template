@@ -17,10 +17,12 @@ set -o pipefail         # Use last non-zero exit code in a pipeline
 # DESC: Usage help
 # ARGS: None
 function script_usage() {
-    echo 'Usage:
+    cat << EOF
+Usage:
      -h|--help                  Displays this help
      -v|--verbose               Displays verbose output
-    -nc|--no-colour             Disables colour output'
+    -nc|--no-colour             Disables colour output
+EOF
 }
 
 
