@@ -26,6 +26,7 @@ function main() {
 # assembling a template meant to consist of good Bash scripting practices. I'll
 # make it more durable once I have some spare time. Likely some arcane sed...
 function build_template() {
+    local tmp_file
     local shebang header
     local source_file script_file
     local script_options source_data script_data
@@ -51,7 +52,10 @@ function build_template() {
         printf '%s\n' "$script_data"
     } > template.sh
 
-    sed -i '/# shellcheck source=source.sh/{N;N;d}' template.sh
+    tmp_file="$(mktemp /tmp/template.XXXXXX)"
+    sed -e '/# shellcheck source=source\.sh/{N;N;d;}' template.sh > "$tmp_file"
+    mv "$tmp_file" template.sh
+    chmod +x template.sh
 }
 
 # Template, assemble!
