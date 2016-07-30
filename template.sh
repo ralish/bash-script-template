@@ -45,12 +45,12 @@ function script_trap_exit() {
 #       $2 (optional): Exit code (defaults to 0)
 function script_exit() {
     if [[ $# -eq 1 ]]; then
-        echo "$1"
+        printf '%s\n' "$1"
         exit 0
     fi
 
     if [[ $# -eq 2 && $2 =~ ^[0-9]+$ ]]; then
-        echo -e "$1"
+        printf '%b\n' "$1"
         # If we've been provided a non-zero exit code run the error trap
         if [[ $2 -ne 0 ]]; then
             script_trap_err "$2"
@@ -113,13 +113,13 @@ function pretty_print() {
 
     if [[ -z ${no_colour-} ]]; then
         if [[ $# -eq 2 ]]; then
-            echo -n -e "$2"
+            printf '%b' "$2"
         else
-            echo -n -e "$fg_green"
+            printf '%b' "$fg_green"
         fi
     fi
 
-    echo "$1"
+    printf '%s\n' "$1"
 
     if [[ -z ${no_colour-} ]]; then
         # Restore terminal colours
@@ -177,7 +177,7 @@ function check_superuser() {
                 verbose_print "Sudo: Couldn't acquire credentials..." "$fg_red"
             else
                 # shellcheck disable=SC2016
-                test_euid="$(sudo -H -- "$BASH" -c 'echo $EUID')"
+                test_euid="$(sudo -H -- "$BASH" -c 'printf "%s" "$EUID"')"
                 if [[ $test_euid -eq 0 ]]; then
                     superuser="true"
                 fi

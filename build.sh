@@ -44,10 +44,11 @@ function build_template() {
     script_data="$(tail -n +16 "$script_file")"
 
     {
-        echo -e "$shebang\n$header\n\n$script_options\n"
-        echo "$source_data"
-        echo
-        echo "$script_data"
+        printf '%s\n' "$shebang"
+        printf '%s\n\n' "$header"
+        printf '%s\n\n' "$script_options"
+        printf '%s\n\n' "$source_data"
+        printf '%s\n' "$script_data"
     } > template.sh
 
     sed -i '/# shellcheck source=source.sh/{N;N;d}' template.sh
