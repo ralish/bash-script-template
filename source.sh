@@ -69,32 +69,32 @@ function script_init() {
     readonly script_name="$(basename "$script_path")"
 
     # Text attributes
-    readonly ta_none="\e[0m"
-    readonly ta_bold="\e[1m"
-    readonly ta_uscore="\e[4m"
-    readonly ta_blink="\e[5m"
-    readonly ta_reverse="\e[7m"
-    readonly ta_conceal="\e[8m"
+    readonly ta_none="$(tput sgr0)"
+    readonly ta_bold="$(tput bold)"
+    readonly ta_uscore="$(tput smul)"
+    readonly ta_blink="$(tput blink)"
+    readonly ta_reverse="$(tput rev)"
+    readonly ta_conceal="$(tput invis)"
 
     # Foreground codes
-    readonly fg_black="\e[30m"
-    readonly fg_blue="\e[34m"
-    readonly fg_cyan="\e[36m"
-    readonly fg_green="\e[32m"
-    readonly fg_magenta="\e[35m"
-    readonly fg_red="\e[31m"
-    readonly fg_white="\e[37m"
-    readonly fg_yellow="\e[33m"
+    readonly fg_black="$(tput setaf 0)"
+    readonly fg_blue="$(tput setaf 4)"
+    readonly fg_cyan="$(tput setaf 6)"
+    readonly fg_green="$(tput setaf 2)"
+    readonly fg_magenta="$(tput setaf 5)"
+    readonly fg_red="$(tput setaf 1)"
+    readonly fg_white="$(tput setaf 7)"
+    readonly fg_yellow="$(tput setaf 3)"
 
     # Background codes
-    readonly bg_black="\e[40m"
-    readonly bg_blue="\e[44m"
-    readonly bg_cyan="\e[46m"
-    readonly bg_green="\e[42m"
-    readonly bg_magenta="\e[45m"
-    readonly bg_red="\e[41m"
-    readonly bg_white="\e[47m"
-    readonly bg_yellow="\e[43m"
+    readonly bg_black="$(tput setab 0)"
+    readonly bg_blue="$(tput setab 4)"
+    readonly bg_cyan="$(tput setab 6)"
+    readonly bg_green="$(tput setab 2)"
+    readonly bg_magenta="$(tput setab 5)"
+    readonly bg_red="$(tput setab 1)"
+    readonly bg_white="$(tput setab 7)"
+    readonly bg_yellow="$(tput setab 3)"
 }
 
 
@@ -119,7 +119,7 @@ function pretty_print() {
 
     if [[ -z ${no_colour-} ]]; then
         # Restore terminal colours
-        tput sgr0
+        printf '%b' "$ta_none"
     fi
 }
 
