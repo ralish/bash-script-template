@@ -140,12 +140,8 @@ function pretty_print() {
         fi
     fi
 
-    printf '%s\n' "$1"
-
-    if [[ -z ${no_colour-} ]]; then
-        # Restore terminal colours
-        printf '%b' "$ta_none"
-    fi
+    # Print message & reset text attributes
+    printf '%s%b\n' "$1" "$ta_none"
 }
 
 
