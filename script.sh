@@ -63,6 +63,9 @@ function main() {
 
     script_init
     parse_params "$@"
+    if [[ -z $no_colour ]]; then
+        colour_init
+    fi
 }
 
 

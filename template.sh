@@ -74,6 +74,22 @@ function script_init() {
 
     # Text attributes
     readonly ta_none="$(tput sgr0 || true)"
+    declare -g ta_bold ta_uscore ta_blink ta_reverse ta_conceal
+
+    # Foreground codes
+    declare -g fg_black fg_blue fg_cyan fg_green \
+               fg_magenta fg_red fg_white fg_yellow
+
+    # Background codes
+    declare -g bg_black bg_blue bg_cyan bg_green \
+               bg_magenta bg_red bg_white bg_yellow
+}
+
+
+# DESC: Initialise colour variables
+# ARGS: None
+function colour_init() {
+    # Text attributes
     readonly ta_bold="$(tput bold || true)"
     printf '%b' "$ta_none"
     readonly ta_uscore="$(tput smul || true)"
@@ -282,6 +298,9 @@ function main() {
 
     script_init
     parse_params "$@"
+    if [[ -z $no_colour ]]; then
+        colour_init
+    fi
 }
 
 
