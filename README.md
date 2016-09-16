@@ -1,13 +1,15 @@
 bash-script-template
 ====================
 
-## Motivation
+Motivation
+----------
 
 I write `bash` scripts not infrequently and realised that I often copied a recent script whenever I started writing a new one. This provided me with a basic scaffold to work on and several useful helper functions I'd otherwise likely end up duplicating.
 
-So rather than continually copying old scripts and flensing the irrelevant code I'm publishing a more formalised template to ease the process for my usage and anyone else who may find it helpful! Suggestions for improvements are most welcome.
+So rather than continually copying old scripts and flensing the irrelevant code, I'm publishing a more formalised template to ease the process for my own usage and anyone else who may find it helpful! Suggestions for improvements are most welcome.
 
-## Files
+Files
+-----
 
 | File            | Description                                                                                      |
 | --------------- |------------------------------------------------------------------------------------------------- |
@@ -16,7 +18,8 @@ So rather than continually copying old scripts and flensing the irrelevant code 
 | **script.sh**   | Sample script which sources in `source.sh` and contains those functions likely to be modified.   |
 | **build.sh**    | Generates `template.sh` by combining `source.sh` & `template.sh`. Just a helper script for me.   |
 
-## Controversies
+Controversies
+-------------
 
 The Bash scripting community is an opinionated one. This is not a bad thing, but it does mean that some decisions made in this template aren't going to be agreed upon by everyone. A few of the most notable ones are highlighted here with an explanation of the rationale.
 
@@ -32,6 +35,7 @@ By enabling `set -u` (or the equivalent `set -o nounset`) the script will exit i
 
 This option is enabled for the same reasons as described above for `errexit`.
 
-## License
+License
+-------
 
-All scripts are licensed under the terms of [The MIT License](LICENSE).
+All content is licensed under the terms of [The MIT License](LICENSE).
