@@ -72,70 +72,90 @@ function script_init() {
     readonly script_dir="$(dirname "$script_path")"
     readonly script_name="$(basename "$script_path")"
 
-    # Text attributes
+    # Important to always set as we use it in the exit handler
     readonly ta_none="$(tput sgr0 || true)"
-    declare -g ta_bold ta_uscore ta_blink ta_reverse ta_conceal
-
-    # Foreground codes
-    declare -g fg_black fg_blue fg_cyan fg_green \
-               fg_magenta fg_red fg_white fg_yellow
-
-    # Background codes
-    declare -g bg_black bg_blue bg_cyan bg_green \
-               bg_magenta bg_red bg_white bg_yellow
 }
 
 
 # DESC: Initialise colour variables
 # ARGS: None
 function colour_init() {
-    # Text attributes
-    readonly ta_bold="$(tput bold || true)"
-    printf '%b' "$ta_none"
-    readonly ta_uscore="$(tput smul || true)"
-    printf '%b' "$ta_none"
-    readonly ta_blink="$(tput blink || true)"
-    printf '%b' "$ta_none"
-    readonly ta_reverse="$(tput rev || true)"
-    printf '%b' "$ta_none"
-    readonly ta_conceal="$(tput invis || true)"
-    printf '%b' "$ta_none"
+    if [[ -z ${no_colour-} ]]; then
+        # Text attributes
+        readonly ta_bold="$(tput bold || true)"
+        printf '%b' "$ta_none"
+        readonly ta_uscore="$(tput smul || true)"
+        printf '%b' "$ta_none"
+        readonly ta_blink="$(tput blink || true)"
+        printf '%b' "$ta_none"
+        readonly ta_reverse="$(tput rev || true)"
+        printf '%b' "$ta_none"
+        readonly ta_conceal="$(tput invis || true)"
+        printf '%b' "$ta_none"
 
-    # Foreground codes
-    readonly fg_black="$(tput setaf 0 || true)"
-    printf '%b' "$ta_none"
-    readonly fg_blue="$(tput setaf 4 || true)"
-    printf '%b' "$ta_none"
-    readonly fg_cyan="$(tput setaf 6 || true)"
-    printf '%b' "$ta_none"
-    readonly fg_green="$(tput setaf 2 || true)"
-    printf '%b' "$ta_none"
-    readonly fg_magenta="$(tput setaf 5 || true)"
-    printf '%b' "$ta_none"
-    readonly fg_red="$(tput setaf 1 || true)"
-    printf '%b' "$ta_none"
-    readonly fg_white="$(tput setaf 7 || true)"
-    printf '%b' "$ta_none"
-    readonly fg_yellow="$(tput setaf 3 || true)"
-    printf '%b' "$ta_none"
+        # Foreground codes
+        readonly fg_black="$(tput setaf 0 || true)"
+        printf '%b' "$ta_none"
+        readonly fg_blue="$(tput setaf 4 || true)"
+        printf '%b' "$ta_none"
+        readonly fg_cyan="$(tput setaf 6 || true)"
+        printf '%b' "$ta_none"
+        readonly fg_green="$(tput setaf 2 || true)"
+        printf '%b' "$ta_none"
+        readonly fg_magenta="$(tput setaf 5 || true)"
+        printf '%b' "$ta_none"
+        readonly fg_red="$(tput setaf 1 || true)"
+        printf '%b' "$ta_none"
+        readonly fg_white="$(tput setaf 7 || true)"
+        printf '%b' "$ta_none"
+        readonly fg_yellow="$(tput setaf 3 || true)"
+        printf '%b' "$ta_none"
 
-    # Background codes
-    readonly bg_black="$(tput setab 0 || true)"
-    printf '%b' "$ta_none"
-    readonly bg_blue="$(tput setab 4 || true)"
-    printf '%b' "$ta_none"
-    readonly bg_cyan="$(tput setab 6 || true)"
-    printf '%b' "$ta_none"
-    readonly bg_green="$(tput setab 2 || true)"
-    printf '%b' "$ta_none"
-    readonly bg_magenta="$(tput setab 5 || true)"
-    printf '%b' "$ta_none"
-    readonly bg_red="$(tput setab 1 || true)"
-    printf '%b' "$ta_none"
-    readonly bg_white="$(tput setab 7 || true)"
-    printf '%b' "$ta_none"
-    readonly bg_yellow="$(tput setab 3 || true)"
-    printf '%b' "$ta_none"
+        # Background codes
+        readonly bg_black="$(tput setab 0 || true)"
+        printf '%b' "$ta_none"
+        readonly bg_blue="$(tput setab 4 || true)"
+        printf '%b' "$ta_none"
+        readonly bg_cyan="$(tput setab 6 || true)"
+        printf '%b' "$ta_none"
+        readonly bg_green="$(tput setab 2 || true)"
+        printf '%b' "$ta_none"
+        readonly bg_magenta="$(tput setab 5 || true)"
+        printf '%b' "$ta_none"
+        readonly bg_red="$(tput setab 1 || true)"
+        printf '%b' "$ta_none"
+        readonly bg_white="$(tput setab 7 || true)"
+        printf '%b' "$ta_none"
+        readonly bg_yellow="$(tput setab 3 || true)"
+        printf '%b' "$ta_none"
+    else
+        # Text attributes
+        readonly ta_bold=''
+        readonly ta_uscore=''
+        readonly ta_blink=''
+        readonly ta_reverse=''
+        readonly ta_conceal=''
+
+        # Foreground codes
+        readonly fg_black=''
+        readonly fg_blue=''
+        readonly fg_cyan=''
+        readonly fg_green=''
+        readonly fg_magenta=''
+        readonly fg_red=''
+        readonly fg_white=''
+        readonly fg_yellow=''
+
+        # Background codes
+        readonly bg_black=''
+        readonly bg_blue=''
+        readonly bg_cyan=''
+        readonly bg_green=''
+        readonly bg_magenta=''
+        readonly bg_red=''
+        readonly bg_white=''
+        readonly bg_yellow=''
+    fi
 }
 
 
@@ -182,7 +202,7 @@ function check_binary() {
         if [[ -n ${2-} ]]; then
             script_exit "Missing dependency: Couldn't locate $1." 1
         else
-            verbose_print "Missing dependency: $1" "$fg_red"
+            verbose_print "Missing dependency: $1" "${fg_red-}"
             return 1
         fi
     fi
@@ -207,7 +227,8 @@ function check_superuser() {
         if check_binary sudo; then
             pretty_print "Sudo: Updating cached credentials for future use..."
             if ! sudo -v; then
-                verbose_print "Sudo: Couldn't acquire credentials..." "$fg_red"
+                verbose_print "Sudo: Couldn't acquire credentials..." \
+                              "${fg_red-}"
             else
                 # shellcheck disable=SC2016
                 test_euid="$(sudo -H -- "$BASH" -c 'printf "%s" "$EUID"')"
@@ -219,7 +240,7 @@ function check_superuser() {
     fi
 
     if [[ -z $superuser ]]; then
-        verbose_print "Unable to acquire superuser credentials." "$fg_red"
+        verbose_print "Unable to acquire superuser credentials." "${fg_red-}"
         return 1
     fi
 
@@ -298,9 +319,7 @@ function main() {
 
     script_init
     parse_params "$@"
-    if [[ -z ${no_colour-} ]]; then
-        colour_init
-    fi
+    colour_init
 }
 
 
