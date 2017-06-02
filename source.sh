@@ -210,7 +210,6 @@ function check_binary() {
 
 # DESC: Validate we have superuser access as root (via sudo if requested)
 # ARGS: $1 (optional): Set to any value to not attempt root access via sudo
-# shellcheck disable=SC2120
 function check_superuser() {
     if [[ $# -gt 1 ]]; then
         script_exit "Invalid arguments passed to check_superuser()!" 2
@@ -226,7 +225,6 @@ function check_superuser() {
                 verbose_print "Sudo: Couldn't acquire credentials..." \
                               "${fg_red-}"
             else
-                # shellcheck disable=SC2016
                 test_euid="$(sudo -H -- "$BASH" -c 'printf "%s" "$EUID"')"
                 if [[ $test_euid -eq 0 ]]; then
                     superuser="true"
