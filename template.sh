@@ -262,9 +262,9 @@ function check_superuser() {
         superuser="true"
     elif [[ -z ${1-} ]]; then
         if check_binary sudo; then
-            pretty_print "Sudo: Updating cached credentials for future use..."
+            pretty_print "Sudo: Updating cached credentials ..."
             if ! sudo -v; then
-                verbose_print "Sudo: Couldn't acquire credentials..." \
+                verbose_print "Sudo: Couldn't acquire credentials ..." \
                               "${fg_red-}"
             else
                 test_euid="$(sudo -H -- "$BASH" -c 'printf "%s" "$EUID"')"
