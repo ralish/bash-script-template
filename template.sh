@@ -14,6 +14,8 @@ set -o pipefail         # Use last non-zero exit code in a pipeline
 # DESC: Handler for unexpected errors
 # ARGS: $1 (optional): Exit code (defaults to 1)
 function script_trap_err() {
+    local exit_code=1
+
     # Disable the error trap handler to prevent potential recursion
     trap - ERR
 
@@ -21,12 +23,37 @@ function script_trap_err() {
     set +o errexit
     set +o pipefail
 
-    # Exit with failure status
+    # Validate any provided exit code
     if [[ $# -eq 1 && $1 =~ ^[0-9]+$ ]]; then
-        exit "$1"
-    else
-        exit 1
+        exit_code="$1"
     fi
+
+    # Output debug data if in Cron mode
+    if [[ -n ${cron-} ]]; then
+        # Restore original file output descriptors
+        if [[ -n ${script_output-} ]]; then
+            exec 1>&3 2>&4
+        fi
+
+        # Print basic debugging information
+        printf '%b\n' "$ta_none"
+        printf '***** Abnormal termination of script *****\n'
+        printf 'Script Path:            %s\n' "$script_path"
+        printf 'Script Parameters:      %s\n' "$script_params"
+        printf 'Script Exit Code:       %s\n' "$exit_code"
+
+        # Print the script log if we have it. It's possible we may not if we
+        # failed before we even called cron_init(). This can happen if bad
+        # parameters were passed to the script so we bailed out very early.
+        if [[ -n ${script_output-} ]]; then
+            printf 'Script Output:\n\n%s' "$(cat "$script_output")"
+        else
+            printf 'Script Output:          None (failed before log init)\n'
+        fi
+    fi
+
+    # Exit with failure status
+    exit "$exit_code"
 }
 
 
@@ -34,6 +61,11 @@ function script_trap_err() {
 # ARGS: None
 function script_trap_exit() {
     cd "$orig_cwd"
+
+    # Remove Cron mode script log
+    if [[ -n ${cron-} && -f ${script_output-} ]]; then
+        rm "$script_output"
+    fi
 
     # Restore terminal colours
     printf '%b' "$ta_none"
@@ -64,13 +96,14 @@ function script_exit() {
 
 
 # DESC: Generic script initialisation
-# ARGS: None
+# ARGS: $@ (optional): Arguments provided to the script
 function script_init() {
     # Useful paths
     readonly orig_cwd="$PWD"
     readonly script_path="${BASH_SOURCE[0]}"
     readonly script_dir="$(dirname "$script_path")"
     readonly script_name="$(basename "$script_path")"
+    readonly script_params="$*"
 
     # Important to always set as we use it in the exit handler
     readonly ta_none="$(tput sgr0 || true)"
@@ -155,6 +188,17 @@ function colour_init() {
         readonly bg_red=''
         readonly bg_white=''
         readonly bg_yellow=''
+    fi
+}
+
+
+# DESC: Initialise Cron mode
+# ARGS: None
+function cron_init() {
+    if [[ -n ${cron-} ]]; then
+        # Redirect all output to a temporary file
+        readonly script_output="$(mktemp --tmpdir "$script_name".XXXXX)"
+        exec 3>&1 4>&2 1>"$script_output" 2>&1
     fi
 }
 
@@ -317,6 +361,7 @@ Usage:
      -h|--help                  Displays this help
      -v|--verbose               Displays verbose output
     -nc|--no-colour             Disables colour output
+    -cr|--cron                  Run silently unless we encounter an error
 EOF
 }
 
@@ -339,6 +384,9 @@ function parse_params() {
             -nc|--no-colour)
                 no_colour="true"
                 ;;
+            -cr|--cron)
+                cron="true"
+                ;;
             *)
                 script_exit "Invalid parameter was provided: $param" 2
                 ;;
@@ -353,8 +401,9 @@ function main() {
     trap "script_trap_err" ERR
     trap "script_trap_exit" EXIT
 
-    script_init
+    script_init "$@"
     parse_params "$@"
+    cron_init
     colour_init
 }
 

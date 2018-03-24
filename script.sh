@@ -22,6 +22,7 @@ Usage:
      -h|--help                  Displays this help
      -v|--verbose               Displays verbose output
     -nc|--no-colour             Disables colour output
+    -cr|--cron                  Run silently unless we encounter an error
 EOF
 }
 
@@ -44,6 +45,9 @@ function parse_params() {
             -nc|--no-colour)
                 no_colour="true"
                 ;;
+            -cr|--cron)
+                cron="true"
+                ;;
             *)
                 script_exit "Invalid parameter was provided: $param" 2
                 ;;
@@ -61,8 +65,9 @@ function main() {
     trap "script_trap_err" ERR
     trap "script_trap_exit" EXIT
 
-    script_init
+    script_init "$@"
     parse_params "$@"
+    cron_init
     colour_init
 }
 
