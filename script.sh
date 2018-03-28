@@ -40,13 +40,13 @@ function parse_params() {
                 exit 0
                 ;;
             -v|--verbose)
-                verbose="true"
+                verbose=true
                 ;;
             -nc|--no-colour)
-                no_colour="true"
+                no_colour=true
                 ;;
             -cr|--cron)
-                cron="true"
+                cron=true
                 ;;
             *)
                 script_exit "Invalid parameter was provided: $param" 2
@@ -62,8 +62,8 @@ function main() {
     # shellcheck source=source.sh
     source "$(dirname "${BASH_SOURCE[0]}")/source.sh"
 
-    trap "script_trap_err" ERR
-    trap "script_trap_exit" EXIT
+    trap script_trap_err ERR
+    trap script_trap_exit EXIT
 
     script_init "$@"
     parse_params "$@"

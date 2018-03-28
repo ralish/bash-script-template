@@ -91,7 +91,7 @@ function script_exit() {
         fi
     fi
 
-    script_exit "Invalid arguments passed to script_exit()!" 2
+    script_exit 'Invalid arguments passed to script_exit()!' 2
 }
 
 
@@ -210,7 +210,7 @@ function cron_init() {
 #       $3 (optional): Set to any value to not append a new line to the message
 function pretty_print() {
     if [[ $# -eq 0 || $# -gt 3 ]]; then
-        script_exit "Invalid arguments passed to pretty_print()!" 2
+        script_exit 'Invalid arguments passed to pretty_print()!' 2
     fi
 
     if [[ -z ${no_colour-} ]]; then
@@ -246,7 +246,7 @@ function verbose_print() {
 # NOTE: Heavily inspired by: https://unix.stackexchange.com/a/40973
 function build_path() {
     if [[ -z ${1-} || $# -gt 2 ]]; then
-        script_exit "Invalid arguments passed to build_path()!" 2
+        script_exit 'Invalid arguments passed to build_path()!' 2
     fi
 
     local new_path path_entry temp_path
@@ -277,7 +277,7 @@ function build_path() {
 #       $2 (optional): Set to any value to treat failure as a fatal error
 function check_binary() {
     if [[ $# -ne 1 && $# -ne 2 ]]; then
-        script_exit "Invalid arguments passed to check_binary()!" 2
+        script_exit 'Invalid arguments passed to check_binary()!' 2
     fi
 
     if ! command -v "$1" > /dev/null 2>&1; then
@@ -298,33 +298,33 @@ function check_binary() {
 # ARGS: $1 (optional): Set to any value to not attempt root access via sudo
 function check_superuser() {
     if [[ $# -gt 1 ]]; then
-        script_exit "Invalid arguments passed to check_superuser()!" 2
+        script_exit 'Invalid arguments passed to check_superuser()!' 2
     fi
 
     local superuser test_euid
     if [[ $EUID -eq 0 ]]; then
-        superuser="true"
+        superuser=true
     elif [[ -z ${1-} ]]; then
         if check_binary sudo; then
-            pretty_print "Sudo: Updating cached credentials ..."
+            pretty_print 'Sudo: Updating cached credentials ...'
             if ! sudo -v; then
                 verbose_print "Sudo: Couldn't acquire credentials ..." \
                               "${fg_red-}"
             else
                 test_euid="$(sudo -H -- "$BASH" -c 'printf "%s" "$EUID"')"
                 if [[ $test_euid -eq 0 ]]; then
-                    superuser="true"
+                    superuser=true
                 fi
             fi
         fi
     fi
 
     if [[ -z ${superuser-} ]]; then
-        verbose_print "Unable to acquire superuser credentials." "${fg_red-}"
+        verbose_print 'Unable to acquire superuser credentials.' "${fg_red-}"
         return 1
     fi
 
-    verbose_print "Successfully acquired superuser credentials."
+    verbose_print 'Successfully acquired superuser credentials.'
     return 0
 }
 
@@ -335,12 +335,12 @@ function check_superuser() {
 function run_as_root() {
     local try_sudo
     if [[ ${1-} =~ ^0$ ]]; then
-        try_sudo="true"
+        try_sudo=true
         shift
     fi
 
     if [[ $# -eq 0 ]]; then
-        script_exit "Invalid arguments passed to run_as_root()!" 2
+        script_exit 'Invalid arguments passed to run_as_root()!' 2
     fi
 
     if [[ $EUID -eq 0 ]]; then
@@ -379,13 +379,13 @@ function parse_params() {
                 exit 0
                 ;;
             -v|--verbose)
-                verbose="true"
+                verbose=true
                 ;;
             -nc|--no-colour)
-                no_colour="true"
+                no_colour=true
                 ;;
             -cr|--cron)
-                cron="true"
+                cron=true
                 ;;
             *)
                 script_exit "Invalid parameter was provided: $param" 2
@@ -398,8 +398,8 @@ function parse_params() {
 # DESC: Main control flow
 # ARGS: $@ (optional): Arguments provided to the script
 function main() {
-    trap "script_trap_err" ERR
-    trap "script_trap_exit" EXIT
+    trap script_trap_err ERR
+    trap script_trap_exit EXIT
 
     script_init "$@"
     parse_params "$@"
