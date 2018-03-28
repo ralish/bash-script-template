@@ -315,7 +315,7 @@ function check_superuser() {
         fi
     fi
 
-    if [[ -z $superuser ]]; then
+    if [[ -z ${superuser-} ]]; then
         verbose_print "Unable to acquire superuser credentials." "${fg_red-}"
         return 1
     fi
