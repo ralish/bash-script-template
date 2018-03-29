@@ -390,7 +390,7 @@ function parse_params() {
             *)
                 script_exit "Invalid parameter was provided: $param" 2
                 ;;
-            esac
+        esac
     done
 }
 
