@@ -96,7 +96,7 @@ function script_exit() {
 function script_init() {
     # Useful paths
     readonly orig_cwd="$PWD"
-    readonly script_path="${BASH_SOURCE[0]}"
+    readonly script_path="${BASH_SOURCE[1]}"
     readonly script_dir="$(dirname "$script_path")"
     readonly script_name="$(basename "$script_path")"
     readonly script_params="$*"

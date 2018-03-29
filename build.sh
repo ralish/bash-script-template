@@ -17,7 +17,7 @@ function main() {
     trap "script_trap_err" ERR
     trap "script_trap_exit" EXIT
 
-    script_init
+    script_init "$@"
     build_template
 }
 
@@ -53,7 +53,9 @@ function build_template() {
     } > template.sh
 
     tmp_file="$(mktemp /tmp/template.XXXXXX)"
-    sed -e '/# shellcheck source=source\.sh/{N;N;d;}' template.sh > "$tmp_file"
+    sed -e '/# shellcheck source=source\.sh/{N;N;d;}' \
+        -e 's/BASH_SOURCE\[1\]/BASH_SOURCE[0]/' \
+        template.sh > "$tmp_file"
     mv "$tmp_file" template.sh
     chmod +x template.sh
 }
