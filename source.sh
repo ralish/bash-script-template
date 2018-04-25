@@ -20,7 +20,7 @@ function script_trap_err() {
     set +o pipefail
 
     # Validate any provided exit code
-    if [[ $# -eq 1 && $1 =~ ^[0-9]+$ ]]; then
+    if [[ ${1-} =~ ^[0-9]+$ ]]; then
         exit_code="$1"
     fi
 
@@ -77,7 +77,7 @@ function script_exit() {
         exit 0
     fi
 
-    if [[ $# -eq 2 && $2 =~ ^[0-9]+$ ]]; then
+    if [[ ${2-} =~ ^[0-9]+$ ]]; then
         printf '%b\n' "$1"
         # If we've been provided a non-zero exit code run the error trap
         if [[ $2 -ne 0 ]]; then
@@ -87,7 +87,7 @@ function script_exit() {
         fi
     fi
 
-    script_exit 'Invalid arguments passed to script_exit()!' 2
+    script_exit 'Missing required argument to script_exit()!' 2
 }
 
 
@@ -205,8 +205,8 @@ function cron_init() {
 #                      escape code or one of the prepopulated colour variables.
 #       $3 (optional): Set to any value to not append a new line to the message
 function pretty_print() {
-    if [[ $# -eq 0 || $# -gt 3 ]]; then
-        script_exit 'Invalid arguments passed to pretty_print()!' 2
+    if [[ $# -lt 1 ]]; then
+        script_exit 'Missing required argument to pretty_print()!' 2
     fi
 
     if [[ -z ${no_colour-} ]]; then
@@ -241,8 +241,8 @@ function verbose_print() {
 # OUTS: $build_path: The constructed path
 # NOTE: Heavily inspired by: https://unix.stackexchange.com/a/40973
 function build_path() {
-    if [[ -z ${1-} || $# -gt 2 ]]; then
-        script_exit 'Invalid arguments passed to build_path()!' 2
+    if [[ $# -lt 1 ]]; then
+        script_exit 'Missing required argument to build_path()!' 2
     fi
 
     local new_path path_entry temp_path
@@ -272,8 +272,8 @@ function build_path() {
 # ARGS: $1 (required): Name of the binary to test for existence
 #       $2 (optional): Set to any value to treat failure as a fatal error
 function check_binary() {
-    if [[ $# -ne 1 && $# -ne 2 ]]; then
-        script_exit 'Invalid arguments passed to check_binary()!' 2
+    if [[ $# -lt 1 ]]; then
+        script_exit 'Missing required argument to check_binary()!' 2
     fi
 
     if ! command -v "$1" > /dev/null 2>&1; then
@@ -293,10 +293,6 @@ function check_binary() {
 # DESC: Validate we have superuser access as root (via sudo if requested)
 # ARGS: $1 (optional): Set to any value to not attempt root access via sudo
 function check_superuser() {
-    if [[ $# -gt 1 ]]; then
-        script_exit 'Invalid arguments passed to check_superuser()!' 2
-    fi
-
     local superuser test_euid
     if [[ $EUID -eq 0 ]]; then
         superuser=true
@@ -329,14 +325,14 @@ function check_superuser() {
 # ARGS: $1 (optional): Set to zero to not attempt execution via sudo
 #       $@ (required): Passed through for execution as root user
 function run_as_root() {
+    if [[ $# -eq 0 ]]; then
+        script_exit 'Missing required argument to run_as_root()!' 2
+    fi
+
     local try_sudo
     if [[ ${1-} =~ ^0$ ]]; then
         try_sudo=true
         shift
-    fi
-
-    if [[ $# -eq 0 ]]; then
-        script_exit 'Invalid arguments passed to run_as_root()!' 2
     fi
 
     if [[ $EUID -eq 0 ]]; then
