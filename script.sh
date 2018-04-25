@@ -16,6 +16,7 @@ set -o pipefail         # Use last non-zero exit code in a pipeline
 
 # DESC: Usage help
 # ARGS: None
+# OUTS: None
 function script_usage() {
     cat << EOF
 Usage:
@@ -29,6 +30,7 @@ EOF
 
 # DESC: Parameter parser
 # ARGS: $@ (optional): Arguments provided to the script
+# OUTS: Variables indicating command-line parameters and options
 function parse_params() {
     local param
     while [[ $# -gt 0 ]]; do
@@ -58,6 +60,7 @@ function parse_params() {
 
 # DESC: Main control flow
 # ARGS: $@ (optional): Arguments provided to the script
+# OUTS: None
 function main() {
     # shellcheck source=source.sh
     source "$(dirname "${BASH_SOURCE[0]}")/source.sh"

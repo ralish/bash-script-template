@@ -9,6 +9,7 @@
 
 # DESC: Handler for unexpected errors
 # ARGS: $1 (optional): Exit code (defaults to 1)
+# OUTS: None
 function script_trap_err() {
     local exit_code=1
 
@@ -55,6 +56,7 @@ function script_trap_err() {
 
 # DESC: Handler for exiting the script
 # ARGS: None
+# OUTS: None
 function script_trap_exit() {
     cd "$orig_cwd"
 
@@ -71,6 +73,7 @@ function script_trap_exit() {
 # DESC: Exit script with the given message
 # ARGS: $1 (required): Message to print on exit
 #       $2 (optional): Exit code (defaults to 0)
+# OUTS: None
 function script_exit() {
     if [[ $# -eq 1 ]]; then
         printf '%s\n' "$1"
@@ -93,6 +96,16 @@ function script_exit() {
 
 # DESC: Generic script initialisation
 # ARGS: $@ (optional): Arguments provided to the script
+# OUTS: $orig_cwd: The current working directory when the script was run
+#       $script_path: The full path to the script
+#       $script_dir: The directory path of the script
+#       $script_name: The file name of the script
+#       $script_params: The original parameters provided to the script
+#       $ta_none: The ANSI control code to reset all text attributes
+# NOTE: $script_path only contains the path that was used to call the script
+#       and will not resolve any symlinks which may be present in the path.
+#       You can use a tool like realpath to obtain the "true" path. The same
+#       caveat applies to both the $script_dir and $script_name variables.
 function script_init() {
     # Useful paths
     readonly orig_cwd="$PWD"
@@ -108,6 +121,8 @@ function script_init() {
 
 # DESC: Initialise colour variables
 # ARGS: None
+# OUTS: Read-only variables with ANSI control codes
+# NOTE: If --no-colour was set the variables will be empty
 function colour_init() {
     if [[ -z ${no_colour-} ]]; then
         # Text attributes
@@ -190,6 +205,7 @@ function colour_init() {
 
 # DESC: Initialise Cron mode
 # ARGS: None
+# OUTS: $script_output: Path to the file stdout & stderr was redirected to
 function cron_init() {
     if [[ -n ${cron-} ]]; then
         # Redirect all output to a temporary file
@@ -204,6 +220,7 @@ function cron_init() {
 #       $2 (optional): Colour to print the message with. This can be an ANSI
 #                      escape code or one of the prepopulated colour variables.
 #       $3 (optional): Set to any value to not append a new line to the message
+# OUTS: None
 function pretty_print() {
     if [[ $# -lt 1 ]]; then
         script_exit 'Missing required argument to pretty_print()!' 2
@@ -228,6 +245,7 @@ function pretty_print() {
 
 # DESC: Only pretty_print() the provided string if verbose mode is enabled
 # ARGS: $@ (required): Passed through to pretty_pretty() function
+# OUTS: None
 function verbose_print() {
     if [[ -n ${verbose-} ]]; then
         pretty_print "$@"
@@ -271,6 +289,7 @@ function build_path() {
 # DESC: Check a binary exists in the search path
 # ARGS: $1 (required): Name of the binary to test for existence
 #       $2 (optional): Set to any value to treat failure as a fatal error
+# OUTS: None
 function check_binary() {
     if [[ $# -lt 1 ]]; then
         script_exit 'Missing required argument to check_binary()!' 2
@@ -292,6 +311,7 @@ function check_binary() {
 
 # DESC: Validate we have superuser access as root (via sudo if requested)
 # ARGS: $1 (optional): Set to any value to not attempt root access via sudo
+# OUTS: None
 function check_superuser() {
     local superuser test_euid
     if [[ $EUID -eq 0 ]]; then
@@ -324,6 +344,7 @@ function check_superuser() {
 # DESC: Run the requested command as root (via sudo if requested)
 # ARGS: $1 (optional): Set to zero to not attempt execution via sudo
 #       $@ (required): Passed through for execution as root user
+# OUTS: None
 function run_as_root() {
     if [[ $# -eq 0 ]]; then
         script_exit 'Missing required argument to run_as_root()!' 2
