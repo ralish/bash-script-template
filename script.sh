@@ -72,6 +72,7 @@ function main() {
     parse_params "$@"
     cron_init
     colour_init
+    #lock_init system
 }
 
 
