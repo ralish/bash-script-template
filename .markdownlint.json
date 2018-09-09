@@ -1,0 +1,7 @@
+{
+    "default": true,
+    "header-style": { "style": "setext_with_atx" },
+    "no-trailing-spaces": { "br_spaces": 2 },
+    "line-length": false,
+    "no-trailing-punctuation": { "punctuation": ".,;:!" }
+}
