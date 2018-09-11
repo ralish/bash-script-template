@@ -1,4 +1,4 @@
 # Bash script files should always be LF terminated
-*.sh eol=lf
+*.sh                            text        eol=lf
 
 # vim: syntax=conf cc=80 tw=79 ts=4 sw=4 sts=4 et sr
