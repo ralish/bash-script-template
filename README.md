@@ -20,6 +20,48 @@ Files
 | **script.sh**   | Sample script which sources in `source.sh` and contains those functions likely to be modified.   |
 | **build.sh**    | Generates `template.sh` by combining `source.sh` & `template.sh`. Just a helper script for me.   |
 
+Usage
+-----
+
+Being a Bash script you're free to *slice-and-dice* the source as you see fit.
+
+The following steps outline what's typically involved to help you get started:
+
+1. Choose between using either:
+    1. `template.sh` (fully self-contained)
+    2. `script.sh` with `source.sh` (source in most functions)
+2. Depending on your choice open `template.sh` or `script.sh` for editing
+3. Update the `script_usage()` function with additional usage guidance
+4. Update the `parse_params()` function with additional script parameters
+5. Add additional functions to implement the desired functionality
+6. Update the `main()` function to call your additional functions
+
+### Adding a `hostname` parameter
+
+The following contrived example demonstrates how to add a parameter to display the system's hostname.
+
+Update the `script_usage()` function by inserting the following before the `EOF`:  
+
+```plain
+    --hostname                  Display the system's hostname
+```
+
+Update the `parse_params()` function by inserting the following before the default case statement (`*)`):  
+
+```bash
+--hostname)
+    hostname=true
+    ;;
+```
+
+Update the `main()` function by inserting the following after the existing initialisation statements:  
+
+```bash
+if [[ -n ${hostname-} ]]; then
+    pretty_print "Hostname is: $(hostname)"
+fi
+```
+
 Controversies
 -------------
 
