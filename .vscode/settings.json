@@ -1,0 +1,5 @@
+{
+    // Important to disable for EditorConfig to apply correctly
+    // See: https://github.com/editorconfig/editorconfig-vscode/issues/153
+    "files.trimTrailingWhitespace": false
+}
