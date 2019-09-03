@@ -7,11 +7,7 @@ Forked from: https://github.com/ralish/bash-script-template
 
 ## Quick wins
 
-set an alias (with a space at the end)
-
-```
-alias uu=./utility.sh 
-```
+set an alias `alias uu=./utility.sh ` (with a space at the end)
 
 **Example 1A:**
 
