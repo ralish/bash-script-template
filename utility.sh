@@ -87,7 +87,7 @@ function release {
     --name "${tag_version}" \
     --description "Refer to [CHANGELOG.md]("${git_repo_url}"/blob/master/CHANGELOG.md) for details about this release."
 
-    echo "${git_repo_url}/releases/tag/${tag_version}"
+    echo && echo "${git_repo_url}/releases/tag/${tag_version}"
 }
 function tag {
   echo "Look for 'ver' instead."
@@ -369,5 +369,5 @@ function main() {
 # ENTRYPOINT
 ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ###
 main "$@"
-echo && pwd && echo
+echo
 # https://github.com/firepress-org/bash-script-template
