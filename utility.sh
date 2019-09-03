@@ -92,14 +92,6 @@ function push {
   git push
 }
 
-function App_is_input2_empty {
-  if [[ "${input_2}" == "not-set" ]]; then
-    echo -e "${col_pink} ERROR: You must provid a Git message."
-    echo -e "${col_pink}        ./utility.sh push ;Add this great feature; (use double quotes, not ;)"
-    App_stop
-  fi
-}
-
 
 ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ###
 # OTHER
@@ -113,7 +105,131 @@ function test {
   echo -e "${col_blue} Date is: ${date_sec}"
   # Useful when trying to find bad variables along 'set -o nounset'
 }
+#
+  #
+#
+function gitignore {
+.gitignore - <<EOF
+# .gitignore
+############
+test
+.cache
+coverage
+dist
+node_modules
+npm-debug
+.env
 
+# Directories
+############
+
+# Files
+############
+var-config.sh
+
+# Compiled source #
+###################
+*.com
+*.class
+*.dll
+*.exe
+*.o
+*.so
+
+# Packages #
+############
+# it's better to unpack these files and commit the raw source
+# git has its own built in compression methods
+*.7z
+*.dmg
+*.gz
+*.iso
+*.jar
+*.rar
+*.tar
+*.zip
+
+# Logs and databases #
+######################
+*.log
+*.sql
+*.sqlite
+
+# OS generated files #
+######################
+.DS_Store
+.DS_Store?
+.vscode
+.Trashes
+ehthumbs.db
+Thumbs.db
+.AppleDouble
+.LSOverride
+.metadata_never_index
+
+# Thumbnails
+############
+._*
+
+# Icon must end with two \r
+###########################
+Icon
+
+# Files that might appear in the root of a volume
+#################################################
+.DocumentRevisions-V100
+.fseventsd
+.dbfseventsd
+.Spotlight-V100
+.TemporaryItems
+.Trashes
+.trash
+.VolumeIcon.icns
+.com.apple.timemachine.donotpresent
+.com.apple.timemachine.supported
+.PKInstallSandboxManager
+.PKInstallSandboxManager-SystemSoftware
+.file
+.hotfiles.btree
+.quota.ops.user
+.quota.user
+.quota.ops.group
+.quota.group
+.vol
+.efi
+
+# Directories potentially created on remote AFP share
+#####################################################
+.AppleDB
+.AppleDesktop
+Network Trash Folder
+Temporary Items
+.apdisk
+.Mobile*
+.disk_*
+
+# Sherlock files
+################
+TheFindByContentFolder
+TheVolumeSettingsFolder
+.FBCIndex
+.FBCSemaphoreFile
+.FBCLockFolder
+EOF
+}
+#
+  #
+#
+function App_is_input2_empty {
+  if [[ "${input_2}" == "not-set" ]]; then
+    echo -e "${col_pink} ERROR: You must provid a Git message."
+    echo -e "${col_pink}        ./utility.sh push ;Add this great feature; (use double quotes, not ;)"
+    App_stop
+  fi
+}
+#
+  #
+#
 function array_example {
   arr=( "hello" "world" "three" )
   
@@ -121,7 +237,9 @@ function array_example {
     echo ${i}
   done
 }
-
+#
+  #
+#
 function passgen {
   grp1=$(openssl rand -base64 32 | sed 's/[^123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghjkmnpqrstuvwxyz]//g' | cut -c11-14) && \
   grp2=$(openssl rand -base64 32 | sed 's/[^123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghjkmnpqrstuvwxyz]//g' | cut -c2-25) && \
@@ -136,11 +254,15 @@ function passgenmax {
   clear && \
   echo "${grp1}_${grp2}_${grp3}"
 }
-
+#
+  #
+#
 function App_stop {
   echo && exit 1
 }
-
+#
+  #
+#
 function App_utility_vars {
 #==============================================
 #	Date generators
@@ -169,8 +291,9 @@ date_month="$(date +%Y-%m)-XX";
   export col_white="\e[97m——>\e[39m"
   export col_def="\e[39m"
 }
-
-
+#
+  #
+#
 function doc {
 cat << EOF
   Utility's doc (documentation):
