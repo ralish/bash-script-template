@@ -13,7 +13,7 @@ set an alias (with a space at the end)
 alias uu=./utility.sh 
 ```
 
-**Example 1:**
+**Example 1A:**
 
 ```
 ./utility.sh test"
@@ -24,7 +24,7 @@ $3 is now not-set
 
 ```
 
-**Example 2:**
+**Example 1B:**
 
 ```
 ./utility.sh test two "three and something"
@@ -35,7 +35,7 @@ $3 is now three and something
 
 ```
 
-**Example 3A:**
+**Example 2A:**
 
 ```
 ./utility.sh push
@@ -43,16 +43,23 @@ $3 is now three and something
 ——> ERROR: You must provid a Git message.
 ```
 
-**Example 3B:**
+**Example 2B:**
 
 ```
 ./utility.sh update "Improve README / Quick win section"
 
-——> ERROR: You must provid a Git message.
+Enumerating objects: 5, done.
+Counting objects: 100% (5/5), done.
+Delta compression using up to 8 threads
+Compressing objects: 100% (3/3), done.
+Writing objects: 100% (3/3), 506 bytes | 506.00 KiB/s, done.
+Total 3 (delta 2), reused 0 (delta 0)
+remote: Resolving deltas: 100% (2/2), completed with 2 local objects.
+To github.com:firepress-org/bash-script-template.git
+   9737dc7..7255277  master -> master
 ```
 
-
-
+**Example 3:**
 
 ```
 ./utility.sh docs"
