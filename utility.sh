@@ -58,7 +58,7 @@ function version {
   App_is_input2_empty
   tag_version="${input_2}"
 
-  echo "Was our our CHANGELOG.md updated???" && sleep 4 && \
+  echo "Was our CHANGELOG.md updated???" && sleep 4 && \
 
   sed -i '' "s/^ARG VERSION=.*$/ARG VERSION=\"$tag_version\"/" Dockerfile 
 
@@ -93,7 +93,7 @@ function release {
     --name "${tag_version}" \
     --description "Refer to [CHANGELOG.md]("${git_repo_url}"/blob/master/CHANGELOG.md) for details about this release."
 
-    echo && echo "${git_repo_url}/releases/tag/${tag_version}"
+    echo "${git_repo_url}/releases/tag/${tag_version}" && echo
 }
 function tag {
   echo "Look for 'ver' instead."
