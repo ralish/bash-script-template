@@ -67,7 +67,7 @@ function version {    # version
   release
 }
 function release {
-  source env.sh .
+  source set_vars.sh .
   echo "We are about to release ${tag_version}" && sleep 5
 
   # Requires https://github.com/aktau/github-release
