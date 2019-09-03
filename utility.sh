@@ -241,8 +241,7 @@ EOF
 #
 function App_is_input2_empty {
   if [[ "${input_2}" == "not-set" ]]; then
-    echo -e "${col_pink} ERROR: You must provid a Git message."
-    echo -e "${col_pink}        ./utility.sh push ;Add this great feature; (use double quotes, not ;)"
+    echo -e "${col_pink} ERROR: You must provide a Git message."
     App_stop
   fi
 }
