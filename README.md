@@ -1,17 +1,72 @@
-bash-script-template
-====================
+## bash-script-template
+
 
 A `bash` scripting template incorporating best practices & several useful functions.
 
-Motivation
-----------
+Forked from: https://github.com/ralish/bash-script-template
+
+## Quick wins
+
+**Example 1:**
+
+```
+./utility.sh test"
+
+$1 is now test
+$2 is now not-set
+$3 is now not-set
+
+```
+
+**Example 2:**
+
+```
+./utility.sh test two "three and something"
+
+$1 is now test
+$2 is now two
+$3 is now three and something
+
+```
+
+**Example 3:**
+
+```
+./utility.sh docs"
+
+  Doc (documentation):
+
+  This text is used as a placeholder. Words that will follow won't
+  make any sense and this is fine. At the moment, the goal is to
+  build a structure for our site.
+
+  Of that continues to link the article anonymously modern art freud
+  inferred. Eventually primitive brothel scene with a distinction. The
+  Enlightenment criticized from the history.
+```
+
+**Example 4:** (requires docker on your machine)
+
+```
+# 
+./utility.sh figlet"
+
+ _   _               __ _       _      _
+| | | | ___ _   _   / _(_) __ _| | ___| |_
+| |_| |/ _ \ | | | | |_| |/ _` | |/ _ \ __|
+|  _  |  __/ |_| | |  _| | (_| | |  __/ |_
+|_| |_|\___|\__, | |_| |_|\__, |_|\___|\__|
+            |___/         |___/
+```
+
+## Motivation
 
 I write `bash` scripts not infrequently and realised that I often copied a recent script whenever I started writing a new one. This provided me with a basic scaffold to work on and several useful helper functions I'd otherwise likely end up duplicating.
 
 So rather than continually copying old scripts and flensing the irrelevant code, I'm publishing a more formalised template to ease the process for my own usage and anyone else who may find it helpful! Suggestions for improvements are most welcome.
 
-Files
------
+## Files
+
 
 | File            | Description                                                                                      |
 | --------------- |------------------------------------------------------------------------------------------------- |
@@ -20,8 +75,7 @@ Files
 | **script.sh**   | Sample script which sources in `source.sh` and contains those functions likely to be modified.   |
 | **build.sh**    | Generates `template.sh` by combining `source.sh` & `template.sh`. Just a helper script for me.   |
 
-Usage
------
+## Usage
 
 Being a Bash script you're free to *slice-and-dice* the source as you see fit.
 
@@ -62,8 +116,7 @@ if [[ -n ${hostname-} ]]; then
 fi
 ```
 
-Controversies
--------------
+## Controversies
 
 The Bash scripting community is an opinionated one. This is not a bad thing, but it does mean that some decisions made in this template aren't going to be agreed upon by everyone. A few of the most notable ones are highlighted here with an explanation of the rationale.
 
@@ -79,7 +132,6 @@ By enabling `set -u` (or the equivalent `set -o nounset`) the script will exit i
 
 This option is enabled for the same reasons as described above for `errexit`.
 
-License
--------
+## License
 
 All content is licensed under the terms of [The MIT License](LICENSE).
