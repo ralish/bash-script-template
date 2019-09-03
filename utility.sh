@@ -67,14 +67,16 @@ function version {    # version
   release
 }
 function release {
-  # set vars
+  # Read var from Dockerfile
   git_user=$(cat Dockerfile | grep GITHUB_USER= | head -n 1 | grep -o '".*"' | sed 's/"//g')
   git_repo=$(cat Dockerfile | grep APP_NAME= | head -n 1 | grep -o '".*"' | sed 's/"//g')
   git_repo_url=$(cat Dockerfile | grep GIT_REPO_URL= | head -n 1 | grep -o '".*"' | sed 's/"//g')
-  GITHUB_TOKEN="$(cat ~/secrets_open/token_github/token.txt)"
+  
+  export GITHUB_TOKEN="$(cat ~/secrets_open/token_github/token.txt)"
   tag_version="$(git tag --sort=-creatordate | head -n1)"
   gopath=$(go env GOPATH)
 
+  echo
   echo "We are about to release ${tag_version}" && sleep 5 && \
 
   # Requires https://github.com/aktau/github-release
@@ -83,7 +85,7 @@ function release {
     --repo "${git_repo}" \
     --tag "${tag_version}" \
     --name "${tag_version}" \
-    --description "Refer to [CHANGELOG.md]("${GIT_REPO_DOCKERFILE}"/blob/master/CHANGELOG.md) for details about this release."
+    --description "Refer to [CHANGELOG.md]("${git_repo_url}"/blob/master/CHANGELOG.md) for details about this release."
 }
 function tag {
   echo "Look for 'ver' instead."
