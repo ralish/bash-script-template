@@ -15,6 +15,10 @@
 
 # Releases
 
+## 0.5-r2
+### ⚡️ Updates
+- Update fct check
+
 ## 0.5-r1
 ### ⚡️ Updates
 - Improve Prompt before doing a git push
