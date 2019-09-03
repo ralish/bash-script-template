@@ -49,11 +49,16 @@ function diff {
   check && echo
   git diff
 }
-function version {    # version
+function version {
+  # update version in Dockerfile
+  # update version on the latest commit
+  # push tag to remote
+  # release on github
+
   App_is_input2_empty
   tag_version="${input_2}"
 
-  echo "First, do we need to first update CHANGELOG.md?" && sleep 5 && \
+  echo "Do we need to update our CHANGELOG.md ???" && sleep 4 && \
 
   sed -i '' "s/^ARG VERSION=.*$/ARG VERSION=\"$tag_version\"/" Dockerfile 
 
@@ -67,7 +72,8 @@ function version {    # version
   release
 }
 function release {
-  # Read var from Dockerfile
+
+  # Read variables from Dockerfile
   git_user=$(cat Dockerfile | grep GITHUB_ORG= | head -n 1 | grep -o '".*"' | sed 's/"//g')
   git_repo=$(cat Dockerfile | grep APP_NAME= | head -n 1 | grep -o '".*"' | sed 's/"//g')
   git_repo_url=$(cat Dockerfile | grep GIT_REPO_URL= | head -n 1 | grep -o '".*"' | sed 's/"//g')
@@ -77,7 +83,7 @@ function release {
   gopath=$(go env GOPATH)
 
   clear && echo && \
-  echo "We are about to release ${tag_version}" && sleep 5 && \
+  echo "Let's release version: ${tag_version}" && sleep 1 && \
 
   # Requires https://github.com/aktau/github-release
   ${gopath}/bin/github-release release \
