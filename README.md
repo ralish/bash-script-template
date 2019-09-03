@@ -7,6 +7,12 @@ Forked from: https://github.com/ralish/bash-script-template
 
 ## Quick wins
 
+set an alias (with a space at the end)
+
+```
+alias uu=./utility.sh 
+```
+
 **Example 1:**
 
 ```
@@ -29,7 +35,24 @@ $3 is now three and something
 
 ```
 
-**Example 3:**
+**Example 3A:**
+
+```
+./utility.sh push
+
+——> ERROR: You must provid a Git message.
+```
+
+**Example 3B:**
+
+```
+./utility.sh update "Improve README / Quick win section"
+
+——> ERROR: You must provid a Git message.
+```
+
+
+
 
 ```
 ./utility.sh docs"
