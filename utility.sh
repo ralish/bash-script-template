@@ -58,7 +58,11 @@ function version {
   App_is_input2_empty
   tag_version="${input_2}"
 
-  echo "Was our CHANGELOG.md updated???" && sleep 4 && \
+  echo -e "${col_pink} Was our CHANGELOG.md updated???" && sleep 1 && clear && \
+  echo -e "${col_blue} Was our CHANGELOG.md updated???" && sleep 1 && clear && \
+  echo -e "${col_pink} Was our CHANGELOG.md updated???" && sleep 1 && clear && \
+  echo -e "${col_blue} Was our CHANGELOG.md updated???" && sleep 1 && \
+
 
   sed -i '' "s/^ARG VERSION=.*$/ARG VERSION=\"$tag_version\"/" Dockerfile 
 
