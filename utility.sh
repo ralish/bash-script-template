@@ -53,7 +53,7 @@ function version {    # version
   App_is_input2_empty
   tag_version="${input_2}"
 
-  echo "First, do we need to first update CHANGELOG.md?" sleep 5;
+  echo "First, do we need to first update CHANGELOG.md?" && sleep 5 && \
 
   sed -i '' "s/^ARG VERSION=.*$/ARG VERSION=\"$tag_version\"/" Dockerfile 
 
@@ -67,8 +67,15 @@ function version {    # version
   release
 }
 function release {
-  source set_vars.sh .
-  echo "We are about to release ${tag_version}" && sleep 5
+  # set vars
+  git_user=$(cat Dockerfile | grep GITHUB_USER= | head -n 1 | grep -o '".*"' | sed 's/"//g')
+  git_repo=$(cat Dockerfile | grep APP_NAME= | head -n 1 | grep -o '".*"' | sed 's/"//g')
+  git_repo_url=$(cat Dockerfile | grep GIT_REPO_URL= | head -n 1 | grep -o '".*"' | sed 's/"//g')
+  GITHUB_TOKEN="$(cat ~/secrets_open/token_github/token.txt)"
+  tag_version="$(git tag --sort=-creatordate | head -n1)"
+  gopath=$(go env GOPATH)
+
+  echo "We are about to release ${tag_version}" && sleep 5 && \
 
   # Requires https://github.com/aktau/github-release
   ${gopath}/bin/github-release release \
@@ -76,7 +83,7 @@ function release {
     --repo "${git_repo}" \
     --tag "${tag_version}" \
     --name "${tag_version}" \
-    --description "${git_release_description}"
+    --description "Refer to [CHANGELOG.md]("${GIT_REPO_DOCKERFILE}"/blob/master/CHANGELOG.md) for details about this release."
 }
 function tag {
   echo "Look for 'ver' instead."
