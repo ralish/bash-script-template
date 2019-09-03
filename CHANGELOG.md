@@ -15,6 +15,10 @@
 
 # Releases
 
+## 0.5-r1
+### ⚡️ Updates
+- Improve Prompt before doing a git push
+
 ## 0.5-r0
 ### ⚡️ Updates
 - Improve README
