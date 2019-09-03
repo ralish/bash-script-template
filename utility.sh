@@ -58,13 +58,11 @@ function version {
   App_is_input2_empty
   tag_version="${input_2}"
 
-  echo -e "${col_pink} Was our CHANGELOG.md updated???" && sleep 0.7 && clear && \
-  echo -e "${col_blue} Was our CHANGELOG.md updated???" && sleep 0.7 && clear && \
-  echo -e "${col_pink} Was our CHANGELOG.md updated???" && sleep 0.7 && clear && \
-  echo -e "${col_blue} Was our CHANGELOG.md updated???" && sleep 0.7 && clear && \
-  echo -e "${col_pink} Was our CHANGELOG.md updated???" && sleep 0.7 && clear && \
-  echo -e "${col_blue} Was our CHANGELOG.md updated???" && sleep 0.7 && \
-
+  min=1 max=10 message="Was our CHANGELOG.md updated???"
+  for ACTION in $(seq ${min} ${max}); do
+    echo -e "${col_pink} ${message} ${col_pink}" && sleep 0.4 && clear && \
+    echo -e "${col_blue} ${message} ${col_blue}" && sleep 0.4 && clear
+	done
 
   sed -i '' "s/^ARG VERSION=.*$/ARG VERSION=\"$tag_version\"/" Dockerfile 
 
