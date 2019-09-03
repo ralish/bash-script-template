@@ -15,6 +15,10 @@
 
 # Releases
 
+## 0.4-r2
+### ⚡️ Updates
+- Improve comments
+
 ## 0.4-r1
 ### ⚡️ Updates
 - improve comments
