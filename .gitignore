@@ -1,12 +1,12 @@
 # .gitignore
 ############
+test
 .cache
 coverage
 dist
 node_modules
 npm-debug
 .env
-docker-compose*.yml
 
 # Directories
 ############

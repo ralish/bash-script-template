@@ -109,7 +109,9 @@ function test {
   #
 #
 function gitignore {
-.gitignore - <<EOF
+# this overrides your existing .gitignore
+
+cat <<EOF > .gitignore
 # .gitignore
 ############
 test
