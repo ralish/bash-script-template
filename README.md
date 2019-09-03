@@ -36,7 +36,7 @@ $3 is now three and something
 ```
 ./utility.sh push
 
-——> ERROR: You must provid a Git message.
+——> ERROR: You must provide a Git message.
 ```
 
 **Example 2B:**
