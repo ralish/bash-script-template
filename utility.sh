@@ -76,7 +76,7 @@ function release {
   tag_version="$(git tag --sort=-creatordate | head -n1)"
   gopath=$(go env GOPATH)
 
-  echo
+  clear && echo && \
   echo "We are about to release ${tag_version}" && sleep 5 && \
 
   # Requires https://github.com/aktau/github-release
@@ -86,6 +86,8 @@ function release {
     --tag "${tag_version}" \
     --name "${tag_version}" \
     --description "Refer to [CHANGELOG.md]("${git_repo_url}"/blob/master/CHANGELOG.md) for details about this release."
+
+    echo "${git_repo_url}/releases/tag/${tag_version}"
 }
 function tag {
   echo "Look for 'ver' instead."
