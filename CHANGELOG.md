@@ -18,6 +18,7 @@
 ## 0.5-r1
 ### ⚡️ Updates
 - Improve Prompt before doing a git push
+- Testing `utility.sh` / git push, tag, version, release, etc. That's why there are many release today :-p
 
 ## 0.5-r0
 ### ⚡️ Updates
