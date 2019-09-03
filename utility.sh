@@ -343,7 +343,7 @@ function main() {
   input_1=$1
   if [[ -z "$1" ]]; then    #if empty
     clear
-    echo -e "${col_pink} ERROR: You must provid at least one attribute."
+    echo -e "${col_pink} ERROR: You must provide at least one attribute."
     App_stop
   else
     input_1=$1
