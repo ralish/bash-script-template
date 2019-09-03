@@ -43,7 +43,7 @@ function edge {
   git checkout edge
 }
 function check {
-  git checkout
+  git status
 }
 function diff {
   check && echo
