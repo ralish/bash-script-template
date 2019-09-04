@@ -15,6 +15,11 @@
 
 # Releases
 
+## 0.6-r0
+### ⚡️ Updates
+- Update fct **version** and **release**.
+- **release** fct is now based on https://github.com/github/hub
+
 ## 0.5-r2
 ### ⚡️ Updates
 - Update fct check
