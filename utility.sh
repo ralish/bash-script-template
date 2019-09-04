@@ -31,6 +31,7 @@ function figlet {
 
 ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ###
 # Git
+# Requires https://github.com/aktau/github-release
 ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ###
 
 function hash {
@@ -49,16 +50,19 @@ function diff {
   check && echo
   git diff
 }
+function ci-status {
+  hub ci-status $(git rev-parse HEAD)
+}
 function version {
   # update version in Dockerfile
   # update version on the latest commit
   # push tag to remote
-  # release on github
 
   App_is_input2_empty
   tag_version="${input_2}"
 
-  min=1 max=10 message="Was our CHANGELOG.md updated???"
+  # Prompt a warning
+  min=1 max=10 message="WARNING: On MASTER branch?? CHANGELOG.md is updated??"
   for ACTION in $(seq ${min} ${max}); do
     echo -e "${col_pink} ${message} ${col_pink}" && sleep 0.4 && clear && \
     echo -e "${col_blue} ${message} ${col_blue}" && sleep 0.4 && clear
@@ -72,30 +76,44 @@ function version {
   sleep 1 && \
   # push tag
   git tag ${tag_version} && \
-  git push --tags && \
-  release
+  git push --tags
 }
 function release {
+  # release on github
 
-  # Read variables from Dockerfile
-  git_user=$(cat Dockerfile | grep GITHUB_ORG= | head -n 1 | grep -o '".*"' | sed 's/"//g')
-  git_repo=$(cat Dockerfile | grep APP_NAME= | head -n 1 | grep -o '".*"' | sed 's/"//g')
+  App_is_input2_empty
+
+  tag_version="${input_2}"
   git_repo_url=$(cat Dockerfile | grep GIT_REPO_URL= | head -n 1 | grep -o '".*"' | sed 's/"//g')
+
+  # Prompt a warning
+  min=1 max=10 message="WARNING: On MASTER branch?? CHANGELOG.md is updated??"
+  for ACTION in $(seq ${min} ${max}); do
+    echo -e "${col_pink} ${message} ${col_pink}" && sleep 0.4 && clear && \
+    echo -e "${col_blue} ${message} ${col_blue}" && sleep 0.4 && clear
+	done
+
+  # push tag
+  git tag ${tag_version} && \
+  git push --tags
   
   export GITHUB_TOKEN="$(cat ~/secrets_open/token_github/token.txt)"
-  tag_version="$(git tag --sort=-creatordate | head -n1)"
   gopath=$(go env GOPATH)
 
+  release_message="Refer to [CHANGELOG.md]("${git_repo_url}"/blob/master/CHANGELOG.md) for details about this release."
   clear && echo && \
   echo "Let's release version: ${tag_version}" && sleep 1 && \
 
-  # Requires https://github.com/aktau/github-release
-  ${gopath}/bin/github-release release \
-    --user "${git_user}" \
-    --repo "${git_repo}" \
-    --tag "${tag_version}" \
-    --name "${tag_version}" \
-    --description "Refer to [CHANGELOG.md]("${git_repo_url}"/blob/master/CHANGELOG.md) for details about this release."
+  hub release create -oc \
+    -m "${tag_version}" \
+    -m "${release_message}" \
+    -t "$(git rev-parse HEAD)" \
+    "${tag_version}"
+  # https://hub.github.com/hub-release.1.html
+    # title
+    # description
+    # on which commits (use the latest)
+    # on which tag (use the latest)
 
     echo "${git_repo_url}/releases/tag/${tag_version}"
 }
