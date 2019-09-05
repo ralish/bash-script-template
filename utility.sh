@@ -56,6 +56,8 @@ function rebase_master_from_edge {
   git checkout master
   git pull origin master
   git rebase edge
+  git push
+  git checkout edge
 }
 
 function rebase_edge_from_master {
@@ -63,6 +65,7 @@ function rebase_edge_from_master {
   git checkout edge
   git pull origin edge
   git rebase master
+  git push
 }
 
 function ci-status {
