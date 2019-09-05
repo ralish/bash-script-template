@@ -59,8 +59,12 @@ function rebase_master_from_edge {
     git pull origin master
     git rebase edge
     git push
+    hash_master_is=$(git rev-parse --short HEAD)
     # go back to edge by default
     git checkout edge
+    #
+    hash_edge_is=$(git rev-parse --short HEAD)
+    echo "Diligence: ${hash_master_is} vs ${hash_master_is} (master vs edge should be the same)"
   else
     echo "ERROR: you must push your commit before."
   fi
@@ -74,6 +78,13 @@ function rebase_edge_from_master {
     git pull origin edge
     git rebase master
     git push
+    hash_edge_is=$(git rev-parse --short HEAD)
+    #
+    git checkout master
+    hash_master_is=$(git rev-parse --short HEAD)
+    git checkout edge
+    echo "Diligence: ${hash_master_is} vs ${hash_master_is} (master vs edge should be the same)"
+
   else
     echo "ERROR: you must push your commit before."
   fi
