@@ -3,6 +3,8 @@
 
 A `bash script` template incorporating best bash practices and several useful functions to manage your code.
 
+Useful for your typical DevOps workflow.
+
 It was forked from: https://github.com/ralish/bash-script-template
 
 ## Usage & quick wins
@@ -90,12 +92,25 @@ To github.com:firepress-org/bash-script-template.git
 ```
 # 
 ./utility.sh rbmaster"
-```
 
+Switched to branch 'master'
+Your branch is up to date with 'origin/master'.
+From github.com:firepress-org/bash-script-template
+ * branch            master     -> FETCH_HEAD
+Already up to date.
+First, rewinding head to replay your work on top of it...
+Fast-forwarded master to edge.
+Total 0 (delta 0), reused 0 (delta 0)
+To github.com:firepress-org/bash-script-template.git
+   27d5731..4a2a0e5  master -> master
+Switched to branch 'edge'
+Your branch is up to date with 'origin/edge'.
+——> Diligence: 4a2a0e5 | 4a2a0e5 (master vs edge should be the same)
+```
 
 ## Requirements
 
-These scripts use these apps:
+Some scripts are using:
 
 - [Docker](https://docs.docker.com/install/)
 - [Hub](https://github.com/github/hub#installation)
