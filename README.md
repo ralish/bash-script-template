@@ -1,15 +1,15 @@
 ## bash-script-template
 
 
-A `bash` scripting template incorporating best practices & several useful functions.
+A `bash script` template incorporating best bash practices and several useful functions to manage your code.
 
-Forked from: https://github.com/ralish/bash-script-template
+It was forked from: https://github.com/ralish/bash-script-template
 
-## Quick wins
+## Usage & quick wins
 
 set an alias `alias uu=./utility.sh ` (with a space at the end)
 
-**Example 1A:**
+**Example 1A (attributes)**
 
 ```
 ./utility.sh test"
@@ -20,7 +20,7 @@ $3 is now not-set
 
 ```
 
-**Example 1B:**
+**Example 1B (attributes)**
 
 ```
 ./utility.sh test two "three and something"
@@ -31,7 +31,7 @@ $3 is now three and something
 
 ```
 
-**Example 2A:**
+**Example 2A (git push)**
 
 ```
 ./utility.sh push
@@ -39,7 +39,7 @@ $3 is now three and something
 ——> ERROR: You must provide a Git message.
 ```
 
-**Example 2B:**
+**Example 2B (git push)**
 
 ```
 ./utility.sh update "Improve README / Quick win section"
@@ -55,7 +55,7 @@ To github.com:firepress-org/bash-script-template.git
    9737dc7..7255277  master -> master
 ```
 
-**Example 3:**
+**Example 3**
 
 ```
 ./utility.sh docs"
@@ -71,7 +71,7 @@ To github.com:firepress-org/bash-script-template.git
   Enlightenment criticized from the history.
 ```
 
-**Example 4:** (requires docker on your machine)
+**Example 4** (requires docker on your machine)
 
 ```
 # 
@@ -85,6 +85,21 @@ To github.com:firepress-org/bash-script-template.git
             |___/         |___/
 ```
 
+**Example 5 rebase master from the branch edge**
+
+```
+# 
+./utility.sh rbmaster"
+```
+
+
+## Requirements
+
+These scripts use these apps:
+
+- [Docker](https://docs.docker.com/install/)
+- [Hub](https://github.com/github/hub#installation)
+
 ## Motivation
 
 I write `bash` scripts not infrequently and realised that I often copied a recent script whenever I started writing a new one. This provided me with a basic scaffold to work on and several useful helper functions I'd otherwise likely end up duplicating.
@@ -96,51 +111,9 @@ So rather than continually copying old scripts and flensing the irrelevant code,
 
 | File            | Description                                                                                      |
 | --------------- |------------------------------------------------------------------------------------------------- |
-| **template.sh** | A fully self-contained script which combines `source.sh` & `script.sh`.                          |
-| **source.sh**   | Designed for sourcing into scripts; contains only those functions unlikely to need modification. |
-| **script.sh**   | Sample script which sources in `source.sh` and contains those functions likely to be modified.   |
-| **build.sh**    | Generates `template.sh` by combining `source.sh` & `template.sh`. Just a helper script for me.   |
-
-## Usage
-
-Being a Bash script you're free to *slice-and-dice* the source as you see fit.
-
-The following steps outline what's typically involved to help you get started:
-
-1. Choose between using either:
-    1. `template.sh` (fully self-contained)
-    2. `script.sh` with `source.sh` (source in most functions)
-2. Depending on your choice open `template.sh` or `script.sh` for editing
-3. Update the `script_usage()` function with additional usage guidance
-4. Update the `parse_params()` function with additional script parameters
-5. Add additional functions to implement the desired functionality
-6. Update the `main()` function to call your additional functions
-
-### Adding a `hostname` parameter
-
-The following contrived example demonstrates how to add a parameter to display the system's hostname.
-
-Update the `script_usage()` function by inserting the following before the `EOF`:  
-
-```plain
-    --hostname                  Display the system's hostname
-```
-
-Update the `parse_params()` function by inserting the following before the default case statement (`*)`):  
-
-```bash
---hostname)
-    hostname=true
-    ;;
-```
-
-Update the `main()` function by inserting the following after the existing initialisation statements:  
-
-```bash
-if [[ -n ${hostname-} ]]; then
-    pretty_print "Hostname is: $(hostname)"
-fi
-```
+                      |
+| **.bashcheck.sh**   | Designed for sourcing into scripts; contains only those functions unlikely to need modification. |
+| **utility.sh**   | Sample script which sources in `source.sh` and contains those functions likely to be modified. |
 
 ## Controversies
 
@@ -160,4 +133,4 @@ This option is enabled for the same reasons as described above for `errexit`.
 
 ## License
 
-All content is licensed under the terms of [The MIT License](LICENSE).
+- This git repo is under the **GNU V3** license. [Find it here](./LICENSE.md).
