@@ -56,8 +56,8 @@ function App_Error {
   echo -e "${col_pink} ERROR: ${message_err}"
 }
 
-function rebase_master_from_edge {
-  # rebase_master_from_edge
+function rbmaster {
+  # think rebase_master_from_edge
   if [[ $(git status | grep -c "nothing to commit") == "1" ]]; then
     echo "good, nothing to commit"
     git checkout master
@@ -77,8 +77,8 @@ function rebase_master_from_edge {
   fi
 }
 
-function rebase_edge_from_master {
-  # rebase_edge_from_master
+function rbedge {
+  # think rebase_edge_from_master
   if [[ $(git status | grep -c "nothing to commit") == "1" ]]; then
     echo "good, nothing to commit"
     git checkout edge
