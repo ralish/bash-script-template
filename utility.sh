@@ -51,6 +51,11 @@ function diff {
   git diff
 }
 
+function App_Error {
+  # must receive VAR message_err="This text is used as a placeholder"
+  echo -e "${col_pink} ERROR: ${message_err}"
+}
+
 function rebase_master_from_edge {
   # rebase_master_from_edge
   if [[ $(git status | grep -c "nothing to commit") == "1" ]]; then
@@ -64,9 +69,11 @@ function rebase_master_from_edge {
     git checkout edge
     #
     hash_edge_is=$(git rev-parse --short HEAD)
-    echo "Diligence: ${hash_master_is} vs ${hash_master_is} (master vs edge should be the same)"
+    #echo -e "${col_blue} Diligence: ${hash_master_is} | ${hash_master_is} (master vs edge should be the same)"
+    message_err="Diligence: ${hash_master_is} | ${hash_master_is} (master vs edge should be the same)" App_Error
+
   else
-    echo "ERROR: you must push your commit before."
+    message_err="You must push your commit before." App_Error
   fi
 }
 
@@ -83,10 +90,10 @@ function rebase_edge_from_master {
     git checkout master
     hash_master_is=$(git rev-parse --short HEAD)
     git checkout edge
-    echo "Diligence: ${hash_master_is} vs ${hash_master_is} (master vs edge should be the same)"
+    cho -e "${col_blue} Diligence: ${hash_master_is} | ${hash_master_is} (master vs edge should be the same)"
 
   else
-    echo "ERROR: you must push your commit before."
+    echo -e "${col_pink} ERROR: you must push your commit before."
   fi
 }
 
