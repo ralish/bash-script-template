@@ -53,19 +53,30 @@ function diff {
 
 function rebase_master_from_edge {
   # rebase_master_from_edge
-  git checkout master
-  git pull origin master
-  git rebase edge
-  git push
-  git checkout edge
+  if [[ $(git status | grep -c "nothing to commit") == "1" ]]; then
+    echo "good, nothing to commit"
+    git checkout master
+    git pull origin master
+    git rebase edge
+    git push
+    # go back to edge by default
+    git checkout edge
+  else
+    echo "ERROR: you must push your commit before."
+  fi
 }
 
 function rebase_edge_from_master {
   # rebase_edge_from_master
-  git checkout edge
-  git pull origin edge
-  git rebase master
-  git push
+  if [[ $(git status | grep -c "nothing to commit") == "1" ]]; then
+    echo "good, nothing to commit"
+    git checkout edge
+    git pull origin edge
+    git rebase master
+    git push
+  else
+    echo "ERROR: you must push your commit before."
+  fi
 }
 
 function ci-status {
