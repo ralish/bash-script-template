@@ -50,6 +50,21 @@ function diff {
   check && echo
   git diff
 }
+
+function rebase_master_from_edge {
+  # rebase_master_from_edge
+  git checkout master
+  git pull origin master
+  git rebase edge
+}
+
+function rebase_edge_from_master {
+  # rebase_edge_from_master
+  git checkout edge
+  git pull origin edge
+  git rebase master
+}
+
 function ci-status {
   hub ci-status $(git rev-parse HEAD)
 }
