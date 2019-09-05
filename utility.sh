@@ -50,16 +50,23 @@ function diff {
   check && echo
   git diff
 }
+function push {
 
-function App_Error {
-  # must receive VAR message_err="This text is used as a placeholder"
-  echo -e "${col_pink} ERROR: ${message_err}"
+  App_is_input2_empty
+
+  git status && \
+  git add -A && \
+  git commit -m "${input_2}" && \
+  clear
+  git push
 }
-
+function squash {
+  echo " "
+}
 function rbmaster {
   # think rebase_master_from_edge
   if [[ $(git status | grep -c "nothing to commit") == "1" ]]; then
-    echo "good, nothing to commit"
+    echo "good, nothing to commit" | 2>/dev/null
     git checkout master
     git pull origin master
     git rebase edge
@@ -69,18 +76,16 @@ function rbmaster {
     git checkout edge
     #
     hash_edge_is=$(git rev-parse --short HEAD)
-    #echo -e "${col_blue} Diligence: ${hash_master_is} | ${hash_master_is} (master vs edge should be the same)"
-    message_err="Diligence: ${hash_master_is} | ${hash_master_is} (master vs edge should be the same)" App_Error
+    my_message="Diligence: ${hash_master_is} | ${hash_master_is} (master vs edge should be the same)" App_Blue
 
   else
-    message_err="You must push your commit before." App_Error
+    my_message="You must push your commit(s) before doing a rebase." App_Pink
   fi
 }
-
 function rbedge {
   # think rebase_edge_from_master
   if [[ $(git status | grep -c "nothing to commit") == "1" ]]; then
-    echo "good, nothing to commit"
+    echo "good, nothing to commit" | 2>/dev/null
     git checkout edge
     git pull origin edge
     git rebase master
@@ -90,19 +95,18 @@ function rbedge {
     git checkout master
     hash_master_is=$(git rev-parse --short HEAD)
     git checkout edge
-    cho -e "${col_blue} Diligence: ${hash_master_is} | ${hash_master_is} (master vs edge should be the same)"
+    my_message="Diligence: ${hash_master_is} | ${hash_master_is} (master vs edge should be the same)" App_Blue
 
   else
-    echo -e "${col_pink} ERROR: you must push your commit before."
+    my_message="You must push your commit(s) before doing a rebase." App_Pink
   fi
 }
-
 function ci-status {
   hub ci-status $(git rev-parse HEAD)
 }
 function version {
   # update version in Dockerfile
-  # update version on the latest commit
+  # tag version on the latest commit
   # push tag to remote
 
   App_is_input2_empty
@@ -126,6 +130,7 @@ function version {
   git push --tags
 }
 function release {
+  # ensure to 'version' has tag the latest commit
   # release on github
 
   App_is_input2_empty
@@ -167,16 +172,6 @@ function release {
 function tag {
   echo "Look for 'ver' instead."
 }
-function push {
-
-  App_is_input2_empty
-
-  git status && \
-  git add -A && \
-  git commit -m "${input_2}" && \
-  clear
-  git push
-}
 
 
 ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ###
@@ -188,7 +183,7 @@ function test {
   echo "\$1 is now ${input_1}"
   echo "\$2 is now ${input_2}"
   echo "\$3 is now ${input_3}"
-  echo -e "${col_blue} Date is: ${date_sec}"
+  my_message="Date is: ${date_sec}." App_Blue
   # Useful when trying to find bad variables along 'set -o nounset'
 }
 #
@@ -310,7 +305,7 @@ EOF
 #
 function App_is_input2_empty {
   if [[ "${input_2}" == "not-set" ]]; then
-    echo -e "${col_pink} ERROR: You must provide a Git message."
+    my_message="You must provide a Git message." App_Pink
     App_stop
   fi
 }
@@ -378,6 +373,15 @@ date_month="$(date +%Y-%m)-XX";
   export col_white="\e[97m——>\e[39m"
   export col_def="\e[39m"
 }
+function App_Pink {
+  echo -e "${col_pink} ERROR: ${my_message}"
+}
+function App_Blue {
+  echo -e "${col_blue} ${my_message}"
+}
+function App_Green {
+  echo -e "${col_green} ${my_message}"
+}
 #
   #
 #
@@ -412,7 +416,7 @@ function main() {
   input_1=$1
   if [[ -z "$1" ]]; then    #if empty
     clear
-    echo -e "${col_pink} ERROR: You must provide at least one attribute."
+    my_message="You must provide at least one attribute." App_Pink
     App_stop
   else
     input_1=$1
