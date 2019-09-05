@@ -15,6 +15,14 @@
 
 # Releases
 
+## 0.6-r2
+### 🚀 Added (new feat.)
+- wip
+
+## 0.6-r1
+### 🚀 Added (new feat.)
+- 2x rebase functions
+
 ## 0.6-r0
 ### ⚡️ Updates
 - Update fct **version** and **release**.
