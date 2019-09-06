@@ -175,6 +175,7 @@ function release {
     git tag ${tag_version} && \
     git push --tags
 
+    sleep && \
     clear && echo && \
     echo "Let's release version: ${tag_version}" && \
 
