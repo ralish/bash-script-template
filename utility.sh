@@ -1,5 +1,9 @@
 #!/usr/bin/env bash
 
+### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ###
+#
+# Requirements: https://github.com/firepress-org/bash-script-template#requirements
+#
 set -o errexit          # Exit on most errors (see the manual)
 set -o errtrace         # Make sure any error trap is inherited
 set -o pipefail         # Use last non-zero exit code in a pipeline
@@ -8,30 +12,13 @@ set -o pipefail         # Use last non-zero exit code in a pipeline
 #set -o nounset          # Disallow expansion of unset variables
 # --- Find bad variables by using `./utility.sh test two three`, else disable it
 # --- or remove $1, $2, $3 var defintions in @main
-
-
+#
 ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ###
-# DOCKER
-### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ###
-function lint {
-  docker_image="redcoolbeans/dockerlint"
 
-  docker run -it --rm \
-    -v $(pwd)/Dockerfile:/Dockerfile:ro \
-    ${docker_image}
-}
-
-function figlet {
-  docker_image="devmtl/figlet:1.0"
-  message="Hey figlet"
-
-  docker run --rm ${docker_image} ${message}
-}
 
 
 ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ###
 # Git
-# Requires https://github.com/aktau/github-release
 ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ###
 
 function hash {
@@ -50,6 +37,9 @@ function diff {
   check && echo
   git diff
 }
+function bisect {
+  echo "todo"
+}
 function push {
 
   App_is_input2_empty
@@ -60,9 +50,31 @@ function push {
   clear
   git push
 }
-function squash {
-  echo " "
+function sq {
+  # squash
+
+  App_is_input2_empty
+  App_is_input3_empty
+
+  commit_steps_to_gack_back="${input_2}"
+  git_message="${input_3}"
+  usage="sq 3 'Add fct xyz'"
+
+  # think rebase_master_from_edge
+  if [[ $(git status | grep -c "nothing to commit") == "1" ]]; then
+    echo "good, nothing to commit" | 2>/dev/null
+    git reset --hard HEAD~"${commit_steps_to_gack_back}" && \
+    git merge --squash HEAD@{1} && \
+    git push origin HEAD --force && \
+    git status && \
+    git add -A && \
+    git commit -m "${git_message}" && \
+    git push;
+  else
+    my_message="You must push your commit(s) before doing a rebase." App_Pink
+  fi
 }
+
 function rbmaster {
   # think rebase_master_from_edge
   if [[ $(git status | grep -c "nothing to commit") == "1" ]]; then
@@ -183,6 +195,25 @@ function release {
 }
 function tag {
   echo "Look for 'ver' instead."
+}
+
+
+### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ###
+# DOCKER
+### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ###
+function lint {
+  docker_image="redcoolbeans/dockerlint"
+
+  docker run -it --rm \
+    -v $(pwd)/Dockerfile:/Dockerfile:ro \
+    ${docker_image}
+}
+
+function figlet {
+  docker_image="devmtl/figlet:1.0"
+  message="Hey figlet"
+
+  docker run --rm ${docker_image} ${message}
 }
 
 
@@ -317,7 +348,13 @@ EOF
 #
 function App_is_input2_empty {
   if [[ "${input_2}" == "not-set" ]]; then
-    my_message="You must provide a Git message." App_Pink
+    my_message="You must provide a valid attribute!" App_Pink
+    App_stop
+  fi
+}
+function App_is_input3_empty {
+  if [[ "${input_3}" == "not-set" ]]; then
+    my_message="You must provide a valid attribute!" App_Pink
     App_stop
   fi
 }
