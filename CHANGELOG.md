@@ -17,7 +17,12 @@
 
 ## 0.6-r2
 ### 🚀 Added (new feat.)
-- wip
+- 66c91d6e Add fct log
+- ac63cdf8 Add fct sq (means squash)
+
+### ⚡️ Updates
+- e7b5816b Improve README
+- 27d57316 Add logic to version + release fct
 
 ## 0.6-r1
 ### 🚀 Added (new feat.)

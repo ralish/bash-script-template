@@ -41,7 +41,6 @@ function bisect {
   echo "todo"
 }
 function push {
-
   App_is_input2_empty
 
   git status && \
@@ -49,6 +48,9 @@ function push {
   git commit -m "${input_2}" && \
   clear
   git push
+}
+function log {
+  git --no-pager log --decorate=short --pretty=oneline -n25
 }
 function sq {
   # squash
@@ -114,7 +116,7 @@ function rbedge {
   fi
 }
 function ci-status {
-  hub ci-status $(git rev-parse HEAD)
+  hub ci-status -v $(git rev-parse HEAD)
 }
 function version {
   # update version in Dockerfile
@@ -122,13 +124,15 @@ function version {
   # push tag to remote
 
   App_is_input2_empty
-  tag_version="${input_2}"
+
 
   currentBranch=$(git rev-parse --abbrev-ref HEAD)
   if [[ "${currentBranch}" == "master" ]]; then
 
+    tag_version="${input_2}"
+
     # Prompt a warning
-    min=1 max=6 message="WARNING: CHANGELOG.md is updated??"
+    min=1 max=4 message="WARNING: CHANGELOG.md is updated??"
     for ACTION in $(seq ${min} ${max}); do
       echo -e "${col_pink} ${message} ${col_pink}" && sleep 0.4 && clear && \
       echo -e "${col_blue} ${message} ${col_blue}" && sleep 0.4 && clear
@@ -148,51 +152,50 @@ function version {
   fi
 }
 function release {
-  # ensure to 'version' has tag the latest commit
-  # release on github
+  # ensure that 'version' has tag the latest commit
+  # then, release on github
 
   App_is_input2_empty
-
-  tag_version="${input_2}"
-  git_repo_url=$(cat Dockerfile | grep GIT_REPO_URL= | head -n 1 | grep -o '".*"' | sed 's/"//g')
 
   currentBranch=$(git rev-parse --abbrev-ref HEAD)
   if [[ "${currentBranch}" == "master" ]]; then
 
-  # Prompt a warning
-  min=1 max=6 message="WARNING: CHANGELOG.md is updated??"
-  for ACTION in $(seq ${min} ${max}); do
-    echo -e "${col_pink} ${message} ${col_pink}" && sleep 0.4 && clear && \
-    echo -e "${col_blue} ${message} ${col_blue}" && sleep 0.4 && clear
-	done
+    tag_version="${input_2}"
+    git_repo_url=$(cat Dockerfile | grep GIT_REPO_URL= | head -n 1 | grep -o '".*"' | sed 's/"//g')
+    release_message="Refer to [CHANGELOG.md]("${git_repo_url}"/blob/master/CHANGELOG.md) for details about this release.<br><br>Via `./utility.sh release`"
 
-  # push tag
-  git tag ${tag_version} && \
-  git push --tags
-  
-  export GITHUB_TOKEN="$(cat ~/secrets_open/token_github/token.txt)"
-  gopath=$(go env GOPATH)
+    # Prompt a warning
+    min=1 max=4 message="WARNING: CHANGELOG.md is updated??"
+    for ACTION in $(seq ${min} ${max}); do
+      echo -e "${col_pink} ${message} ${col_pink}" && sleep 0.4 && clear && \
+      echo -e "${col_blue} ${message} ${col_blue}" && sleep 0.4 && clear
+    done
 
-  release_message="Refer to [CHANGELOG.md]("${git_repo_url}"/blob/master/CHANGELOG.md) for details about this release."
-  clear && echo && \
-  echo "Let's release version: ${tag_version}" && sleep 1 && \
+    # push tag
+    git tag ${tag_version} && \
+    git push --tags
 
-  hub release create -oc \
-    -m "${tag_version}" \
-    -m "${release_message}" \
-    -t "$(git rev-parse HEAD)" \
-    "${tag_version}"
-  # https://hub.github.com/hub-release.1.html
-    # title
-    # description
-    # on which commits (use the latest)
-    # on which tag (use the latest)
+    clear && echo && \
+    echo "Let's release version: ${tag_version}" && \
+
+    hub release create -oc \
+      -m "${tag_version}" \
+      -m "${release_message}" \
+      -t "$(git rev-parse HEAD)" \
+      "${tag_version}"
+    # https://hub.github.com/hub-release.1.html
+      # title
+      # description
+      # on which commits (use the latest)
+      # on which tag (use the latest)
 
     echo "${git_repo_url}/releases/tag/${tag_version}"
+    
   else
     my_message="You must be a master branch." App_Pink
   fi
 }
+
 function tag {
   echo "Look for 'ver' instead."
 }
@@ -395,6 +398,9 @@ function App_stop {
   #
 #
 function App_utility_vars {
+
+export GITHUB_TOKEN="$(cat ~/secrets_open/token_github/token.txt)"
+
 #==============================================
 #	Date generators
  date_nano="$(date +%Y-%m-%d_%HH%Ms%S-%N)";
