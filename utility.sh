@@ -162,7 +162,7 @@ function release {
 
     tag_version="${input_2}"
     git_repo_url=$(cat Dockerfile | grep GIT_REPO_URL= | head -n 1 | grep -o '".*"' | sed 's/"//g')
-    release_message="Refer to [CHANGELOG.md]("${git_repo_url}"/blob/master/CHANGELOG.md) for details about this release.<br><br>Via `./utility.sh release`"
+    release_message="Refer to [CHANGELOG.md]("${git_repo_url}"/blob/master/CHANGELOG.md) for details about this release.<br><br>Via ./utility.sh release"
 
     # Prompt a warning
     min=1 max=4 message="WARNING: CHANGELOG.md is updated??"
@@ -173,11 +173,10 @@ function release {
 
     # push tag
     git tag ${tag_version} && \
-    git push --tags
+    git push --tags && \
 
-    sleep && \
     clear && echo && \
-    echo "Let's release version: ${tag_version}" && \
+    echo "Let's release version: ${tag_version}" && sleep 1 && \
 
     hub release create -oc \
       -m "${tag_version}" \
