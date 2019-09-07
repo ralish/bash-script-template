@@ -40,7 +40,11 @@ function diff {
 function wip_bisect {
   echo "todo"
 }
+function ci-status {
+  hub ci-status -v $(git rev-parse HEAD)
+}
 function push {
+# commit all
   App_is_input2_empty
 
   git status && \
@@ -53,7 +57,7 @@ function log {
   git --no-pager log --decorate=short --pretty=oneline -n25
 }
 function sq {
-  # squash
+# squash
 
   App_is_input2_empty
   App_is_input3_empty
@@ -76,9 +80,9 @@ function sq {
     my_message="You must push your commit(s) before doing a rebase." App_Pink
   fi
 }
-
 function rbmaster {
-  # think rebase_master_from_edge
+# think rebase_master_from_edge
+
   if [[ $(git status | grep -c "nothing to commit") == "1" ]]; then
     echo "good, nothing to commit" | 2>/dev/null
     git checkout master
@@ -95,7 +99,8 @@ function rbmaster {
   fi
 }
 function rbedge {
-  # think rebase_edge_from_master
+# think rebase_edge_from_master
+
   if [[ $(git status | grep -c "nothing to commit") == "1" ]]; then
     echo "good, nothing to commit" | 2>/dev/null
     git checkout edge
@@ -113,14 +118,15 @@ function rbedge {
     my_message="You must push your commit(s) before doing a rebase." App_Pink
   fi
 }
-function ci-status {
-  hub ci-status -v $(git rev-parse HEAD)
-}
 function pushcl {
 # push changelog
 
-# Use case: we just updated the changelog file
-# we want to: commit change on changelog.md, tag the commit, release on github
+# Use case: we just updated the CAHNGELOG.md file
+# Next, we want to:
+  #commit change on changelog.md
+  #tag the commit
+  #release on github
+  #rbedge
 
   App_is_input2_empty
 
@@ -128,8 +134,10 @@ function pushcl {
   if [[ "${currentBranch}" == "master" ]]; then
 
     tag_version="${input_2}"
+
     version
     release
+    rbedge
 
   else
     my_message="You must be a master branch." App_Pink
@@ -137,7 +145,7 @@ function pushcl {
 
 }
 function version {
-  # tag
+# tag
   
   # what it does:
     # update version in Dockerfile
@@ -233,8 +241,7 @@ function lint {
 ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ###
 
 function test {
-
-  # idempotent bash script
+# uat, idempotent bash script
 
   echo "\$1 is now ${input_1}"
   echo "\$2 is now ${input_2}"
@@ -255,13 +262,76 @@ function test {
     my_message="Docker is missing. https://github.com/firepress-org/bash-script-template#requirements" App_Pink
   fi
 
+  # validate if current directory is a Git repository
+  # git rev-parse --is-inside-work-tree
+
   my_message="Date is: ${date_sec}" App_Blue
 }
-#
-  #
-#
+
+function which_func {
+  # show all available functions
+  clear
+  cat utility.sh | awk '/function /' | awk '{print $2}' | sort -k2 -n | sed '/App_/d' | sed '/main/d' | sed '/utility/d'
+}
+
+function App_is_input2_empty {
+# ensure the second attribute is not empty to continue
+  if [[ "${input_2}" == "not-set" ]]; then
+    my_message="You must provide a valid attribute!" App_Pink
+    App_stop
+  fi
+}
+function App_is_input3_empty {
+# ensure the third attribute is not empty to continue
+  if [[ "${input_3}" == "not-set" ]]; then
+    my_message="You must provide a valid attribute!" App_Pink
+    App_stop
+  fi
+}
+
+function example_array {
+  arr=( "hello" "world" "three" )
+  
+  for i in "${arr[@]}"; do
+    echo ${i}
+  done
+}
+function example_docs {
+cat << EOF
+  Utility's doc (documentation):
+
+  This text is used as a placeholder. Words that will follow won't
+  make any sense and this is fine. At the moment, the goal is to 
+  build a structure for our site.
+
+  Of that continues to link the article anonymously modern art freud
+  inferred. Eventually primitive brothel scene with a distinction. The
+  Enlightenment criticized from the history.
+EOF
+}
+function example_figlet {
+  docker_image="devmtl/figlet:1.0"
+  message="Hey figlet"
+
+  docker run --rm ${docker_image} ${message}
+}
+function passfull {
+  grp1=$(openssl rand -base64 32 | sed 's/[^123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghjkmnpqrstuvwxyz]//g' | cut -c11-14) && \
+  grp2=$(openssl rand -base64 32 | sed 's/[^123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghjkmnpqrstuvwxyz]//g' | cut -c2-25) && \
+  grp3=$(openssl rand -base64 32 | sed 's/[^123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghjkmnpqrstuvwxyz]//g' | cut -c21-24) && \
+  clear && \
+  echo "${grp1}_${grp2}_${grp3}"
+}
+function passfull_long {
+  grp1=$(openssl rand -base64 32 | sed 's/[^123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghjkmnpqrstuvwxyz]//g' | cut -c11-14) && \
+  grp2=$(openssl rand -base64 48 | sed 's/[^123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghjkmnpqrstuvwxyz]//g' | cut -c2-50) && \
+  grp3=$(openssl rand -base64 32 | sed 's/[^123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghjkmnpqrstuvwxyz]//g' | cut -c21-24) && \
+  clear && \
+  echo "${grp1}_${grp2}_${grp3}"
+}
+
 function gitignore {
-# this overides your existing .gitignore
+# set and overides .gitignore
 
 cat <<EOF > .gitignore
 # Files
@@ -370,80 +440,12 @@ TheVolumeSettingsFolder
 .FBCLockFolder
 EOF
 }
-#
-  #
-#
-function App_is_input2_empty {
-  if [[ "${input_2}" == "not-set" ]]; then
-    my_message="You must provide a valid attribute!" App_Pink
-    App_stop
-  fi
-}
-function App_is_input3_empty {
-  if [[ "${input_3}" == "not-set" ]]; then
-    my_message="You must provide a valid attribute!" App_Pink
-    App_stop
-  fi
-}
-#
-  #
-#
-function example_array {
-  arr=( "hello" "world" "three" )
-  
-  for i in "${arr[@]}"; do
-    echo ${i}
-  done
-}
-function example_docs {
-cat << EOF
-  Utility's doc (documentation):
 
-  This text is used as a placeholder. Words that will follow won't
-  make any sense and this is fine. At the moment, the goal is to 
-  build a structure for our site.
-
-  Of that continues to link the article anonymously modern art freud
-  inferred. Eventually primitive brothel scene with a distinction. The
-  Enlightenment criticized from the history.
-EOF
-}
-function example_figlet {
-  docker_image="devmtl/figlet:1.0"
-  message="Hey figlet"
-
-  docker run --rm ${docker_image} ${message}
-}
-
-#
-  #
-#
-function passfull {
-  grp1=$(openssl rand -base64 32 | sed 's/[^123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghjkmnpqrstuvwxyz]//g' | cut -c11-14) && \
-  grp2=$(openssl rand -base64 32 | sed 's/[^123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghjkmnpqrstuvwxyz]//g' | cut -c2-25) && \
-  grp3=$(openssl rand -base64 32 | sed 's/[^123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghjkmnpqrstuvwxyz]//g' | cut -c21-24) && \
-  clear && \
-  echo "${grp1}_${grp2}_${grp3}"
-}
-function passfull_long {
-  grp1=$(openssl rand -base64 32 | sed 's/[^123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghjkmnpqrstuvwxyz]//g' | cut -c11-14) && \
-  grp2=$(openssl rand -base64 48 | sed 's/[^123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghjkmnpqrstuvwxyz]//g' | cut -c2-50) && \
-  grp3=$(openssl rand -base64 32 | sed 's/[^123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghjkmnpqrstuvwxyz]//g' | cut -c21-24) && \
-  clear && \
-  echo "${grp1}_${grp2}_${grp3}"
-}
 function App_stop {
   echo && exit 1
 }
-function which_func {
-  # show all available functions
-  clear
-  cat utility.sh | awk '/function /' | awk '{print $2}' | sort -k2 -n | sed '/App_/d' | sed '/main/d' | sed '/utility/d'
-}
-#
-  #
-#
-function App_utility_vars {
+
+function App_DefineVariables {
 #==============================================
 #	Date generators
  date_nano="$(date +%Y-%m-%d_%HH%Ms%S-%N)";
@@ -484,10 +486,6 @@ function App_Blue {
 function App_Green {
   echo -e "${col_green} ${my_message}"
 }
-#
-  #
-#
-
 
 ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ###
 # ENTRYPOINT
@@ -500,7 +498,7 @@ function main() {
   # shellcheck source=.bashcheck.sh
   source "$(dirname "${BASH_SOURCE[0]}")/.bashcheck.sh"
 
-  App_utility_vars
+  App_DefineVariables
 
   # input management
   input_1=$1
@@ -529,6 +527,8 @@ function main() {
   colour_init
   #lock_init system
 
+  # Attribute #1
+  # It accept 2 other attributes
   clear
   $1
 }
