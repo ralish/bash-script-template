@@ -13,6 +13,15 @@
 ### 🛑 Removed
 ### 🔑 Security
 
+
+# Releases
+
+
+## 0.7-r2
+### ⚡️ Updates
+- 0d56c7a1 Improve sq fct
+- dd7b7be6 Minor updates to utility.sh
+
 # Releases
 ## 0.7-r1
 ### ⚡️ Updates
