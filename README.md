@@ -1,17 +1,15 @@
 ## bash-script-template
 
 
-A `bash script` template incorporating best bash practices and several useful functions to manage your code.
+An idempotent `bash script` template using best practices and several useful functions to manage your code.
 
 Useful for your typical DevOps workflow.
-
-It was forked from: https://github.com/ralish/bash-script-template
 
 ## Usage & quick wins
 
 set an alias `alias uu=./utility.sh ` (with a space at the end)
 
-**Example 1A (attributes)**
+**Example**: test
 
 ```
 ./utility.sh test"
@@ -20,31 +18,54 @@ $1 is now test
 $2 is now not-set
 $3 is now not-set
 
+——> Hub is installed.
+——> Docker is installed.
+——> Date is: 2019-09-06_23H10s56
 ```
 
-**Example 1B (attributes)**
+**Example**: test using attributes
 
 ```
-./utility.sh test two "three and something"
+./utility.sh test two "The red fox is running."
 
 $1 is now test
 $2 is now two
-$3 is now three and something
+$3 is now The red fox is running.
+
+——> Hub is installed.
+——> Docker is installed.
+——> Date is: 2019-09-06_23H39s16
+```
+
+**Example**: git status
+
+```
+./utility.sh stat
+
+On branch edge
+Your branch is up to date with 'origin/edge'.
+
+Changes not staged for commit:
+  (use "git add/rm <file>..." to update what will be committed)
+  (use "git restore <file>..." to discard changes in working directory)
+	modified:   README.md
+	deleted:    dummyfile.md
+	modified:   utility.sh
+
+no changes added to commit (use "git add" and/or "git commit -a")
+```
+
+**Example**: git push
 
 ```
 
-**Example 2A (git push)**
-
-```
 ./utility.sh push
 
 ——> ERROR: You must provide a Git message.
-```
 
-**Example 2B (git push)**
+### ### ###
 
-```
-./utility.sh update "Improve README / Quick win section"
+./utility.sh push "Improve README / Quick win section"
 
 Enumerating objects: 5, done.
 Counting objects: 100% (5/5), done.
@@ -57,37 +78,7 @@ To github.com:firepress-org/bash-script-template.git
    9737dc7..7255277  master -> master
 ```
 
-**Example 3**
-
-```
-./utility.sh docs"
-
-  Doc (documentation):
-
-  This text is used as a placeholder. Words that will follow won't
-  make any sense and this is fine. At the moment, the goal is to
-  build a structure for our site.
-
-  Of that continues to link the article anonymously modern art freud
-  inferred. Eventually primitive brothel scene with a distinction. The
-  Enlightenment criticized from the history.
-```
-
-**Example 4** (requires docker on your machine)
-
-```
-# 
-./utility.sh figlet"
-
- _   _               __ _       _      _
-| | | | ___ _   _   / _(_) __ _| | ___| |_
-| |_| |/ _ \ | | | | |_| |/ _` | |/ _ \ __|
-|  _  |  __/ |_| | |  _| | (_| | |  __/ |_
-|_| |_|\___|\__, | |_| |_|\__, |_|\___|\__|
-            |___/         |___/
-```
-
-**Example 5 rebase master from the branch edge**
+**Example**: rebase master (from the branch edge)
 
 ```
 # 
@@ -108,6 +99,36 @@ Your branch is up to date with 'origin/edge'.
 ——> Diligence: 4a2a0e5 | 4a2a0e5 (master vs edge should be the same)
 ```
 
+**Example**: list available functions
+
+```
+./utility.sh which_func
+
+ci-status
+diff
+example_array
+example_docs
+example_figlet
+gitignore
+hash
+lint
+log
+outedge
+outmaster
+passfull
+passfull_long
+push
+rbedge
+rbmaster
+release
+sq
+stat
+test
+version
+which_func
+wip_bisect
+```
+
 ## Requirements
 
 Some scripts are using:
@@ -115,20 +136,21 @@ Some scripts are using:
 - [Docker](https://docs.docker.com/install/)
 - [Hub](https://github.com/github/hub#installation)
 
-## Motivation
-
-I write `bash` scripts not infrequently and realised that I often copied a recent script whenever I started writing a new one. This provided me with a basic scaffold to work on and several useful helper functions I'd otherwise likely end up duplicating.
-
-So rather than continually copying old scripts and flensing the irrelevant code, I'm publishing a more formalised template to ease the process for my own usage and anyone else who may find it helpful! Suggestions for improvements are most welcome.
-
 ## Files
-
 
 | File            | Description                                                                                      |
 | --------------- |------------------------------------------------------------------------------------------------- |
                       |
 | **.bashcheck.sh**   | Designed for sourcing into scripts; contains only those functions unlikely to need modification. |
-| **utility.sh**   | Sample script which sources in `source.sh` and contains those functions likely to be modified. |
+| **utility.sh**   | Core script which sources in `.bashcheck.sh` and contains those functions likely to be modified. |
+
+## Motivation
+
+It was forked from: https://github.com/ralish/bash-script-template
+
+I write `bash` scripts not infrequently and realised that I often copied a recent script whenever I started writing a new one. This provided me with a basic scaffold to work on and several useful helper functions I'd otherwise likely end up duplicating.
+
+So rather than continually copying old scripts and flensing the irrelevant code, I'm publishing a more formalised template to ease the process for my own usage and anyone else who may find it helpful! Suggestions for improvements are most welcome.
 
 ## Controversies
 
