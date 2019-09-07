@@ -116,11 +116,29 @@ function rbedge {
 function ci-status {
   hub ci-status -v $(git rev-parse HEAD)
 }
+function push_cl {
+
+# push changelog
+# Use case: we just updated the changelog file
+# the script will: commit, tag, release
+
+  if [[ "${currentBranch}" == "master" ]]; then
+
+    tag_version="${input_2}"
+    version
+    release
+
+  else
+    my_message="You must be a master branch." App_Pink
+  fi
+
+}
 function version {
   # tag
   
   # what it does:
     # update version in Dockerfile
+    # save the commit
     # tag version on the latest commit
     # push tag to remote
 
