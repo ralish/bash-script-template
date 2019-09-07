@@ -171,10 +171,6 @@ function release {
       echo -e "${col_blue} ${message} ${col_blue}" && sleep 0.4 && clear
     done
 
-    # push tag
-    git tag ${tag_version} && \
-    git push --tags && \
-
     clear && echo && \
     echo "Let's release version: ${tag_version}" && sleep 1 && \
 
