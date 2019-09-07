@@ -24,20 +24,20 @@ set -o pipefail         # Use last non-zero exit code in a pipeline
 function hash {
   git rev-parse --short HEAD
 }
-function master {
+function outmaster {
   git checkout master
 }
-function edge {
+function outedge {
   git checkout edge
 }
-function check {
+function stat {
   git status
 }
 function diff {
   check && echo
   git diff
 }
-function bisect {
+function wip_bisect {
   echo "todo"
 }
 function push {
@@ -119,12 +119,14 @@ function ci-status {
   hub ci-status -v $(git rev-parse HEAD)
 }
 function version {
-  # update version in Dockerfile
-  # tag version on the latest commit
-  # push tag to remote
+  # tag
+  
+  # what it does:
+    # update version in Dockerfile
+    # tag version on the latest commit
+    # push tag to remote
 
   App_is_input2_empty
-
 
   currentBranch=$(git rev-parse --abbrev-ref HEAD)
   if [[ "${currentBranch}" == "master" ]]; then
@@ -196,11 +198,6 @@ function release {
   fi
 }
 
-function tag {
-  echo "Look for 'ver' instead."
-}
-
-
 ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ###
 # DOCKER
 ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ###
@@ -212,13 +209,6 @@ function lint {
     ${docker_image}
 }
 
-function figlet {
-  docker_image="devmtl/figlet:1.0"
-  message="Hey figlet"
-
-  docker run --rm ${docker_image} ${message}
-}
-
 
 ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ###
 # OTHER
@@ -226,20 +216,37 @@ function figlet {
 
 function test {
 
+  # idempotent bash script
+
   echo "\$1 is now ${input_1}"
   echo "\$2 is now ${input_2}"
   echo "\$3 is now ${input_3}"
-  my_message="Date is: ${date_sec}." App_Blue
   # Useful when trying to find bad variables along 'set -o nounset'
+
+  # validate that hub is installed
+  if [[ $(hub version | grep -c "hub version") == "1" ]]; then
+    echo && my_message="Hub is installed." App_Blue
+  else
+    echo && my_message="Hub is missing. https://github.com/firepress-org/bash-script-template#requirements" App_Pink
+  fi
+
+  # validate that Docker is installed
+  if [[ $(docker version | grep -c "Client: Docker Engine") == "1" ]]; then
+    my_message="Docker is installed." App_Blue
+  else
+    my_message="Docker is missing. https://github.com/firepress-org/bash-script-template#requirements" App_Pink
+  fi
+
+  my_message="Date is: ${date_sec}" App_Blue
 }
 #
   #
 #
 function gitignore {
-# this overrides your existing .gitignore
+# this overides your existing .gitignore
 
 cat <<EOF > .gitignore
-# .gitignore
+# Files
 ############
 test
 .cache
@@ -248,13 +255,12 @@ dist
 node_modules
 npm-debug
 .env
+var-config.sh
 
 # Directories
 ############
-
-# Files
-############
-var-config.sh
+/tmp
+/temp
 
 # Compiled source #
 ###################
@@ -364,43 +370,62 @@ function App_is_input3_empty {
 #
   #
 #
-function array_example {
+function example_array {
   arr=( "hello" "world" "three" )
   
   for i in "${arr[@]}"; do
     echo ${i}
   done
 }
+function example_docs {
+cat << EOF
+  Utility's doc (documentation):
+
+  This text is used as a placeholder. Words that will follow won't
+  make any sense and this is fine. At the moment, the goal is to 
+  build a structure for our site.
+
+  Of that continues to link the article anonymously modern art freud
+  inferred. Eventually primitive brothel scene with a distinction. The
+  Enlightenment criticized from the history.
+EOF
+}
+function example_figlet {
+  docker_image="devmtl/figlet:1.0"
+  message="Hey figlet"
+
+  docker run --rm ${docker_image} ${message}
+}
+
 #
   #
 #
-function passgen {
+function passfull {
   grp1=$(openssl rand -base64 32 | sed 's/[^123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghjkmnpqrstuvwxyz]//g' | cut -c11-14) && \
   grp2=$(openssl rand -base64 32 | sed 's/[^123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghjkmnpqrstuvwxyz]//g' | cut -c2-25) && \
   grp3=$(openssl rand -base64 32 | sed 's/[^123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghjkmnpqrstuvwxyz]//g' | cut -c21-24) && \
   clear && \
   echo "${grp1}_${grp2}_${grp3}"
 }
-function passgenmax {
+function passfull_long {
   grp1=$(openssl rand -base64 32 | sed 's/[^123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghjkmnpqrstuvwxyz]//g' | cut -c11-14) && \
   grp2=$(openssl rand -base64 48 | sed 's/[^123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghjkmnpqrstuvwxyz]//g' | cut -c2-50) && \
   grp3=$(openssl rand -base64 32 | sed 's/[^123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghjkmnpqrstuvwxyz]//g' | cut -c21-24) && \
   clear && \
   echo "${grp1}_${grp2}_${grp3}"
 }
-#
-  #
-#
 function App_stop {
   echo && exit 1
+}
+function which_func {
+  # show all available functions
+  clear
+  cat utility.sh | awk '/function /' | awk '{print $2}' | sort -k2 -n | sed '/App_/d' | sed '/main/d' | sed '/utility/d'
 }
 #
   #
 #
 function App_utility_vars {
-
-export GITHUB_TOKEN="$(cat ~/secrets_open/token_github/token.txt)"
-
 #==============================================
 #	Date generators
  date_nano="$(date +%Y-%m-%d_%HH%Ms%S-%N)";
@@ -427,6 +452,10 @@ date_month="$(date +%Y-%m)-XX";
   export col_green="\e[36m——>\e[39m"
   export col_white="\e[97m——>\e[39m"
   export col_def="\e[39m"
+
+#==============================================
+#	Placeholders
+#export GITHUB_TOKEN="$(cat ~/secrets_open/token_github/token.txt)"
 }
 function App_Pink {
   echo -e "${col_pink} ERROR: ${my_message}"
@@ -440,23 +469,11 @@ function App_Green {
 #
   #
 #
-function doc {
-cat << EOF
-  Utility's doc (documentation):
 
-  This text is used as a placeholder. Words that will follow won't
-  make any sense and this is fine. At the moment, the goal is to 
-  build a structure for our site.
 
-  Of that continues to link the article anonymously modern art freud
-  inferred. Eventually primitive brothel scene with a distinction. The
-  Enlightenment criticized from the history.
-EOF
-}
-function docs { 
-  doc
-}
-
+### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ###
+# ENTRYPOINT
+### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ###
 function main() {
 
   trap script_trap_err ERR
@@ -498,9 +515,7 @@ function main() {
   $1
 }
 
-### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ###
-# ENTRYPOINT
-### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ###
 main "$@"
 echo
+
 # https://github.com/firepress-org/bash-script-template
