@@ -2,8 +2,6 @@
 
 ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ###
 #
-# Requirements: https://github.com/firepress-org/bash-script-template#requirements
-#
 set -o errexit          # Exit on most errors (see the manual)
 set -o errtrace         # Make sure any error trap is inherited
 set -o pipefail         # Use last non-zero exit code in a pipeline
@@ -12,6 +10,8 @@ set -o pipefail         # Use last non-zero exit code in a pipeline
 #set -o nounset          # Disallow expansion of unset variables
 # --- Find bad variables by using `./utility.sh test two three`, else disable it
 # --- or remove $1, $2, $3 var defintions in @main
+#
+# Requirements: https://github.com/firepress-org/bash-script-template#requirements
 #
 ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ###
 
@@ -195,16 +195,9 @@ function release {
     first_name_author=$(git log | awk '/Author:/' | head -n1 | awk '{print $2}')
     tag_version="${input_2}"
     git_repo_url=$(cat Dockerfile | grep GIT_REPO_URL= | head -n 1 | grep -o '".*"' | sed 's/"//g')
-    release_message1="Refer to [CHANGELOG.md]("${git_repo_url}"/blob/master/CHANGELOG.md) for details about this release."
-    release_message2="This release was package using <./utility.sh release>."
-    release_message3="Enjoy! "${first_name_author}""
-
-    # Prompt a warning
-    min=1 max=4 message="WARNING: CHANGELOG.md is updated??"
-    for ACTION in $(seq ${min} ${max}); do
-      echo -e "${col_pink} ${message} ${col_pink}" && sleep 0.4 && clear && \
-      echo -e "${col_blue} ${message} ${col_blue}" && sleep 0.4 && clear
-    done
+    release_message1="Refer to [CHANGELOG.md](${git_repo_url}/blob/master/CHANGELOG.md) for details about this release."
+    release_message2="This release was packaged and published by using <./utility.sh release>."
+    release_message3="Enjoy!<br>${first_name_author}"
 
     clear && echo && \
     echo "Let's release version: ${tag_version}" && sleep 1 && \
@@ -273,8 +266,8 @@ function test {
   my_message="Date is: ${date_sec}" App_Blue
 }
 
-function which_func {
-  # show all available functions
+function which {
+  # list, show which functions are available
   clear
   cat utility.sh | awk '/function /' | awk '{print $2}' | sort -k2 -n | sed '/App_/d' | sed '/main/d' | sed '/utility/d'
 }
