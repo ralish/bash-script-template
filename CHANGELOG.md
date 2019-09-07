@@ -15,6 +15,10 @@
 
 # Releases
 
+## 0.6-r4
+### ⚡️ Updates
+- 7c28fe3b Improve pullcl
+
 ## 0.6-r3
 ### ⚡️ Updates
 - e6e44b8f 🚀 New feat. Add push_cl
