@@ -62,19 +62,19 @@ function sq {
   App_is_input2_empty
   App_is_input3_empty
 
-  commit_steps_to_gack_back="${input_2}"
+  backwards_steps="${input_2}"
   git_message="${input_3}"
   usage="sq 3 'Add fct xyz'"
 
   # think rebase_master_from_edge
   if [[ $(git status | grep -c "nothing to commit") == "1" ]]; then
     echo "good, nothing to commit" | 2>/dev/null
-    git reset --hard HEAD~"${commit_steps_to_gack_back}" && \
+    git reset --hard HEAD~"${backwards_steps}" && \
     git merge --squash HEAD@{1} && \
     git push origin HEAD --force && \
     git status && \
     git add -A && \
-    git commit -m "${git_message}" && \
+    git commit -m "${git_message} / squashed" && \
     git push;
   else
     my_message="You must push your commit(s) before doing a rebase." App_Pink
