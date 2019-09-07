@@ -192,9 +192,12 @@ function release {
   currentBranch=$(git rev-parse --abbrev-ref HEAD)
   if [[ "${currentBranch}" == "master" ]]; then
 
+    first_name_author=$(git log | awk '/Author:/' | head -n1 | awk '{print $2}')
     tag_version="${input_2}"
     git_repo_url=$(cat Dockerfile | grep GIT_REPO_URL= | head -n 1 | grep -o '".*"' | sed 's/"//g')
-    release_message="Refer to [CHANGELOG.md]("${git_repo_url}"/blob/master/CHANGELOG.md) for details about this release.<br><br>Via ./utility.sh release"
+    release_message1="Refer to [CHANGELOG.md]("${git_repo_url}"/blob/master/CHANGELOG.md) for details about this release."
+    release_message2="This release was package using <./utility.sh release>."
+    release_message3="Enjoy! "${first_name_author}""
 
     # Prompt a warning
     min=1 max=4 message="WARNING: CHANGELOG.md is updated??"
@@ -208,7 +211,9 @@ function release {
 
     hub release create -oc \
       -m "${tag_version}" \
-      -m "${release_message}" \
+      -m "${release_message1}" \
+      -m "${release_message2}" \
+      -m "${release_message3}" \
       -t "$(git rev-parse HEAD)" \
       "${tag_version}"
     # https://hub.github.com/hub-release.1.html
