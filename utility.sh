@@ -116,12 +116,15 @@ function rbedge {
 function ci-status {
   hub ci-status -v $(git rev-parse HEAD)
 }
-function push_cl {
+function pushcl {
 
 # push changelog
 # Use case: we just updated the changelog file
 # the script will: commit, tag, release
 
+  App_is_input2_empty
+
+  currentBranch=$(git rev-parse --abbrev-ref HEAD)
   if [[ "${currentBranch}" == "master" ]]; then
 
     tag_version="${input_2}"

@@ -15,6 +15,10 @@
 
 # Releases
 
+## 0.6-r3
+### ⚡️ Updates
+- e6e44b8f 🚀 New feat. Add push_cl
+
 ## 0.6-r2
 ### ⚡️ Updates
 - 44b179eb update rbmaster
