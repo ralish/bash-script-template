@@ -86,8 +86,6 @@ function rbmaster {
     git rebase edge
     git push
     hash_master_is=$(git rev-parse --short HEAD)
-    # go back to edge by default
-    git checkout edge
     #
     hash_edge_is=$(git rev-parse --short HEAD)
     my_message="Diligence: ${hash_master_is} | ${hash_master_is} (master vs edge should be the same)" App_Blue
