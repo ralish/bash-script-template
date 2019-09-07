@@ -8,7 +8,7 @@
 ## Status template
 
 ### ⚡️ Updates
-### 🚀 Added (new feat.)
+### 🚀 New feat.
 ### 🐛 Fix bug
 ### 🛑 Removed
 ### 🔑 Security
@@ -16,13 +16,15 @@
 # Releases
 
 ## 0.6-r2
-### 🚀 Added (new feat.)
-- 66c91d6e Add fct log
-- ac63cdf8 Add fct sq (means squash)
-
 ### ⚡️ Updates
+- 44b179eb update rbmaster
+- 8faf9d7f Improve README examples
+- 257f356d 🚀 New feat. Added fct which_func
+- 9229df00 improve release
+- dc490cdb 🚀 New feat. Add fct log
+- ac63cdf8 🚀 New feat. Add fct sq (means squash)
 - e7b5816b Improve README
-- 27d57316 Add logic to version + release fct
+- 27d57316 🚀 New feat. Add logic to version + release fct
 
 ## 0.6-r1
 ### 🚀 Added (new feat.)
