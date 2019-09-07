@@ -14,6 +14,9 @@
 ### 🔑 Security
 
 # Releases
+## 0.7-r1
+### ⚡️ Updates
+- 07bb2a92 Improve release messages
 
 ## 0.7-r0
 ### ⚡️ Updates
