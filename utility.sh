@@ -117,10 +117,10 @@ function ci-status {
   hub ci-status -v $(git rev-parse HEAD)
 }
 function pushcl {
-
 # push changelog
+
 # Use case: we just updated the changelog file
-# the script will: commit, tag, release
+# we want to: commit change on changelog.md, tag the commit, release on github
 
   App_is_input2_empty
 
@@ -159,7 +159,10 @@ function version {
       echo -e "${col_blue} ${message} ${col_blue}" && sleep 0.4 && clear
     done
 
-    sed -i '' "s/^ARG VERSION=.*$/ARG VERSION=\"$tag_version\"/" Dockerfile 
+    # update version within the Dockerfile
+    # We don't want to have "-r1" "-r2" etc within the Dockerfile
+    ver_in_dockerfile=$(echo $tag_version | sed 's/-r.*//g')
+    sed -i '' "s/^ARG VERSION=.*$/ARG VERSION=\"$ver_in_dockerfile\"/" Dockerfile 
 
     git add . && \
     git commit -m "Updated to version: $tag_version" && \
