@@ -17,6 +17,10 @@
 # Releases
 
 
+## 0.7-r3
+### ⚡️ Updates
+- 1fb4af1c Improve README / squashed
+
 ## 0.7-r2
 ### ⚡️ Updates
 - 0d56c7a1 Improve sq fct
