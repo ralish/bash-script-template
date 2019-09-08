@@ -1,3 +1,25 @@
+&nbsp;
+
+<p align="center">
+    Brought to you by
+</p>
+
+<p align="center">
+  <a href="https://firepress.org/">
+    <img src="https://user-images.githubusercontent.com/6694151/50166045-2cc53000-02b4-11e9-8f7f-5332089ec331.jpg" width="340px" alt="FirePress" />
+  </a>
+</p>
+
+<p align="center">
+    <a href="https://firepress.org/">FirePress.org</a> |
+    <a href="https://play-with-ghost.com/">play-with-ghost</a> |
+    <a href="https://github.com/firepress-org/">GitHub</a> |
+    <a href="https://twitter.com/askpascalandy">Twitter</a>
+    <br /> <br />
+</p>
+
+&nbsp;
+
 # [bash-script-template](https://github.com/firepress-org/bash-script-template)
 
 
@@ -144,27 +166,8 @@ Some scripts are using:
 - [Docker](https://docs.docker.com/install/)
 - [Hub](https://github.com/github/hub#installation)
 
-<br>
 
-&nbsp;
-
-<p align="center">
-    Brought to you by
-</p>
-
-<p align="center">
-  <a href="https://firepress.org/">
-    <img src="https://user-images.githubusercontent.com/6694151/50166045-2cc53000-02b4-11e9-8f7f-5332089ec331.jpg" width="340px" alt="FirePress" />
-  </a>
-</p>
-
-<p align="center">
-    <a href="https://firepress.org/">FirePress.org</a> |
-    <a href="https://play-with-ghost.com/">play-with-ghost</a> |
-    <a href="https://github.com/firepress-org/">GitHub</a> |
-    <a href="https://twitter.com/askpascalandy">Twitter</a>
-    <br /> <br />
-</p>
+## Website hosting
 
 If you are looking for an alternative to WordPress, [Ghost](https://firepress.org/en/faq/#what-is-ghost) might be the CMS you are looking for. Check out our [hosting plans](https://firepress.org/en).
 
