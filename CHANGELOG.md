@@ -17,6 +17,10 @@
 # Releases
 
 
+## 0.7-r4
+### ⚡️ Updates
+- 89c4f36f Esthetic updates / squashed
+
 ## 0.7-r3
 ### ⚡️ Updates
 - 1fb4af1c Improve README / squashed
