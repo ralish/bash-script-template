@@ -238,7 +238,7 @@ Check this post for more details: [Contributing to our Github project](https://p
 
 ## License
 
-- This git repo is under the **GNU V3** license. [Find it here](./LICENSE.md).
+- This git repo is under the **GNU V3** license. [Find it here](./LICENSE).
 
 </p>
 </details>

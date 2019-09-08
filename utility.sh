@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+# Find the latest version of this application: https://github.com/firepress-org/bash-script-template
+#
 ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ###
 #
 set -o errexit          # Exit on most errors (see the manual)
@@ -11,10 +13,7 @@ set -o pipefail         # Use last non-zero exit code in a pipeline
 # --- Find bad variables by using `./utility.sh test two three`, else disable it
 # --- or remove $1, $2, $3 var defintions in @main
 #
-# Requirements: https://github.com/firepress-org/bash-script-template#requirements
-#
 ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ###
-
 
 
 ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ###
