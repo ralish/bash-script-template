@@ -1,19 +1,15 @@
 #!/usr/bin/env bash
 
-# Find the latest version of this application: https://github.com/firepress-org/bash-script-template
-#
-### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ###
+# Find the latest version of this application:
+# https://github.com/firepress-org/bash-script-template
 #
 set -o errexit          # Exit on most errors (see the manual)
 set -o errtrace         # Make sure any error trap is inherited
 set -o pipefail         # Use last non-zero exit code in a pipeline
 #set -o xtrace          # Trace the execution of the script (debug)
-#
 #set -o nounset          # Disallow expansion of unset variables
 # --- Find bad variables by using `./utility.sh test two three`, else disable it
 # --- or remove $1, $2, $3 var defintions in @main
-#
-### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ###
 
 
 ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ###
@@ -21,7 +17,7 @@ set -o pipefail         # Use last non-zero exit code in a pipeline
 ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ###
 
 function push {
-# commit & push all changes
+# commit all & push all changes
   App_input2_rule
 
   git status && \
@@ -253,6 +249,7 @@ function App_release_check_vars {
   fi
 }
 function release_find_the_latest {
+# find the latest release that was pushed on github
 
   APP_NAME=$(cat Dockerfile | grep APP_NAME= | head -n 1 | grep -o '".*"' | sed 's/"//g')
   GITHUB_ORG=$(cat Dockerfile | grep GITHUB_ORG= | head -n 1 | grep -o '".*"' | sed 's/"//g')
@@ -296,13 +293,13 @@ function ci {
 # DOCKER
 ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ###
 function lint {
-  docker_image="redcoolbeans/dockerlint"
+  docker_img="redcoolbeans/dockerlint"
 
   docker run -it --rm \
     -v $(pwd)/Dockerfile:/Dockerfile:ro \
-    ${docker_image}
+    ${docker_img}
 }
-function linthado {
+function lint_hado_wip {
 # ToDo
   docker run --rm hadolint/hadolint:v1.16.3-4-gc7f877d hadolint --version && echo;
 
