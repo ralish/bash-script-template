@@ -20,25 +20,6 @@ set -o pipefail         # Use last non-zero exit code in a pipeline
 # Git
 ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ###
 
-function hash {
-  git rev-parse --short HEAD
-}
-function outmaster {
-  git checkout master
-}
-function outedge {
-  git checkout edge
-}
-function stat {
-  git status
-}
-function diff {
-  check && echo
-  git diff
-}
-function ci-status {
-  hub ci-status -v $(git rev-parse HEAD)
-}
 function push {
 # commit all
   App_input2_rule
@@ -146,13 +127,11 @@ function pushcl {
 
   currentBranch=$(git rev-parse --abbrev-ref HEAD)
   if [[ "${currentBranch}" == "master" ]]; then
-
     tag_version="${input_2}"
 
     version
     release
     rbedge
-
   else
     my_message="You must be a master branch." App_Pink
   fi
@@ -240,6 +219,25 @@ function release {
   else
     my_message="You must be a master branch." App_Pink
   fi
+}
+function hash {
+  git rev-parse --short HEAD
+}
+function outmaster {
+  git checkout master
+}
+function outedge {
+  git checkout edge
+}
+function stat {
+  git status
+}
+function diff {
+  check && echo
+  git diff
+}
+function ci-status {
+  hub ci-status -v $(git rev-parse HEAD)
 }
 
 ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ###
@@ -350,7 +348,7 @@ function passfull_long {
 function add_license {
 # add changelog
 
-cat << EOF > LICENSE
+cat << EOF > LICENSE_template
 Copyright (C) 2019
 by Pascal Andy | https://pascalandy.com/blog/now/
 
@@ -368,7 +366,7 @@ EOF
 function add_changelog {
 # add changelog
 
-cat << EOF > CHANGELOG.md
+cat << EOF > CHANGELOG_template.md
 ### About this changelog
 
 Based on this [template](https://gist.github.com/pascalandy/af709db02d3fe132a3e6f1c11b934fe4). Release process at FirePress ([blog post](https://firepress.org/en/software-and-ghost-updates/)). Based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
@@ -388,7 +386,7 @@ EOF
 function add_gitignore {
 # add gitignore
 
-cat <<EOF > .gitignore
+cat <<EOF > .gitignore_template
 # Files
 ############
 test
