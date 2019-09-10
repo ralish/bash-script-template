@@ -95,13 +95,20 @@ function sq {
     my_message="You must push your commit(s) before doing a rebase." App_Pink
   fi
 }
-function updatecl {
+function cl_update {
 # update changelog
 
   App_input2_rule
 
+  # Prompt a warning
+  min=1 max=4 message="WARNING: are your commits clean and squashed?"
+  for ACTION in $(seq ${min} ${max}); do
+    echo -e "${col_pink} ${message} ${col_pink}" && sleep 0.4 && clear && \
+    echo -e "${col_blue} ${message} ${col_blue}" && sleep 0.4 && clear
+  done
+
   # build the message to insert in the CHANGELOG
-  mkdir -p ~/temp && rm ~/temp/tmpfile || true && touch ~/temp/tmpfile
+  mkdir -p ~/temp && rm ~/temp/tmpfile || true
 
   git_message="$(git --no-pager log --abbrev-commit --decorate=short --pretty=oneline -n25 | \
     awk '/HEAD ->/{flag=1} /tag:/{flag=0} flag' | \
@@ -115,15 +122,23 @@ function updatecl {
   bottle="$(cat ~/temp/tmpfile)"
   rm ~/temp/tmpfile
   # Insert our relase notes after pattern "# Release"
-  awk -vbottle="$bottle" '/# Releases/{print;print bottle;next}1' CHANGELOG.md > ~/temp/tmpfile.md
-  cat ~/temp/tmpfile.md | awk 'NF > 0 {blank=0} NF == 0 {blank++} blank < 2' > CHANGELOG.md
-  rm ~/temp/tmpfile || true
+  awk -vbottle="$bottle" '/# Releases/{print;print bottle;next}1' CHANGELOG.md > ~/temp/tmpfile
+  cat ~/temp/tmpfile | awk 'NF > 0 {blank=0} NF == 0 {blank++} blank < 2' > CHANGELOG.md
+  rm ~/temp/tmpfile
   my_message="Done! Manually edit your CHANGELOG if needed" App_Blue
 }
-function pushcl {
+function cl_push {
 # push changelog
+# powerfull as it combines: tag + release + rbedge
 
   App_input2_rule
+
+  # Prompt a warning
+  min=1 max=4 message="WARNING: is CHANGELOG.md is updated using /cl_update/"
+  for ACTION in $(seq ${min} ${max}); do
+    echo -e "${col_pink} ${message} ${col_pink}" && sleep 0.4 && clear && \
+    echo -e "${col_blue} ${message} ${col_blue}" && sleep 0.4 && clear
+  done
 
   currentBranch=$(git rev-parse --abbrev-ref HEAD)
   if [[ "${currentBranch}" == "master" ]]; then
@@ -143,8 +158,8 @@ function pushcl {
   #release on github
   #rbedge
 }
-function version {
-# is a sub fct of pushcl
+function tag {
+# is a sub fct of cl_push
 # tag
 
   App_input2_rule
@@ -154,14 +169,7 @@ function version {
 
     tag_version="${input_2}"
 
-    # Prompt a warning
-    min=1 max=4 message="WARNING: CHANGELOG.md is updated??"
-    for ACTION in $(seq ${min} ${max}); do
-      echo -e "${col_pink} ${message} ${col_pink}" && sleep 0.4 && clear && \
-      echo -e "${col_blue} ${message} ${col_blue}" && sleep 0.4 && clear
-    done
-
-    # update version within the Dockerfile without "-r1" "-r2"
+    # update tag within the Dockerfile without "-r1" "-r2"
     ver_in_dockerfile=$(echo $tag_version | sed 's/-r.*//g')
     sed -i '' "s/^ARG VERSION=.*$/ARG VERSION=\"$ver_in_dockerfile\"/" Dockerfile 
 
@@ -177,13 +185,13 @@ function version {
   fi
 
 # what it does:
-  # update version in Dockerfile
+  # update tag in Dockerfile
   # save the commit
-  # tag version on the latest commit
+  # tag on the latest commit
   # push tag to remote
 }
 function release {
-# is a sub fct of pushcl
+# is a sub fct of cl_push
 
 # ensure that 'version' has tag the latest commit
 # then, release on github
