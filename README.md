@@ -84,13 +84,14 @@ no changes added to commit (use "git add" and/or "git commit -a")
 **Example**: git push
 
 ```
-
 ./utility.sh push
 
 ——> ERROR: You must provide a Git message.
+```
 
-### ### ###
+Oups! Now with a second attribute:
 
+```
 ./utility.sh push "Improve README / Quick win section"
 
 Enumerating objects: 5, done.
