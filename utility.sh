@@ -200,7 +200,7 @@ function release {
     first_name_author=$(git log | awk '/Author:/' | head -n1 | awk '{print $2}')
     tag_version="${input_2}"
     git_repo_url=$(cat Dockerfile | grep GIT_REPO_URL= | head -n 1 | grep -o '".*"' | sed 's/"//g')
-    release_message1="Refer to [CHANGELOG.md](${git_repo_url}/blob/master/CHANGELOG.md) for details about this release."
+    release_message1="Refer to [CHANGELOG.md](./CHANGELOG.md) for details about this release."
     release_message2="This release was packaged and published by using <./utility.sh release>."
     release_message3="Enjoy!<br>${first_name_author}"
 
@@ -399,6 +399,19 @@ Based on this [template](https://gist.github.com/pascalandy/af709db02d3fe132a3e6
 EOF
 }
 function add_dockerfile {
+# add dockerignore
+
+cat << EOF > .dockerignore_template
+.cache
+coverage
+dist
+node_modules
+npm-debug
+.git
+
+EOF
+}
+function add_dockerfile {
 # add changelog
 
 cat << EOF > Dockerfile_template
@@ -529,6 +542,7 @@ TheVolumeSettingsFolder
 .FBCIndex
 .FBCSemaphoreFile
 .FBCLockFolder
+
 EOF
 }
 
