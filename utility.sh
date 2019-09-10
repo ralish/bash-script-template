@@ -362,7 +362,6 @@ Basically, you have to credit the author AND keep the code free and open source.
 
 EOF
 }
-
 function add_changelog {
 # add changelog
 
@@ -380,6 +379,29 @@ Based on this [template](https://gist.github.com/pascalandy/af709db02d3fe132a3e6
 - 🔑 Security
 
 # Releases
+
+EOF
+}
+function add_dockerfile {
+# add changelog
+
+cat << EOF > Dockerfile_template
+# This is a fake Dockerfile.
+
+# Those vars are used broadly outside this very Dockerfile
+# Github Action CI and release script (./utility.sh) is consuming variables from here.
+ARG APP_NAME="placeholder"
+ARG VERSION="0.0"
+#
+ARG DOCKERHUB_USER="devmtl"
+ARG GITHUB_USER="firepress"
+ARG GITHUB_ORG="firepress-org"
+ARG GITHUB_REGISTRY="registry"
+ARG GIT_REPO_URL="https://github.com/firepress-org/placeholder"
+#
+ARG GIT_REPO_SOURCE="none"
+ARG USER="none"
+ARG ALPINE_VERSION="none"
 
 EOF
 }
