@@ -36,15 +36,12 @@ function diff {
   check && echo
   git diff
 }
-function wip_bisect {
-  echo "todo"
-}
 function ci-status {
   hub ci-status -v $(git rev-parse HEAD)
 }
 function push {
 # commit all
-  App_is_input2_empty
+  App_input2_rule
 
   git status && \
   git add -A && \
@@ -52,56 +49,8 @@ function push {
   clear
   git push
 }
-function updatecl {
-# update changelog
-
-# build the message to insert in the CHANGELOG
-mkdir -p ~/temp && rm ~/temp/tmpfile || true && touch ~/temp/tmpfile
-
-git_message="$(git --no-pager log --abbrev-commit --decorate=short --pretty=oneline -n25 | \
-  awk '/HEAD ->/{flag=1} /tag:/{flag=0} flag' | \
-  sed -e 's/([^()]*)//g' | \
-  awk '$1=$1')"
-
-echo -e "" > ~/temp/tmpfile
-echo -e "## ${input_2}" >> ~/temp/tmpfile
-echo -e "### ⚡️ Updates" >> ~/temp/tmpfile
-echo -e "${git_message}" >> ~/temp/tmpfile
-bottle="$(cat ~/temp/tmpfile)"
-rm ~/temp/tmpfile
-# Insert our relase notes after pattern "# Release"
-awk -vbottle="$bottle" '/# Releases/{print;print bottle;next}1' CHANGELOG.md > ~/temp/tmpfile.md
-cat ~/temp/tmpfile.md | awk 'NF > 0 {blank=0} NF == 0 {blank++} blank < 2' > CHANGELOG.md
-rm ~/temp/tmpfile.md
-my_message="Done! Manually edit your CHANGELOG if needed" App_Blue
-}
-
 function log {
   git --no-pager log --decorate=short --pretty=oneline -n25
-}
-function sq {
-# squash
-
-  App_is_input2_empty
-  App_is_input3_empty
-
-  backwards_steps="${input_2}"
-  git_message="${input_3}"
-  usage="sq 3 'Add fct xyz'"
-
-  # think rebase_master_from_edge
-  if [[ $(git status | grep -c "nothing to commit") == "1" ]]; then
-    echo "good, nothing to commit" | 2>/dev/null
-    git reset --hard HEAD~"${backwards_steps}" && \
-    git merge --squash HEAD@{1} && \
-    git push origin HEAD --force && \
-    git status && \
-    git add -A && \
-    git commit -m "${git_message} / squashed" && \
-    git push;
-  else
-    my_message="You must push your commit(s) before doing a rebase." App_Pink
-  fi
 }
 function rbmaster {
 # think rebase_master_from_edge
@@ -141,17 +90,59 @@ function rbedge {
     my_message="You must push your commit(s) before doing a rebase." App_Pink
   fi
 }
+function sq {
+# squash
+
+  App_input2_rule
+  App_input3_rule
+
+  backwards_steps="${input_2}"
+  git_message="${input_3}"
+  usage="sq 3 'Add fct xyz'"
+
+  # think rebase_master_from_edge
+  if [[ $(git status | grep -c "nothing to commit") == "1" ]]; then
+    echo "good, nothing to commit" | 2>/dev/null
+    git reset --hard HEAD~"${backwards_steps}" && \
+    git merge --squash HEAD@{1} && \
+    git push origin HEAD --force && \
+    git status && \
+    git add -A && \
+    git commit -m "${git_message} / squashed" && \
+    git push;
+  else
+    my_message="You must push your commit(s) before doing a rebase." App_Pink
+  fi
+}
+function updatecl {
+# update changelog
+
+  App_input2_rule
+
+  # build the message to insert in the CHANGELOG
+  mkdir -p ~/temp && rm ~/temp/tmpfile || true && touch ~/temp/tmpfile
+
+  git_message="$(git --no-pager log --abbrev-commit --decorate=short --pretty=oneline -n25 | \
+    awk '/HEAD ->/{flag=1} /tag:/{flag=0} flag' | \
+    sed -e 's/([^()]*)//g' | \
+    awk '$1=$1')"
+
+  echo -e "" > ~/temp/tmpfile
+  echo -e "## ${input_2}" >> ~/temp/tmpfile
+  echo -e "### ⚡️ Updates" >> ~/temp/tmpfile
+  echo -e "${git_message}" >> ~/temp/tmpfile
+  bottle="$(cat ~/temp/tmpfile)"
+  rm ~/temp/tmpfile
+  # Insert our relase notes after pattern "# Release"
+  awk -vbottle="$bottle" '/# Releases/{print;print bottle;next}1' CHANGELOG.md > ~/temp/tmpfile.md
+  cat ~/temp/tmpfile.md | awk 'NF > 0 {blank=0} NF == 0 {blank++} blank < 2' > CHANGELOG.md
+  rm ~/temp/tmpfile.md
+  my_message="Done! Manually edit your CHANGELOG if needed" App_Blue
+}
 function pushcl {
 # push changelog
 
-# Use case: we just updated the CAHNGELOG.md file
-# Next, we want to:
-  #commit change on changelog.md
-  #tag the commit
-  #release on github
-  #rbedge
-
-  App_is_input2_empty
+  App_input2_rule
 
   currentBranch=$(git rev-parse --abbrev-ref HEAD)
   if [[ "${currentBranch}" == "master" ]]; then
@@ -166,17 +157,17 @@ function pushcl {
     my_message="You must be a master branch." App_Pink
   fi
 
+# Use case: we just updated the CAHNGELOG.md file
+# Next, we want to:
+  #commit change on changelog.md
+  #tag the commit
+  #release on github
+  #rbedge
 }
 function version {
 # tag
-  
-  # what it does:
-    # update version in Dockerfile
-    # save the commit
-    # tag version on the latest commit
-    # push tag to remote
 
-  App_is_input2_empty
+  App_input2_rule
 
   currentBranch=$(git rev-parse --abbrev-ref HEAD)
   if [[ "${currentBranch}" == "master" ]]; then
@@ -204,12 +195,18 @@ function version {
   else
     my_message="You must be a master branch." App_Pink
   fi
+
+# what it does:
+  # update version in Dockerfile
+  # save the commit
+  # tag version on the latest commit
+  # push tag to remote
 }
 function release {
   # ensure that 'version' has tag the latest commit
   # then, release on github
 
-  App_is_input2_empty
+  App_input2_rule
 
   currentBranch=$(git rev-parse --abbrev-ref HEAD)
   if [[ "${currentBranch}" == "master" ]]; then
@@ -295,14 +292,14 @@ function which {
   cat utility.sh | awk '/function /' | awk '{print $2}' | sort -k2 -n | sed '/App_/d' | sed '/main/d' | sed '/utility/d'
 }
 
-function App_is_input2_empty {
+function App_input2_rule {
 # ensure the second attribute is not empty to continue
   if [[ "${input_2}" == "not-set" ]]; then
     my_message="You must provide a valid attribute!" App_Pink
     App_stop
   fi
 }
-function App_is_input3_empty {
+function App_input3_rule {
 # ensure the third attribute is not empty to continue
   if [[ "${input_3}" == "not-set" ]]; then
     my_message="You must provide a valid attribute!" App_Pink
