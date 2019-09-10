@@ -12,6 +12,11 @@ Based on this [template](https://gist.github.com/pascalandy/af709db02d3fe132a3e6
 
 # Releases
 
+## 0.8.4
+### ⚡️ Updates
+- d1299bb rename fct release_find_the_latest
+- 95ae92f Add find_latest_release / squashed
+
 ## 0.8.3
 ### ⚡️ Updates
 - 2e9b65f Add fct add_dockerignore, update changelog URL

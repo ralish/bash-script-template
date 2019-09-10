@@ -3,7 +3,7 @@
 # Those vars are used broadly outside this very Dockerfile
 # Github Action CI and release script (./utility.sh) is consuming variables from here.
 ARG APP_NAME="bash-script-template"
-ARG VERSION="0.8.3"
+ARG VERSION="0.8.4"
 #
 ARG DOCKERHUB_USER="devmtl"
 ARG GITHUB_USER="firepress"
