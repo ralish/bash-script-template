@@ -12,6 +12,11 @@ Based on this [template](https://gist.github.com/pascalandy/af709db02d3fe132a3e6
 
 # Releases
 
+## 0.8.5
+### ⚡️ Updates
+- d1c3164 Fix logic where the APP_NAME is not the same as the git repo name
+- 0496250 introduce a new var in Dockerfile
+
 ## 0.8.4
 ### ⚡️ Updates
 - d1299bb rename fct release_find_the_latest
