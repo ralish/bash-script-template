@@ -12,6 +12,10 @@ Based on this [template](https://gist.github.com/pascalandy/af709db02d3fe132a3e6
 
 # Releases
 
+## 0.8-r2
+### ⚡️ Updates
+- 11abc51 FIX release message
+
 ## 0.8-r1
 ### ⚡️ Updates
 - a0abfdd Improve functions ordering + README / squashed
