@@ -166,25 +166,19 @@ function tag {
 
   App_input2_rule
 
-  currentBranch=$(git rev-parse --abbrev-ref HEAD)
-  if [[ "${currentBranch}" == "master" ]]; then
+  tag_version="${input_2}"
 
-    tag_version="${input_2}"
+  # update tag within the Dockerfile without "-r1" "-r2"
+  ver_in_dockerfile=$(echo $tag_version | sed 's/-r.*//g')
+  sed -i '' "s/^ARG VERSION=.*$/ARG VERSION=\"$ver_in_dockerfile\"/" Dockerfile 
 
-    # update tag within the Dockerfile without "-r1" "-r2"
-    ver_in_dockerfile=$(echo $tag_version | sed 's/-r.*//g')
-    sed -i '' "s/^ARG VERSION=.*$/ARG VERSION=\"$ver_in_dockerfile\"/" Dockerfile 
-
-    git add . && \
-    git commit -m "Updated to version: $tag_version" && \
-    git push && \
-    sleep 1 && \
-    # push tag
-    git tag ${tag_version} && \
-    git push --tags
-  else
-    my_message="You must be a master branch." App_Pink
-  fi
+  git add . && \
+  git commit -m "Updated to version: $tag_version" && \
+  git push && \
+  sleep 1 && \
+  # push tag
+  git tag ${tag_version} && \
+  git push --tags
 
 # what it does:
   # update tag in Dockerfile
@@ -262,7 +256,17 @@ function lint {
     -v $(pwd)/Dockerfile:/Dockerfile:ro \
     ${docker_image}
 }
+function linthado {
+# ToDo
+  docker run --rm hadolint/hadolint:v1.16.3-4-gc7f877d hadolint --version && echo;
 
+  docker run --rm -i hadolint/hadolint:v1.16.3-4-gc7f877d hadolint \
+    --ignore DL3000 \
+    - < Dockerfile && \
+
+  echo && \
+  docker run -v `pwd`/Dockerfile:/Dockerfile replicated/dockerfilelint /Dockerfile
+}
 
 ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ###
 # OTHER
