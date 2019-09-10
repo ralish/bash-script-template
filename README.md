@@ -128,14 +128,17 @@ Your branch is up to date with 'origin/edge'.
 **Example**: list available functions
 
 ```
-./utility.sh which_func
+./utility.sh which
 
-ci-status
+add_changelog
+add_dockerfile
+add_gitignore
+add_license
+ci
 diff
 example_array
 example_docs
 example_figlet
-gitignore
 hash
 lint
 log
@@ -144,15 +147,16 @@ outmaster
 passfull
 passfull_long
 push
+pushcl
 rbedge
 rbmaster
 release
 sq
 stat
 test
+updatecl
 version
-which_func
-wip_bisect
+which
 ```
 
 </p>
