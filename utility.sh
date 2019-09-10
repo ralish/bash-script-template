@@ -350,7 +350,25 @@ function passfull_long {
   clear && \
   echo "${grp1}_${grp2}_${grp3}"
 }
-function addcl {
+function add_license {
+# add changelog
+
+cat << EOF > LICENSE
+Copyright (C) 2019
+by Pascal Andy | https://pascalandy.com/blog/now/
+
+Project:
+https://github.com/firepress-org/PLACEHOLDER
+
+Find the GNU General Public License V3 at:
+https://github.com/pascalandy/GNU-GENERAL-PUBLIC-LICENSE/blob/master/LICENSE.md
+
+Basically, you have to credit the author AND keep the code free and open source.
+
+EOF
+}
+
+function add_changelog {
 # add changelog
 
 cat << EOF > CHANGELOG.md
@@ -369,9 +387,8 @@ Based on this [template](https://gist.github.com/pascalandy/af709db02d3fe132a3e6
 # Releases
 
 EOF
-
 }
-function add_giti {
+function add_gitignore {
 # add gitignore
 
 cat <<EOF > .gitignore
