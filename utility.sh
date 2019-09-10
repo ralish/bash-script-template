@@ -465,18 +465,18 @@ cat << EOF > Dockerfile_template
 
 # Those vars are used broadly outside this very Dockerfile
 # Github Action CI and release script (./utility.sh) is consuming variables from here.
-ARG APP_NAME="placeholder"
-ARG VERSION="0.0"
+
+ARG VERSION="notset"
+ARG APP_NAME="notset"
+ARG GIT_PROJECT_NAME="notset-in-docker"
+#
+ARG ALPINE_VERSION="3.10"
+ARG USER="notset"
 #
 ARG DOCKERHUB_USER="devmtl"
 ARG GITHUB_USER="firepress"
 ARG GITHUB_ORG="firepress-org"
 ARG GITHUB_REGISTRY="registry"
-ARG GIT_REPO_URL="https://github.com/firepress-org/placeholder"
-#
-ARG GIT_REPO_SOURCE="none"
-ARG USER="none"
-ARG ALPINE_VERSION="none"
 
 EOF
 }
