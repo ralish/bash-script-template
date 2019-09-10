@@ -12,6 +12,12 @@ Based on this [template](https://gist.github.com/pascalandy/af709db02d3fe132a3e6
 
 # Releases
 
+## 0.8.3
+### ⚡️ Updates
+- 2e9b65f Add fct add_dockerignore, update changelog URL
+- 5858e5e Init dockerignore
+- af05b49 fct tag / now can be executed on any branches + update CHANGELOG url
+
 ## 0.8-r2
 ### ⚡️ Updates
 - 11abc51 FIX release message
