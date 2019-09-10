@@ -121,11 +121,11 @@ function cl_update {
   echo -e "### ⚡️ Updates" >> ~/temp/tmpfile
   echo -e "${git_message}" >> ~/temp/tmpfile
   bottle="$(cat ~/temp/tmpfile)"
-  rm ~/temp/tmpfile
+  rm ~/temp/tmpfile || true
   # Insert our relase notes after pattern "# Release"
   awk -vbottle="$bottle" '/# Releases/{print;print bottle;next}1' CHANGELOG.md > ~/temp/tmpfile
   cat ~/temp/tmpfile | awk 'NF > 0 {blank=0} NF == 0 {blank++} blank < 2' > CHANGELOG.md
-  rm ~/temp/tmpfile
+  rm ~/temp/tmpfile || true
   my_message="Done! Manually edit your CHANGELOG if needed" App_Blue
 }
 function cl_push {
