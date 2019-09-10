@@ -144,6 +144,7 @@ function pushcl {
   #rbedge
 }
 function version {
+# is a sub fct of pushcl
 # tag
 
   App_input2_rule
@@ -182,8 +183,10 @@ function version {
   # push tag to remote
 }
 function release {
-  # ensure that 'version' has tag the latest commit
-  # then, release on github
+# is a sub fct of pushcl
+
+# ensure that 'version' has tag the latest commit
+# then, release on github
 
   App_input2_rule
 
@@ -236,7 +239,7 @@ function diff {
   check && echo
   git diff
 }
-function ci-status {
+function ci {
   hub ci-status -v $(git rev-parse HEAD)
 }
 
