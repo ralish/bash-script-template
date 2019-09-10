@@ -4,6 +4,7 @@
 # Github Action CI and release script (./utility.sh) is consuming variables from here.
 ARG APP_NAME="bash-script-template"
 ARG VERSION="0.8.4"
+ARG GIT_PROJECT_NAME="bash-script-template"
 #
 ARG DOCKERHUB_USER="devmtl"
 ARG GITHUB_USER="firepress"
