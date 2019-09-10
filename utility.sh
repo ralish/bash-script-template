@@ -444,7 +444,7 @@ Based on this [template](https://gist.github.com/pascalandy/af709db02d3fe132a3e6
 
 EOF
 }
-function add_dockerfile {
+function add_dockerignore {
 # add dockerignore
 
 cat << EOF > .dockerignore_template
