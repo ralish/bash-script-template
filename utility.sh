@@ -117,7 +117,7 @@ function updatecl {
   # Insert our relase notes after pattern "# Release"
   awk -vbottle="$bottle" '/# Releases/{print;print bottle;next}1' CHANGELOG.md > ~/temp/tmpfile.md
   cat ~/temp/tmpfile.md | awk 'NF > 0 {blank=0} NF == 0 {blank++} blank < 2' > CHANGELOG.md
-  rm ~/temp/tmpfile.md
+  rm ~/temp/tmpfile || true
   my_message="Done! Manually edit your CHANGELOG if needed" App_Blue
 }
 function pushcl {
