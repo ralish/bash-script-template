@@ -214,6 +214,7 @@ function release {
       -m "${release_message3}" \
       -t "$(git rev-parse HEAD)" \
       "${tag_version}"
+
     # https://hub.github.com/hub-release.1.html
       # title
       # description
@@ -228,7 +229,7 @@ function release {
     my_message="You must be a master branch." App_Pink
   fi
 }
-function find_latest_release {
+function release_find_the_latest {
 
   APP_NAME=$(cat Dockerfile | grep APP_NAME= | head -n 1 | grep -o '".*"' | sed 's/"//g')
   GITHUB_ORG=$(cat Dockerfile | grep GITHUB_ORG= | head -n 1 | grep -o '".*"' | sed 's/"//g')
