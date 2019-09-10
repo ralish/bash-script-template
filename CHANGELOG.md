@@ -12,6 +12,12 @@ Based on this [template](https://gist.github.com/pascalandy/af709db02d3fe132a3e6
 
 # Releases
 
+## 0.8.6
+### ⚡️ Updates
+- 180a9af Improve comments and vars
+- 191b3f0 Fix and rename add_dockerignore / squashed
+- c6b2f45 Update add_dockerfile template
+
 ## 0.8.5
 ### ⚡️ Updates
 - d1c3164 Fix logic where the APP_NAME is not the same as the git repo name
