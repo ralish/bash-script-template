@@ -136,6 +136,8 @@ add_dockerfile
 add_gitignore
 add_license
 ci
+cl_push
+cl_update
 diff
 example_array
 example_docs
@@ -145,18 +147,16 @@ lint
 log
 outedge
 outmaster
-passfull
-passfull_long
+passgen
+passgen_long
 push
-pushcl
 rbedge
 rbmaster
 release
 sq
 stat
+tag
 test
-updatecl
-version
 which
 ```
 

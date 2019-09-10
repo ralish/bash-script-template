@@ -21,7 +21,7 @@ set -o pipefail         # Use last non-zero exit code in a pipeline
 ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ###
 
 function push {
-# commit all
+# commit & push all changes
   App_input2_rule
 
   git status && \
@@ -32,24 +32,6 @@ function push {
 }
 function log {
   git --no-pager log --decorate=short --pretty=oneline -n25
-}
-function rbmaster {
-# think rebase_master_from_edge
-
-  if [[ $(git status | grep -c "nothing to commit") == "1" ]]; then
-    echo "good, nothing to commit" | 2>/dev/null
-    git checkout master
-    git pull origin master
-    git rebase edge
-    git push
-    hash_master_is=$(git rev-parse --short HEAD)
-    #
-    hash_edge_is=$(git rev-parse --short HEAD)
-    my_message="Diligence: ${hash_master_is} | ${hash_master_is} (master vs edge should be the same)" App_Blue
-
-  else
-    my_message="You must push your commit(s) before doing a rebase." App_Pink
-  fi
 }
 function rbedge {
 # think rebase_edge_from_master
@@ -95,9 +77,28 @@ function sq {
     my_message="You must push your commit(s) before doing a rebase." App_Pink
   fi
 }
+function rbmaster {
+# think rebase_master_from_edge
+
+  if [[ $(git status | grep -c "nothing to commit") == "1" ]]; then
+    echo "good, nothing to commit" | 2>/dev/null
+    git checkout master
+    git pull origin master
+    git rebase edge
+    git push
+    hash_master_is=$(git rev-parse --short HEAD)
+    #
+    hash_edge_is=$(git rev-parse --short HEAD)
+    my_message="Diligence: ${hash_master_is} | ${hash_master_is} (master vs edge should be the same)" App_Blue
+
+  else
+    my_message="You must push your commit(s) before doing a rebase." App_Pink
+  fi
+}
 function cl_update {
 # update changelog
 
+  # is expecting a version
   App_input2_rule
 
   # Prompt a warning
@@ -131,6 +132,7 @@ function cl_push {
 # push changelog
 # powerfull as it combines: tag + release + rbedge
 
+  # is expecting a version
   App_input2_rule
 
   # Prompt a warning
@@ -297,7 +299,7 @@ function test {
 
 function which {
   # list, show which functions are available
-  clear
+  clear && echo && \
   cat utility.sh | awk '/function /' | awk '{print $2}' | sort -k2 -n | sed '/App_/d' | sed '/main/d' | sed '/utility/d'
 }
 
