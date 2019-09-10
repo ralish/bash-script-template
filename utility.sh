@@ -52,6 +52,30 @@ function push {
   clear
   git push
 }
+function updatecl {
+# update changelog
+
+# build the message to insert in the CHANGELOG
+mkdir -p ~/temp && rm ~/temp/tmpfile || true && touch ~/temp/tmpfile
+
+git_message="$(git --no-pager log --abbrev-commit --decorate=short --pretty=oneline -n25 | \
+  awk '/HEAD ->/{flag=1} /tag:/{flag=0} flag' | \
+  sed -e 's/([^()]*)//g' | \
+  awk '$1=$1')"
+
+echo -e "" > ~/temp/tmpfile
+echo -e "## ${input_2}" >> ~/temp/tmpfile
+echo -e "### ⚡️ Updates" >> ~/temp/tmpfile
+echo -e "${git_message}" >> ~/temp/tmpfile
+bottle="$(cat ~/temp/tmpfile)"
+rm ~/temp/tmpfile
+# Insert our relase notes after pattern "# Release"
+awk -vbottle="$bottle" '/# Releases/{print;print bottle;next}1' CHANGELOG.md > ~/temp/tmpfile.md
+cat ~/temp/tmpfile.md | awk 'NF > 0 {blank=0} NF == 0 {blank++} blank < 2' > CHANGELOG.md
+rm ~/temp/tmpfile.md
+cat CHANGELOG.md | head -n 40
+}
+
 function log {
   git --no-pager log --decorate=short --pretty=oneline -n25
 }
@@ -166,8 +190,7 @@ function version {
       echo -e "${col_blue} ${message} ${col_blue}" && sleep 0.4 && clear
     done
 
-    # update version within the Dockerfile
-    # We don't want to have "-r1" "-r2" etc within the Dockerfile
+    # update version within the Dockerfile without "-r1" "-r2"
     ver_in_dockerfile=$(echo $tag_version | sed 's/-r.*//g')
     sed -i '' "s/^ARG VERSION=.*$/ARG VERSION=\"$ver_in_dockerfile\"/" Dockerfile 
 
@@ -194,7 +217,8 @@ function release {
     first_name_author=$(git log | awk '/Author:/' | head -n1 | awk '{print $2}')
     tag_version="${input_2}"
     git_repo_url=$(cat Dockerfile | grep GIT_REPO_URL= | head -n 1 | grep -o '".*"' | sed 's/"//g')
-    release_message1="Refer to [CHANGELOG.md](${git_repo_url}/blob/master/CHANGELOG.md) for details about this release."
+    release_message1="$"
+    #release_message1="Refer to [CHANGELOG.md](${git_repo_url}/blob/master/CHANGELOG.md) for details about this release."
     release_message2="This release was packaged and published by using <./utility.sh release>."
     release_message3="Enjoy!<br>${first_name_author}"
 

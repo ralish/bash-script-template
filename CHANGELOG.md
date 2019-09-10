@@ -1,21 +1,16 @@
-## About this changelog
+### About this changelog
 
-- FirePress Public [Roadmap](https://trello.com/b/0fCwwzqc/firepress-public-roadmap)
-- Based on this [template](https://gist.github.com/pascalandy/af709db02d3fe132a3e6f1c11b934fe4)
-- Release process at FirePress ([blog post](https://firepress.org/en/software-and-ghost-updates/))
-- Based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+Based on this [template](https://gist.github.com/pascalandy/af709db02d3fe132a3e6f1c11b934fe4). Release process at FirePress ([blog post](https://firepress.org/en/software-and-ghost-updates/)). Based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## Status template
+### Status template
 
-### ⚡️ Updates
-### 🚀 New feat.
-### 🐛 Fix bug
-### 🛑 Removed
-### 🔑 Security
-
+- ⚡️ Updates
+- 🚀 New feat.
+- 🐛 Fix bug
+- 🛑 Removed
+- 🔑 Security
 
 # Releases
-
 
 ## 0.7-r4
 ### ⚡️ Updates
@@ -30,7 +25,6 @@
 - 0d56c7a1 Improve sq fct
 - dd7b7be6 Minor updates to utility.sh
 
-# Releases
 ## 0.7-r1
 ### ⚡️ Updates
 - 07bb2a92 Improve release messages
