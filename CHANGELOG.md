@@ -12,6 +12,13 @@ Based on this [template](https://gist.github.com/pascalandy/af709db02d3fe132a3e6
 
 # Releases
 
+## 0.8-r1
+### ⚡️ Updates
+- a0abfdd Improve functions ordering + README / squashed
+- 50b755b Rename passgen / instead passfull
+- 65eda6a Rename fct tag / instead of version
+- fbbb5fb Improve the dynamic between updatecl and pushcl
+- 3b61bd4 Improve README
 
 ## 0.7-r4
 ### ⚡️ Updates

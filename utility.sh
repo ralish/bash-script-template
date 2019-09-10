@@ -146,7 +146,7 @@ function cl_push {
   if [[ "${currentBranch}" == "master" ]]; then
     tag_version="${input_2}"
 
-    version
+    tag
     release
     rbedge
   else
