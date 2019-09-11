@@ -12,6 +12,11 @@ Based on this [template](https://gist.github.com/pascalandy/af709db02d3fe132a3e6
 
 # Releases
 
+## 0.8.7
+### ⚡️ Updates
+9157715 Add help, version / Renamed master, edge, release
+909ad8e Add fct version
+
 ## 0.8.6
 ### ⚡️ Updates
 - 180a9af Improve comments and vars
