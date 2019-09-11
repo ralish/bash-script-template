@@ -29,8 +29,8 @@ function push {
 function log {
   git --no-pager log --decorate=short --pretty=oneline -n25
 }
-function rbedge {
-# think rebase_edge_from_master
+function edge {
+# think rebase edge from master
 
   if [[ $(git status | grep -c "nothing to commit") == "1" ]]; then
     echo "good, nothing to commit" | 2>/dev/null
@@ -48,6 +48,27 @@ function rbedge {
   else
     my_message="You must push your commit(s) before doing a rebase." App_Pink
   fi
+}
+function version {
+# update the Dockerfile
+# useful the upgrade an app on edge branch
+
+  App_input2_rule
+  tag_version="${input_2}"
+
+  # update tag within the Dockerfile without "-r1" "-r2"
+  ver_in_dockerfile=$(echo $tag_version | sed 's/-r.*//g')
+  sed -i '' "s/^ARG VERSION=.*$/ARG VERSION=\"$ver_in_dockerfile\"/" Dockerfile 
+
+  git add . && \
+  git commit -m "Updated to version: $tag_version" && \
+  git push
+
+# what it does:
+  # update tag in Dockerfile
+  # save the commit
+  # tag on the latest commit
+  # push tag to remote
 }
 function sq {
 # squash
@@ -73,8 +94,47 @@ function sq {
     my_message="You must push your commit(s) before doing a rebase." App_Pink
   fi
 }
-function rbmaster {
-# think rebase_master_from_edge
+function -h {
+  help
+}
+function help {
+cat << EOF
+USE CASE #1:
+  - We commit some change on edge branch.
+  - Rebase on master from edge
+  - write a git history ofwhat happened with the CHANGELOG
+  - commit with a message
+  - tag 1.2.3-r4 this commit
+  - push tag 1.2.3-r4
+  - release on Github with the tag 1.2.3-r4 along a markdown description that points to our CHANGELOG.md
+
+That takes time! 
+
+  First method (2 steps):
+    'master 1.2.3-r4' (rebase master from edge).
+        Optionaly, manually edit CHANGELOG.md
+    'release 1.2.3-r4' (at this point, we are now to edge branch)
+
+  Second method (3 steps):
+    'master' (rebase master from edge)
+    'draft 1.2.3-r4' (it injects the latest commit(s) in CHANGELOG.md)
+        Optionaly, manually edit CHANGELOG.md
+    'release 1.2.3-r4' (at this point, we are now to edge branch)
+
+USE CASE #2:
+  This text is used as a placeholder. Words that will follow won't make
+  any sense and this is fine. At the moment, the goal is to build a
+  structure for our site.
+
+USE CASE #3:
+  This text is used as a placeholder. Words that will follow won't make
+  any sense and this is fine. At the moment, the goal is to build a
+  structure for our site.
+
+EOF
+}
+function master {
+# think rebase master from edge
 
   if [[ $(git status | grep -c "nothing to commit") == "1" ]]; then
     echo "good, nothing to commit" | 2>/dev/null
@@ -87,12 +147,19 @@ function rbmaster {
     hash_edge_is=$(git rev-parse --short HEAD)
     my_message="Diligence: ${hash_master_is} | ${hash_master_is} (master vs edge should be the same)" App_Blue
 
+    # if a tag is provided
+    # it means we want to draft our CHANGELOG as well
+    if [[ ! -z "${input_2}" ]] && [[ "${input_2}" != not-set ]]; then
+      draft
+    fi
+
   else
     my_message="You must push your commit(s) before doing a rebase." App_Pink
   fi
 }
-function cl_update {
-# update changelog
+function draft {
+# think draft your release in the changelog
+# was called cl_update
 
   # is expecting a version
   App_input2_rule
@@ -124,9 +191,10 @@ function cl_update {
   rm ~/temp/tmpfile || true
   my_message="Done! Manually edit your CHANGELOG if needed" App_Blue
 }
-function cl_push {
+function release {
 # push changelog
-# powerfull as it combines: tag + release + rbedge
+# powerfull as it combines: tag + release + edge
+# was called cl_push
 
   # is expecting a version
   App_input2_rule
@@ -143,42 +211,14 @@ function cl_push {
     tag_version="${input_2}"
 
     tag
-    release
-    rbedge
+    App_release
+    edge
   else
     my_message="You must be a master branch." App_Pink
   fi
-
-# Use case: we just updated the CAHNGELOG.md file
-# Next, we want to:
-  #commit change on changelog.md
-  #tag the commit
-  #release on github
-  #rbedge
-}
-function version {
-# update the Dockerfile
-# useful the upgrade an app on edge branch
-
-  App_input2_rule
-  tag_version="${input_2}"
-
-  # update tag within the Dockerfile without "-r1" "-r2"
-  ver_in_dockerfile=$(echo $tag_version | sed 's/-r.*//g')
-  sed -i '' "s/^ARG VERSION=.*$/ARG VERSION=\"$ver_in_dockerfile\"/" Dockerfile 
-
-  git add . && \
-  git commit -m "Updated to version: $tag_version" && \
-  git push
-
-# what it does:
-  # update tag in Dockerfile
-  # save the commit
-  # tag on the latest commit
-  # push tag to remote
 }
 function tag {
-# is a sub fct of cl_push
+# is a sub fct of release
 # tag
 
   App_input2_rule
@@ -203,8 +243,8 @@ function tag {
   # tag on the latest commit
   # push tag to remote
 }
-function release {
-# is a sub fct of cl_push
+function App_release {
+# is a sub fct of release
 
 # ensure that 'version' has tag the latest commit
 # then, release on github
@@ -344,6 +384,11 @@ function test {
   echo "\$3 is now ${input_3}"
   # Useful when trying to find bad variables along 'set -o nounset'
 
+  if [[ ! -z "${input_2}" ]] && [[ "${input_2}" != not-set ]]; then
+    my_message="input_2 is not empty" 
+    echo && App_Green 
+  fi
+
   # validate that hub is installed
   if [[ $(hub version | grep -c "hub version") == "1" ]]; then
     echo && my_message="Hub is installed." App_Blue
@@ -391,19 +436,6 @@ function example_array {
   for i in "${arr[@]}"; do
     echo ${i}
   done
-}
-function example_docs {
-cat << EOF
-  Utility's doc (documentation):
-
-  This text is used as a placeholder. Words that will follow won't
-  make any sense and this is fine. At the moment, the goal is to 
-  build a structure for our site.
-
-  Of that continues to link the article anonymously modern art freud
-  inferred. Eventually primitive brothel scene with a distinction. The
-  Enlightenment criticized from the history.
-EOF
 }
 function example_figlet {
   docker_image="devmtl/figlet:1.0"
