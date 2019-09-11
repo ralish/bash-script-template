@@ -156,6 +156,27 @@ function cl_push {
   #release on github
   #rbedge
 }
+function version {
+# update the Dockerfile
+# useful the upgrade an app on edge branch
+
+  App_input2_rule
+  tag_version="${input_2}"
+
+  # update tag within the Dockerfile without "-r1" "-r2"
+  ver_in_dockerfile=$(echo $tag_version | sed 's/-r.*//g')
+  sed -i '' "s/^ARG VERSION=.*$/ARG VERSION=\"$ver_in_dockerfile\"/" Dockerfile 
+
+  git add . && \
+  git commit -m "Updated to version: $tag_version" && \
+  git push
+
+# what it does:
+  # update tag in Dockerfile
+  # save the commit
+  # tag on the latest commit
+  # push tag to remote
+}
 function tag {
 # is a sub fct of cl_push
 # tag
@@ -438,6 +459,10 @@ Based on this [template](https://gist.github.com/pascalandy/af709db02d3fe132a3e6
 - 🔑 Security
 
 # Releases
+
+## 0.0.0
+### ⚡️ Updates
+- placeholder
 
 EOF
 }
