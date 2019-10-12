@@ -349,7 +349,7 @@ function check_superuser() {
         superuser=true
     elif [[ -z ${1-} ]]; then
         if check_binary sudo; then
-            pretty_print 'Sudo: Updating cached credentials ...'
+            verbose_print 'Sudo: Updating cached credentials ...'
             if ! sudo -v; then
                 verbose_print "Sudo: Couldn't acquire credentials ..." \
                               "${fg_red-}"
