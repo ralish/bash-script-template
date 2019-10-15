@@ -381,15 +381,15 @@ function run_as_root() {
         script_exit 'Missing required argument to run_as_root()!' 2
     fi
 
-    local try_sudo
+    local skip_sudo
     if [[ ${1-} =~ ^0$ ]]; then
-        try_sudo=true
+        skip_sudo=true
         shift
     fi
 
     if [[ $EUID -eq 0 ]]; then
         "$@"
-    elif [[ -z ${try_sudo-} ]]; then
+    elif [[ -z ${skip_sudo-} ]]; then
         sudo -H -- "$@"
     else
         script_exit "Unable to run requested command as root: $*" 1
