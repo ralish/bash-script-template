@@ -348,7 +348,7 @@ function check_binary() {
 # ARGS: $1 (optional): Set to any value to not attempt root access via sudo
 # OUTS: None
 function check_superuser() {
-    local superuser test_euid
+    local superuser
     if [[ $EUID -eq 0 ]]; then
         superuser=true
     elif [[ -z ${1-} ]]; then
@@ -358,6 +358,7 @@ function check_superuser() {
                 verbose_print "Sudo: Couldn't acquire credentials ..." \
                               "${fg_red-}"
             else
+                local test_euid
                 test_euid="$(sudo -H -- "$BASH" -c 'printf "%s" "$EUID"')"
                 if [[ $test_euid -eq 0 ]]; then
                     superuser=true
@@ -385,9 +386,8 @@ function run_as_root() {
         script_exit 'Missing required argument to run_as_root()!' 2
     fi
 
-    local skip_sudo
     if [[ ${1-} =~ ^0$ ]]; then
-        skip_sudo=true
+        local skip_sudo=true
         shift
     fi
 
