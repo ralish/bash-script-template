@@ -115,6 +115,28 @@ function sq {
   fi
 }
 
+function edge {
+# think rebase edge from master
+# usage: CMD ./utility.sh edge
+
+  if [[ $(git status | grep -c "nothing to commit") == "1" ]]; then
+    echo "good, nothing to commit" | 2>/dev/null
+    git checkout edge
+    git pull origin edge
+    git rebase master
+    git push
+    hash_edge_is=$(git rev-parse --short HEAD)
+    #
+    git checkout master
+    hash_master_is=$(git rev-parse --short HEAD)
+    git checkout edge
+    my_message="Diligence: ${hash_master_is} | ${hash_master_is} (master vs edge should be the same)" App_Blue
+
+  else
+    my_message="You must push your commit(s) before doing a rebase." App_Pink
+  fi
+}
+
 function master {
 # think rebase master from edge
 # usage: CMD ./utility.sh master
@@ -134,28 +156,6 @@ function master {
     if [[ ! -z "${input_2}" ]] && [[ "${input_2}" != not-set ]]; then
       App_Draft
     fi
-
-  else
-    my_message="You must push your commit(s) before doing a rebase." App_Pink
-  fi
-}
-
-function edge {
-# think rebase edge from master
-# usage: CMD ./utility.sh edge
-
-  if [[ $(git status | grep -c "nothing to commit") == "1" ]]; then
-    echo "good, nothing to commit" | 2>/dev/null
-    git checkout edge
-    git pull origin edge
-    git rebase master
-    git push
-    hash_edge_is=$(git rev-parse --short HEAD)
-    #
-    git checkout master
-    hash_master_is=$(git rev-parse --short HEAD)
-    git checkout edge
-    my_message="Diligence: ${hash_master_is} | ${hash_master_is} (master vs edge should be the same)" App_Blue
 
   else
     my_message="You must push your commit(s) before doing a rebase." App_Pink
