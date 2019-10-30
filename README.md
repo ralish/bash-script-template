@@ -166,11 +166,9 @@ which
 
 ## Requirements
 
-Some scripts are using:
-
 - [Docker](https://docs.docker.com/install/)
 - [Hub](https://github.com/github/hub#installation)
-
+- [Terminal Markdown Viewer](https://github.com/axiros/terminal_markdown_viewer)
 
 ## Website hosting
 
