@@ -79,6 +79,10 @@ function script_trap_exit() {
 # ARGS: $1 (required): Message to print on exit
 #       $2 (optional): Exit code (defaults to 0)
 # OUTS: None
+# NOTE: The convention used in this script for exit codes is:
+#       0: Normal exit
+#       1: Abnormal exit due to external error
+#       2: Abnormal exit due to script error
 function script_exit() {
     if [[ $# -eq 1 ]]; then
         printf '%s\n' "$1"
@@ -241,7 +245,7 @@ function lock_init() {
         readonly script_lock="$lock_dir"
         verbose_print "Acquired script lock: $script_lock"
     else
-        script_exit "Unable to acquire script lock: $lock_dir" 2
+        script_exit "Unable to acquire script lock: $lock_dir" 1
     fi
 }
 

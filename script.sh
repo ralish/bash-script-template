@@ -51,7 +51,7 @@ function parse_params() {
                 cron=true
                 ;;
             *)
-                script_exit "Invalid parameter was provided: $param" 2
+                script_exit "Invalid parameter was provided: $param" 1
                 ;;
         esac
     done
