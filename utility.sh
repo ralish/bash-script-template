@@ -373,7 +373,7 @@ function App_release {
     github_org=$(cat Dockerfile | grep GITHUB_ORG= | head -n 1 | grep -o '".*"' | sed 's/"//g')
     git_repo_url="https://github.com/${github_org}/${git_project_name}"
     release_message1="Refer to [CHANGELOG.md](./CHANGELOG.md) for details about this release."
-    release_message2="This release was packaged and published by using cmd <./utility.sh release>."
+    release_message2="This release was packaged and published using https://github.com/firepress-org/bash-script-template"
     release_message3="Enjoy!<br>${first_name_author}"
 
     App_release_check_vars
