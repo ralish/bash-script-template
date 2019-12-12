@@ -12,6 +12,15 @@ Based on this [template](https://gist.github.com/pascalandy/af709db02d3fe132a3e6
 
 # Releases
 
+## 0.8.9
+### ⚡️ Updates
+3a5be95 Updated to version: 0.8.9
+92b10a6 Merge branch 'master' into edge
+df3ebf4 Update comment in App_release
+f4bd14c added fct list
+abbce23 Update comment in App_release
+aa4d1b6 added fct list
+
 ## 0.8.8
 ### ⚡️ Updates
 - overall reorganisation to make it easier to read
