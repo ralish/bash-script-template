@@ -242,6 +242,11 @@ function release_find_the_latest {
   fi
 }
 
+function list {
+  # shortcut
+  which
+}
+
 function which {
   # list (show) which CMD (functions) are available
   clear && echo && \
