@@ -12,6 +12,10 @@ Based on this [template](https://gist.github.com/pascalandy/af709db02d3fe132a3e6
 
 # Releases
 
+## 0.8.8
+### ⚡️ Updates
+- overall reorganisation to make it easier to read
+
 ## 0.8.7
 ### ⚡️ Updates
 9157715 Add help, version / Renamed master, edge, release
