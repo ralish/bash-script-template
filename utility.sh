@@ -270,6 +270,11 @@ function status {
   git status
 }
 
+function info {
+  # the need is to quickly see the version of our app
+  cat Dockerfile
+}
+
 function diff {
   check && echo
   git diff
