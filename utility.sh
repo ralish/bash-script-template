@@ -52,8 +52,14 @@ cat << EOF
       'release 1.2.3-r4' (at this point, we are now to edge branch)
 EOF
 }
+# idea see our docs in Markdown / mdv https://github.com/axiros/terminal_markdown_viewer#installation 
+
 function -h {
-  help
+  echo "######################################################################" && echo && \
+  info && echo && echo && \
+  echo "######################################################################" && echo && \
+  help && echo && echo && \
+  echo "######################################################################" && echo ;
 }
 
 function version {
@@ -347,7 +353,7 @@ function App_Draft {
   done
 
   # build the message to insert in the CHANGELOG
-  mkdir -p ~/temp && rm ~/temp/tmpfile || true
+  touch ~/temp/tmpfile && rm ~/temp/tmpfile || true
 
   git_message="$(git --no-pager log --abbrev-commit --decorate=short --pretty=oneline -n25 | \
     awk '/HEAD ->/{flag=1} /tag:/{flag=0} flag' | \
