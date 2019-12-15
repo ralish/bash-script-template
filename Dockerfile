@@ -3,7 +3,7 @@
 ###################################
 # REQUIRED BY OUR GITHUB ACTION CI
 ###################################
-ARG VERSION="0.8.9"
+ARG VERSION="0.8.10"
 ARG APP_NAME="bash-script-template"
 ARG GIT_PROJECT_NAME="bash-script-template"
 
