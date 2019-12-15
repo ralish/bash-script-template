@@ -261,7 +261,12 @@ function hash {
   git rev-parse --short HEAD
 }
 
+
 function stat {
+  status
+}
+
+function status {
   git status
 }
 
