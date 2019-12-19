@@ -262,16 +262,20 @@ function which {
 function log {
   git --no-pager log --decorate=short --pretty=oneline -n25
 }
+function logs {
+  log # alias
+}
 
 function hash {
   git rev-parse --short HEAD
 }
 
-
-function stat {
-  status
+function stats {
+  status # alias
 }
-
+function stat {
+  status # alias
+}
 function status {
   git status
 }
