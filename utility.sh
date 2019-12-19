@@ -334,6 +334,24 @@ function lint_hado_wip {
   docker run -v `pwd`/Dockerfile:/Dockerfile replicated/dockerfilelint /Dockerfile
 }
 
+function prt {
+# pr theme, theme containous
+# work in progress
+
+# pre-requirments
+  #git checkout ghostv3-dev && git pull ghostv3-dev # I'm here
+  #utility.sh push "my change dummy file"
+
+git checkout ghostv3-staging && git pull ghostv3-staging
+# hub sync
+git checkout -b mrg-dev-to-staging
+git merge --no-ff origin/ghostv3-dev # no fast forward
+git push -u origin mrg-dev-to-staging
+
+# hub pull-request
+
+}
+
 ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### #
 #
 # sub fct
