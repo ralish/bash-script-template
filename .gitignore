@@ -11,6 +11,14 @@ Icon
 ehthumbs.db
 Thumbs.db
 
+# Temporary
+*~
+*.bak
+*.tmp
+*.temp
+tmp/
+temp/
+
 # Vim
 .netrwhist
 [._]*.s[a-v][a-z]
@@ -19,11 +27,3 @@ Thumbs.db
 [._]s[a-rt-v][a-z]
 [._]ss[a-gi-z]
 [._]sw[a-p]
-
-# Temporary
-*~
-*.bak
-*.tmp
-*.temp
-tmp/
-temp/
