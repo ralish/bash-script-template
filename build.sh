@@ -21,7 +21,6 @@ function main() {
     build_template
 }
 
-
 # This is quite brittle, but it does work. I appreciate the irony given it's
 # assembling a template meant to consist of good Bash scripting practices. I'll
 # make it more durable once I have some spare time. Likely some arcane sed...

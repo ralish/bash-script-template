@@ -27,7 +27,6 @@ Usage:
 EOF
 }
 
-
 # DESC: Parameter parser
 # ARGS: $@ (optional): Arguments provided to the script
 # OUTS: Variables indicating command-line parameters and options
@@ -37,17 +36,17 @@ function parse_params() {
         param="$1"
         shift
         case $param in
-            -h|--help)
+            -h | --help)
                 script_usage
                 exit 0
                 ;;
-            -v|--verbose)
+            -v | --verbose)
                 verbose=true
                 ;;
-            -nc|--no-colour)
+            -nc | --no-colour)
                 no_colour=true
                 ;;
-            -cr|--cron)
+            -cr | --cron)
                 cron=true
                 ;;
             *)
@@ -56,7 +55,6 @@ function parse_params() {
         esac
     done
 }
-
 
 # DESC: Main control flow
 # ARGS: $@ (optional): Arguments provided to the script
@@ -74,7 +72,6 @@ function main() {
     colour_init
     #lock_init system
 }
-
 
 # Make it rain
 main "$@"
