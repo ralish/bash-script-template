@@ -19,3 +19,6 @@ trim_trailing_whitespace = false
 # Shell scripts
 [*.sh]
 max_line_length = 79
+keep_padding = true             # shfmt: -kp
+space_redirects = true          # shfmt: -sr
+switch_case_indent = true       # shfmt: -ci
