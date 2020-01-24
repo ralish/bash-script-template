@@ -119,6 +119,7 @@ function script_exit() {
 #       and will not resolve any symlinks which may be present in the path.
 #       You can use a tool like realpath to obtain the "true" path. The same
 #       caveat applies to both the $script_dir and $script_name variables.
+# shellcheck disable=SC2034
 function script_init() {
     # Useful paths
     readonly orig_cwd="$PWD"
@@ -136,6 +137,7 @@ function script_init() {
 # ARGS: None
 # OUTS: Read-only variables with ANSI control codes
 # NOTE: If --no-colour was set the variables will be empty
+# shellcheck disable=SC2034
 function colour_init() {
     if [[ -z ${no_colour-} ]]; then
         # Text attributes
