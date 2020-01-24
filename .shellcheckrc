@@ -1,0 +1,8 @@
+# Add the script directory to the search path for source statements
+source-path=SCRIPTDIR
+
+# Enable all optional checks
+enable=all
+
+# Disable the require-variable-braces check
+disable=SC2250
