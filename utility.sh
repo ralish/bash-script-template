@@ -430,24 +430,32 @@ function App_Draft {
 
   # build the message to insert in the CHANGELOG
   touch ~/temp/tmpfile && rm ~/temp/tmpfile || true
+  touch ~/temp/tmpfile2 && rm ~/temp/tmpfile2 || true
 
   git_message="$(git --no-pager log --abbrev-commit --decorate=short --pretty=oneline -n25 | \
     awk '/HEAD ->/{flag=1} /tag:/{flag=0} flag' | \
     sed -e 's/([^()]*)//g' | \
     awk '$1=$1')"
 
+  echo -e "${git_message}" >> ~/temp/tmpfile2
+  # add space at the begining of a line
+  sed 's/^/ /' ~/temp/tmpfile2
+  # add sign "-" at the begining of a line
+  sed 's/^/-/' ~/temp/tmpfile2
+  # insert paragraph
   echo -e "" > ~/temp/tmpfile
+  # insert version
   echo -e "## ${input_2}" >> ~/temp/tmpfile
   echo -e "### ⚡️ Updates" >> ~/temp/tmpfile
-  echo -e "${git_message}" >> ~/temp/tmpfile
-  # add sign "- " with a space 
-  sed 's/^/- /' ~/temp/tmpfile
+  echo -e $(cat ~/temp/tmpfile2) >> ~/temp/tmpfile
+
   bottle="$(cat ~/temp/tmpfile)"
   rm ~/temp/tmpfile || true
-  # Insert our relase notes after pattern "# Release"
+  # Insert our release notes after pattern "# Release"
   awk -vbottle="$bottle" '/# Releases/{print;print bottle;next}1' CHANGELOG.md > ~/temp/tmpfile
   cat ~/temp/tmpfile | awk 'NF > 0 {blank=0} NF == 0 {blank++} blank < 2' > CHANGELOG.md
   rm ~/temp/tmpfile || true
+  rm ~/temp/tmpfile2 || true
 
   # Manually edit CHANGELOG
   nano CHANGELOG.md
