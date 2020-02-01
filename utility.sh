@@ -158,15 +158,6 @@ function master {
     git checkout edge && \
     git branch -D mrg_edge_2_master;
 
-    # TK let create a function cl (think changelog) instead.
-    # This can only be updated in edge.
-        # if a tag "3.4.0" is provided
-        # it means we want to draft our CHANGELOG as well
-        
-        #if [[ ! -z "${input_2}" ]] && [[ "${input_2}" != not-set ]]; then
-        #  App_Draft
-        #fi
-
   else
     my_message="You must push your commit(s) before doing a rebase." App_Pink
   fi
@@ -222,6 +213,13 @@ function edge {
 
   else
     my_message="You must push your commit(s) before doing a rebase." App_Pink
+  fi
+}
+
+function cl {
+  # think changelog
+  if [[ ! -z "${input_2}" ]] && [[ "${input_2}" != not-set ]]; then
+    App_Draft
   fi
 }
 
