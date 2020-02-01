@@ -131,6 +131,66 @@ function sq {
   fi
 }
 
+function master {
+# think rebase master from edge
+# usage: CMD ./utility.sh master
+  if [[ $(git status | grep -c "nothing to commit") == "1" ]]; then
+    echo "good, nothing to commit" | 2>/dev/null
+
+    # No prompt required
+
+    git rebase master
+    git checkout master
+    git checkout -b mrg_edge_2_master
+    # 
+    git merge mrg_edge_2_master --ff
+    git push
+    ### master is up to date
+
+    ### Go back to dev mode
+    edge
+
+    # TK let create a function cl (think changelog) instead.
+    # This can only be updated in edge.
+        # if a tag "3.4.0" is provided
+        # it means we want to draft our CHANGELOG as well
+        
+        #if [[ ! -z "${input_2}" ]] && [[ "${input_2}" != not-set ]]; then
+        #  App_Draft
+        #fi
+
+  else
+    my_message="You must push your commit(s) before doing a rebase." App_Pink
+  fi
+}
+
+function master-sq {
+# think rebase master from edge
+# usage: CMD ./utility.sh master
+  if [[ $(git status | grep -c "nothing to commit") == "1" ]]; then
+    echo "good, nothing to commit" | 2>/dev/null
+
+    #prompt
+    my_message="What is this merge is doing?" App_Blue
+    read -p "==>" squash_message
+
+    git rebase master
+    git checkout master
+    git checkout -b mrg_edge_2_master
+    # 
+    git merge --squash mrg_edge_2_master
+    git commit . -m "FEAT: ${squash_message} /squash"
+    git push
+    ### master is up to date
+
+    ### Go back to dev mode
+    edge
+
+  else
+    my_message="You must push your commit(s) before doing a rebase." App_Pink
+  fi
+}
+
 function edge {
 # think rebase edge from master
 # usage: CMD ./utility.sh edge
@@ -147,31 +207,6 @@ function edge {
     hash_master_is=$(git rev-parse --short HEAD)
     git checkout edge
     my_message="Diligence: ${hash_master_is} | ${hash_master_is} (master vs edge should be the same)" App_Blue
-
-  else
-    my_message="You must push your commit(s) before doing a rebase." App_Pink
-  fi
-}
-
-function master {
-# think rebase master from edge
-# usage: CMD ./utility.sh master
-  if [[ $(git status | grep -c "nothing to commit") == "1" ]]; then
-    echo "good, nothing to commit" | 2>/dev/null
-    git checkout master
-    git pull origin master
-    git rebase edge
-    git push
-    hash_master_is=$(git rev-parse --short HEAD)
-    #
-    hash_edge_is=$(git rev-parse --short HEAD)
-    my_message="Diligence: ${hash_master_is} | ${hash_master_is} (master vs edge should be the same)" App_Blue
-
-    # if a tag is provided
-    # it means we want to draft our CHANGELOG as well
-    if [[ ! -z "${input_2}" ]] && [[ "${input_2}" != not-set ]]; then
-      App_Draft
-    fi
 
   else
     my_message="You must push your commit(s) before doing a rebase." App_Pink
