@@ -440,13 +440,17 @@ function App_Draft {
   echo -e "## ${input_2}" >> ~/temp/tmpfile
   echo -e "### ⚡️ Updates" >> ~/temp/tmpfile
   echo -e "${git_message}" >> ~/temp/tmpfile
+  # add sign "- " with a space 
+  sed 's/^/- /' ~/temp/tmpfile
   bottle="$(cat ~/temp/tmpfile)"
   rm ~/temp/tmpfile || true
   # Insert our relase notes after pattern "# Release"
   awk -vbottle="$bottle" '/# Releases/{print;print bottle;next}1' CHANGELOG.md > ~/temp/tmpfile
   cat ~/temp/tmpfile | awk 'NF > 0 {blank=0} NF == 0 {blank++} blank < 2' > CHANGELOG.md
   rm ~/temp/tmpfile || true
-  my_message="Done! Manually edit your CHANGELOG if needed" App_Blue
+
+  # Manually edit CHANGELOG
+  nano CHANGELOG.md
 }
 
 function App_release {
