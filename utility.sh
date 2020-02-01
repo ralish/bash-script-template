@@ -218,6 +218,10 @@ function edge {
 
 function cl {
   # think changelog
+
+  # is expecting a version
+  App_input2_rule
+  
   if [[ ! -z "${input_2}" ]] && [[ "${input_2}" != not-set ]]; then
     App_Draft
   fi
