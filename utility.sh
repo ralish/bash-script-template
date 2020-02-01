@@ -101,8 +101,8 @@ function push {
   git status && \
   git add -A && \
   git commit -m "${input_2}" && \
-  clear
-  git push
+  clear && \
+  git push;
 }
 
 function sq {
@@ -137,18 +137,23 @@ function master {
   if [[ $(git status | grep -c "nothing to commit") == "1" ]]; then
     echo "good, nothing to commit" | 2>/dev/null
 
-    # No prompt required
+    #prompt
+    my_message="What is this merge is doing?" App_Blue
+    read -p "==> " squash_message
 
-    git rebase master
-    git checkout master
-    git checkout -b mrg_edge_2_master
-    # 
-    git merge mrg_edge_2_master --ff
-    git push
+    ### Commit your updates, then merge to master
+    git checkout edge && \
+    git checkout -b mrg_edge_2_master && \
+    git checkout master && \
+    git rebase master && \
+    git merge -m "${squash_message}" mrg_edge_2_master && \
+    git push && \
     ### master is up to date
 
     ### Go back to dev mode
-    edge
+    git branch -D edge && \
+    git checkout edge && \
+    git branch -D mrg_edge_2_master;
 
     # TK let create a function cl (think changelog) instead.
     # This can only be updated in edge.
@@ -172,19 +177,23 @@ function master-sq {
 
     #prompt
     my_message="What is this merge is doing?" App_Blue
-    read -p "==>" squash_message
+    read -p "==> " squash_message
 
-    git rebase master
-    git checkout master
-    git checkout -b mrg_edge_2_master
-    # 
-    git merge --squash mrg_edge_2_master
-    git commit . -m "FEAT: ${squash_message} /squash"
-    git push
+    ### Commit your updates, then merge to master
+    git checkout edge && \
+    git checkout -b mrg_edge_2_master && \
+    git rebase master && \
+    git checkout master && \
+    git merge --squash mrg_edge_2_master && \
+    # git merge mrg_edge_2_master --ff
+    git commit . -m "FEAT: ${squash_message} /squash" && \
+    git push && \
     ### master is up to date
 
     ### Go back to dev mode
-    edge
+    git branch -D edge && \
+    git checkout edge && \
+    git branch -D mrg_edge_2_master;
 
   else
     my_message="You must push your commit(s) before doing a rebase." App_Pink
