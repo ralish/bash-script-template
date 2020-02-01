@@ -134,6 +134,9 @@ function sq {
 function master {
 # think rebase master from edge
 # usage: CMD ./utility.sh master
+
+  # NoAttributes needed
+
   if [[ $(git status | grep -c "nothing to commit") == "1" ]]; then
     echo "good, nothing to commit" | 2>/dev/null
 
@@ -464,9 +467,9 @@ function App_release {
     git_project_name=$(cat Dockerfile | grep GIT_PROJECT_NAME= | head -n 1 | grep -o '".*"' | sed 's/"//g')
     github_org=$(cat Dockerfile | grep GITHUB_ORG= | head -n 1 | grep -o '".*"' | sed 's/"//g')
     git_repo_url="https://github.com/${github_org}/${git_project_name}"
-    release_message1="Refer to [CHANGELOG.md](https://github.com/firepress-org/ghostfire/blob/master/CHANGELOG.md) for details about this release."
+    release_message1="Refer to CHANGELOG.md for details about this release."
     release_message2="This release was packaged and published using https://github.com/firepress-org/bash-script-template"
-    release_message3="Enjoy!<br>${first_name_author}"
+    release_message3="Enjoy!"
 
     App_release_check_vars
     
@@ -482,12 +485,6 @@ function App_release {
       "${tag_version}"
 
     # https://hub.github.com/hub-release.1.html
-      # title
-      # description
-      # description
-      # description
-      # on which commits (use the latest)
-      # on which tag (use the latest)
 
     echo "${git_repo_url}/releases/tag/${tag_version}"
     
