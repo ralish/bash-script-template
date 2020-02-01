@@ -21,6 +21,16 @@ set -o pipefail         # Use last non-zero exit code in a pipeline
 		#   #
 function help {
 cat << EOF
+
+CORE WORKFLOW (for https://github.com/firepress-org/ghostfire/)
+
+==> from branch edge,
+==> we want to update ghost.
+run these cmd
+======> utility.sh version 3.3.0
+======> utility.sh master
+======> utility.sh release 3.3.0
+
   USE CASE #1:
     Simple version update on the dockerfile
     - see CMD version
@@ -410,7 +420,7 @@ function App_release {
     git_project_name=$(cat Dockerfile | grep GIT_PROJECT_NAME= | head -n 1 | grep -o '".*"' | sed 's/"//g')
     github_org=$(cat Dockerfile | grep GITHUB_ORG= | head -n 1 | grep -o '".*"' | sed 's/"//g')
     git_repo_url="https://github.com/${github_org}/${git_project_name}"
-    release_message1="Refer to [CHANGELOG.md](./CHANGELOG.md) for details about this release."
+    release_message1="Refer to [CHANGELOG.md](https://github.com/firepress-org/ghostfire/blob/master/CHANGELOG.md) for details about this release."
     release_message2="This release was packaged and published using https://github.com/firepress-org/bash-script-template"
     release_message3="Enjoy!<br>${first_name_author}"
 
