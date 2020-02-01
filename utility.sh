@@ -221,10 +221,8 @@ function cl {
 
   # is expecting a version
   App_input2_rule
-  
-  if [[ ! -z "${input_2}" ]] && [[ "${input_2}" != not-set ]]; then
-    App_Draft
-  fi
+
+  App_Draft
 }
 
 function release {
@@ -423,15 +421,12 @@ function App_Draft {
 # think draft your release in the changelog
 # you should use release as it's a sub fct of release
 
-  # is expecting a version
-  App_input2_rule
-
   # Prompt a warning
-  min=1 max=4 message="WARNING: are your commits clean and squashed?"
-  for ACTION in $(seq ${min} ${max}); do
-    echo -e "${col_pink} ${message} ${col_pink}" && sleep 0.4 && clear && \
-    echo -e "${col_blue} ${message} ${col_blue}" && sleep 0.4 && clear
-  done
+  #min=1 max=4 message="WARNING: are your commits clean and squashed?"
+  #for ACTION in $(seq ${min} ${max}); do
+  #  echo -e "${col_pink} ${message} ${col_pink}" && sleep 0.4 && clear && \
+  #  echo -e "${col_blue} ${message} ${col_blue}" && sleep 0.4 && clear
+  #done
 
   # build the message to insert in the CHANGELOG
   touch ~/temp/tmpfile && rm ~/temp/tmpfile || true
