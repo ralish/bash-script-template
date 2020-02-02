@@ -202,10 +202,11 @@ function edge {
 
   if [[ $(git status | grep -c "nothing to commit") == "1" ]]; then
     echo "good, nothing to commit" | 2>/dev/null
-    git checkout edge
-    git pull origin edge
-    git rebase master
-    git push
+    git checkout edge && \
+    git pull origin edge && \
+    git rebase master && \
+    git push && \
+    git branch -D mrg_edge_2_master && \
     hash_edge_is=$(git rev-parse --short HEAD)
     #
     git checkout master
