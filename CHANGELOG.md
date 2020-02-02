@@ -12,6 +12,11 @@ Based on this [template](https://gist.github.com/pascalandy/af709db02d3fe132a3e6
 
 # Releases
 
+## 0.8.14
+### ⚡️ Updates
+- 0243fb7 remove dummy files
+- 856d4cb Add alias cl-view
+
 ## 0.8.13
 ### ⚡️ Updates
 - 3d1a6bf add fct cl-read
