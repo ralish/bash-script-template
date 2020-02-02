@@ -252,6 +252,29 @@ function release {
   fi
 }
 
+function mdv {
+# markdown viewer for your terminal
+# https://github.com/axiros/terminal_markdown_viewer#installation
+clear
+
+# show the first 60 lines
+docker run --rm -it \
+  -v $(pwd):/sandbox \
+  -w /sandbox \
+  devmtl/mdv:1.6.3 \
+    -t 'warm & natural' ${input_2} | sed -n 12,50p
+}
+
+function mdv-all {
+clear
+
+docker run --rm -it \
+  -v $(pwd):/sandbox \
+  -w /sandbox \
+  devmtl/mdv:1.6.3 \
+    -t 'warm & natural' ${input_2}
+}
+
 function tag {
 # you should use release as its a sub fct of release
 # usage: CMD ./utility.sh tag 1.50.1
@@ -421,47 +444,41 @@ function App_Draft {
 # think draft your release in the changelog
 # you should use release as it's a sub fct of release
 
-  # Prompt a warning
-  #min=1 max=4 message="WARNING: are your commits clean and squashed?"
-  #for ACTION in $(seq ${min} ${max}); do
-  #  echo -e "${col_pink} ${message} ${col_pink}" && sleep 0.4 && clear && \
-  #  echo -e "${col_blue} ${message} ${col_blue}" && sleep 0.4 && clear
-  #done
-
-  # build the message to insert in the CHANGELOG
+# build the message to insert in the CHANGELOG
   touch ~/temp/tmpfile && rm ~/temp/tmpfile || true
   touch ~/temp/tmpfile2 && rm ~/temp/tmpfile2 || true
-  touch ~/temp/tmpfile2 && rm ~/temp/tmpfile3 || true
-  touch ~/temp/tmpfile2 && rm ~/temp/tmpfile4 || true
+  touch ~/temp/tmpfile3 && rm ~/temp/tmpfile3 || true
+  touch ~/temp/tmpfile4 && rm ~/temp/tmpfile4 || true
 
-  git_message="$(git --no-pager log --abbrev-commit --decorate=short --pretty=oneline -n25 | \
+  git_logs="$(git --no-pager log --abbrev-commit --decorate=short --pretty=oneline -n25 | \
     awk '/HEAD ->/{flag=1} /tag:/{flag=0} flag' | \
     sed -e 's/([^()]*)//g' | \
     awk '$1=$1')"
 
-  echo -e "${git_message}" >> ~/temp/tmpfile2
+  echo -e "${git_logs}" >> ~/temp/tmpfile2
   # add space at the begining of a line
   sed 's/^/ /' ~/temp/tmpfile2 > ~/temp/tmpfile3
   # add sign "-" at the begining of a line
   sed 's/^/-/' ~/temp/tmpfile3 > ~/temp/tmpfile4
-  # insert paragraph
-  echo -e "" > ~/temp/tmpfile4
-  # insert version
-  echo -e "## ${input_2}" >> ~/temp/tmpfile4
-  echo -e "### ⚡️ Updates" >> ~/temp/tmpfile4
-  echo -e $(cat ~/temp/tmpfile4) >> ~/temp/tmpfile
 
+  echo -e "" >> ~/temp/tmpfile
+  # insert version
+  echo -e "## ${input_2}" >> ~/temp/tmpfile
+  echo -e "### ⚡️ Updates" >> ~/temp/tmpfile
+  cat ~/temp/tmpfile4 >> ~/temp/tmpfile
   bottle="$(cat ~/temp/tmpfile)"
-  rm ~/temp/tmpfile || true
+
   # Insert our release notes after pattern "# Release"
   awk -vbottle="$bottle" '/# Releases/{print;print bottle;next}1' CHANGELOG.md > ~/temp/tmpfile
   cat ~/temp/tmpfile | awk 'NF > 0 {blank=0} NF == 0 {blank++} blank < 2' > CHANGELOG.md
+
+  # clean
   rm ~/temp/tmpfile || true
   rm ~/temp/tmpfile2 || true
   rm ~/temp/tmpfile3 || true
   rm ~/temp/tmpfile4 || true
 
-  # Manually edit CHANGELOG
+  # Manually edit CHANGELOG in terminal
   nano CHANGELOG.md
 }
 
