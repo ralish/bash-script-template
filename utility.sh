@@ -146,6 +146,7 @@ function master {
 
     ### Commit your updates, then merge to master
     git checkout edge && \
+    git branch -D mrg_edge_2_master || true && \
     git checkout -b mrg_edge_2_master && \
     git checkout master && \
     git rebase master && \
@@ -175,6 +176,7 @@ function master-sq {
 
     ### Commit your updates, then merge to master
     git checkout edge && \
+    git branch -D mrg_edge_2_master || true && \
     git checkout -b mrg_edge_2_master && \
     git rebase master && \
     git checkout master && \
@@ -223,6 +225,16 @@ function cl {
   App_input2_rule
 
   App_Draft
+}
+
+function cl-read {
+  # think changelog
+
+  input_2="CHANGELOG.md"
+  # is expecting a version
+  App_input2_rule
+
+  mdv-all
 }
 
 function release {
