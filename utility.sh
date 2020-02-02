@@ -236,6 +236,10 @@ function cl-read {
 
   mdv-all
 }
+function cl-view {
+  #alias
+  cl-read
+}
 
 function release {
 # push changelog
