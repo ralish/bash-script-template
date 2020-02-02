@@ -12,6 +12,11 @@ Based on this [template](https://gist.github.com/pascalandy/af709db02d3fe132a3e6
 
 # Releases
 
+## 0.8.12
+### ⚡️ Updates
+- d86bb3b changelog update
+- 05ff973 add function cl / changelog
+
 ## 0.8.11
 ### ⚡️ Updates
 - bb6b2fb4 improve function master AND master-sq
