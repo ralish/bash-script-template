@@ -101,8 +101,8 @@ function push {
   git status && \
   git add -A && \
   git commit -m "${input_2}" && \
-  clear
-  git push
+  clear && \
+  git push;
 }
 
 function sq {
@@ -131,6 +131,71 @@ function sq {
   fi
 }
 
+function master {
+# think rebase master from edge
+# usage: CMD ./utility.sh master
+
+  # NoAttributes needed
+
+  if [[ $(git status | grep -c "nothing to commit") == "1" ]]; then
+    echo "good, nothing to commit" | 2>/dev/null
+
+    #prompt
+    my_message="What is this merge is doing?" App_Blue
+    read -p "==> " squash_message
+
+    ### Commit your updates, then merge to master
+    git checkout edge && \
+    git branch -D mrg_edge_2_master || true && \
+    git checkout -b mrg_edge_2_master && \
+    git checkout master && \
+    git rebase master && \
+    git merge -m "${squash_message}" mrg_edge_2_master && \
+    git push && \
+    ### master is up to date
+
+    ### Go back to dev mode
+    git branch -D edge && \
+    git checkout edge && \
+    git branch -D mrg_edge_2_master;
+
+  else
+    my_message="You must push your commit(s) before doing a rebase." App_Pink
+  fi
+}
+
+function master-sq {
+# think rebase master from edge
+# usage: CMD ./utility.sh master
+  if [[ $(git status | grep -c "nothing to commit") == "1" ]]; then
+    echo "good, nothing to commit" | 2>/dev/null
+
+    #prompt
+    my_message="What is this merge is doing?" App_Blue
+    read -p "==> " squash_message
+
+    ### Commit your updates, then merge to master
+    git checkout edge && \
+    git branch -D mrg_edge_2_master || true && \
+    git checkout -b mrg_edge_2_master && \
+    git rebase master && \
+    git checkout master && \
+    git merge --squash mrg_edge_2_master && \
+    # git merge mrg_edge_2_master --ff
+    git commit . -m "FEAT: ${squash_message} /squash" && \
+    git push && \
+    ### master is up to date
+
+    ### Go back to dev mode
+    git branch -D edge && \
+    git checkout edge && \
+    git branch -D mrg_edge_2_master;
+
+  else
+    my_message="You must push your commit(s) before doing a rebase." App_Pink
+  fi
+}
+
 function edge {
 # think rebase edge from master
 # usage: CMD ./utility.sh edge
@@ -153,29 +218,23 @@ function edge {
   fi
 }
 
-function master {
-# think rebase master from edge
-# usage: CMD ./utility.sh master
-  if [[ $(git status | grep -c "nothing to commit") == "1" ]]; then
-    echo "good, nothing to commit" | 2>/dev/null
-    git checkout master
-    git pull origin master
-    git rebase edge
-    git push
-    hash_master_is=$(git rev-parse --short HEAD)
-    #
-    hash_edge_is=$(git rev-parse --short HEAD)
-    my_message="Diligence: ${hash_master_is} | ${hash_master_is} (master vs edge should be the same)" App_Blue
+function cl {
+  # think changelog
 
-    # if a tag is provided
-    # it means we want to draft our CHANGELOG as well
-    if [[ ! -z "${input_2}" ]] && [[ "${input_2}" != not-set ]]; then
-      App_Draft
-    fi
+  # is expecting a version
+  App_input2_rule
 
-  else
-    my_message="You must push your commit(s) before doing a rebase." App_Pink
-  fi
+  App_Draft
+}
+
+function cl-read {
+  # think changelog
+
+  input_2="CHANGELOG.md"
+  # is expecting a version
+  App_input2_rule
+
+  mdv-all
 }
 
 function release {
@@ -203,6 +262,29 @@ function release {
   else
     my_message="You must be in the master branch." App_Pink
   fi
+}
+
+function mdv {
+# markdown viewer for your terminal
+# https://github.com/axiros/terminal_markdown_viewer#installation
+clear
+
+# show the first 60 lines
+docker run --rm -it \
+  -v $(pwd):/sandbox \
+  -w /sandbox \
+  devmtl/mdv:1.6.3 \
+    -t 'warm & natural' ${input_2} | sed -n 12,50p
+}
+
+function mdv-all {
+clear
+
+docker run --rm -it \
+  -v $(pwd):/sandbox \
+  -w /sandbox \
+  devmtl/mdv:1.6.3 \
+    -t 'warm & natural' ${input_2}
 }
 
 function tag {
@@ -374,35 +456,42 @@ function App_Draft {
 # think draft your release in the changelog
 # you should use release as it's a sub fct of release
 
-  # is expecting a version
-  App_input2_rule
-
-  # Prompt a warning
-  min=1 max=4 message="WARNING: are your commits clean and squashed?"
-  for ACTION in $(seq ${min} ${max}); do
-    echo -e "${col_pink} ${message} ${col_pink}" && sleep 0.4 && clear && \
-    echo -e "${col_blue} ${message} ${col_blue}" && sleep 0.4 && clear
-  done
-
-  # build the message to insert in the CHANGELOG
+# build the message to insert in the CHANGELOG
   touch ~/temp/tmpfile && rm ~/temp/tmpfile || true
+  touch ~/temp/tmpfile2 && rm ~/temp/tmpfile2 || true
+  touch ~/temp/tmpfile3 && rm ~/temp/tmpfile3 || true
+  touch ~/temp/tmpfile4 && rm ~/temp/tmpfile4 || true
 
-  git_message="$(git --no-pager log --abbrev-commit --decorate=short --pretty=oneline -n25 | \
+  git_logs="$(git --no-pager log --abbrev-commit --decorate=short --pretty=oneline -n25 | \
     awk '/HEAD ->/{flag=1} /tag:/{flag=0} flag' | \
     sed -e 's/([^()]*)//g' | \
     awk '$1=$1')"
 
-  echo -e "" > ~/temp/tmpfile
+  echo -e "${git_logs}" >> ~/temp/tmpfile2
+  # add space at the begining of a line
+  sed 's/^/ /' ~/temp/tmpfile2 > ~/temp/tmpfile3
+  # add sign "-" at the begining of a line
+  sed 's/^/-/' ~/temp/tmpfile3 > ~/temp/tmpfile4
+
+  echo -e "" >> ~/temp/tmpfile
+  # insert version
   echo -e "## ${input_2}" >> ~/temp/tmpfile
   echo -e "### ⚡️ Updates" >> ~/temp/tmpfile
-  echo -e "${git_message}" >> ~/temp/tmpfile
+  cat ~/temp/tmpfile4 >> ~/temp/tmpfile
   bottle="$(cat ~/temp/tmpfile)"
-  rm ~/temp/tmpfile || true
-  # Insert our relase notes after pattern "# Release"
+
+  # Insert our release notes after pattern "# Release"
   awk -vbottle="$bottle" '/# Releases/{print;print bottle;next}1' CHANGELOG.md > ~/temp/tmpfile
   cat ~/temp/tmpfile | awk 'NF > 0 {blank=0} NF == 0 {blank++} blank < 2' > CHANGELOG.md
+
+  # clean
   rm ~/temp/tmpfile || true
-  my_message="Done! Manually edit your CHANGELOG if needed" App_Blue
+  rm ~/temp/tmpfile2 || true
+  rm ~/temp/tmpfile3 || true
+  rm ~/temp/tmpfile4 || true
+
+  # Manually edit CHANGELOG in terminal
+  nano CHANGELOG.md
 }
 
 function App_release {
@@ -420,9 +509,9 @@ function App_release {
     git_project_name=$(cat Dockerfile | grep GIT_PROJECT_NAME= | head -n 1 | grep -o '".*"' | sed 's/"//g')
     github_org=$(cat Dockerfile | grep GITHUB_ORG= | head -n 1 | grep -o '".*"' | sed 's/"//g')
     git_repo_url="https://github.com/${github_org}/${git_project_name}"
-    release_message1="Refer to [CHANGELOG.md](https://github.com/firepress-org/ghostfire/blob/master/CHANGELOG.md) for details about this release."
+    release_message1="Refer to CHANGELOG.md for details about this release."
     release_message2="This release was packaged and published using https://github.com/firepress-org/bash-script-template"
-    release_message3="Enjoy!<br>${first_name_author}"
+    release_message3="Enjoy!"
 
     App_release_check_vars
     
@@ -438,12 +527,6 @@ function App_release {
       "${tag_version}"
 
     # https://hub.github.com/hub-release.1.html
-      # title
-      # description
-      # description
-      # description
-      # on which commits (use the latest)
-      # on which tag (use the latest)
 
     echo "${git_repo_url}/releases/tag/${tag_version}"
     
