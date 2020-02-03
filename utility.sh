@@ -151,19 +151,15 @@ function master {
     ### merge mrg_edge_2_master to master
     git checkout master && git pull && \
     git merge mrg_edge_2_master && git push && \
-    ### confirmation
-    echo && \
-    my_message="<edge> was merged to <master>" App_Blue && \
-    my_message="back to branch <edge>" App_Blue && \
-    echo && \
-    ### master is up to date
-
     ### Go back to dev mode
     git checkout edge && git pull && \
     git rebase master && git push && \
     git branch -D mrg_edge_2_master && \
     my_message="Let's works!" App_Blue;
-
+    ### confirmation
+    echo && \
+    my_message="Branch <edge> was merged to <master> (now on edge)" App_Blue && \
+    my_message="Back to work!" App_Blue;
   else
     my_message="You must push your commit(s) before doing a rebase." App_Pink
   fi
