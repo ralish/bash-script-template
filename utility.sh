@@ -186,7 +186,8 @@ function master-sq {
     ### Go back to dev mode
     git checkout edge && git pull && \
     ### to avoid problems we overide potential conflict with commits from master
-    git merge -s ours master && git push && \
+    git merge -s ours master && \
+    git commit . -m "Merge branch <master> into <edge>" && git push && \
     git branch -D mrg_edge_2_master && \
     ### confirmation
     echo && \
