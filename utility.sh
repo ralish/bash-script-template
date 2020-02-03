@@ -185,12 +185,14 @@ function master-sq {
     git merge --squash mrg_edge_2_master && git commit . -m "${squash_message} /squash" && git push && \
     ### Go back to dev mode
     git checkout edge && git pull && \
-    git rebase master && git push && \
-    git branch -D mrg_edge_2_master && \
+    git rebase --strategy recursive --strategy-option Ours master
+    
+    #git rebase master && git push && \
+    #git branch -D mrg_edge_2_master && \
     ### confirmation
-    echo && \
-    my_message="Branch <edge> was merged to <master>" App_Blue && \
-    my_message="Back to work!" App_Blue;
+    #echo && \
+    #my_message="Branch <edge> was merged to <master>" App_Blue && \
+    #my_message="Back to work!" App_Blue;
   else
     my_message="You must push your commit(s) before doing a rebase." App_Pink
   fi
