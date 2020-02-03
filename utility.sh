@@ -140,9 +140,7 @@ function master {
   if [[ $(git status | grep -c "nothing to commit") == "1" ]]; then
     echo "good, nothing to commit" | 2>/dev/null
 
-    #prompt
-    my_message="What is this merge is doing?" App_Blue
-    read -p "==> " squash_message
+    #no prompt
 
     ### Commit your updates, then merge to master
     git checkout edge && \
@@ -150,7 +148,7 @@ function master {
     git checkout -b mrg_edge_2_master && \
     git checkout master && \
     git rebase master && \
-    git merge -m "${squash_message}" mrg_edge_2_master && \
+    git merge mrg_edge_2_master && \
     git push && echo && \
     my_message="<edge> was merged to <master>" App_Blue && \
     my_message="back to branch <edge>" App_Blue && \
