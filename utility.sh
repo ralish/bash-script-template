@@ -184,7 +184,7 @@ function master-sq {
     git rebase master && \
     git merge --squash mrg_edge_2_master && \
     # git merge mrg_edge_2_master --ff
-    git commit . -m "${squash_message} /squash" && \
+    git commit . -m "FEAT: ${squash_message} /squash" && \
     git push && \
     ### master is up to date
 
