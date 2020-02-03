@@ -187,7 +187,7 @@ function master-sq {
     ### Go back to dev mode
     git checkout edge && git pull && \
     ### overide potential conflict with commits from master
-    git rebase -s ours master && git push && \
+    git merge -s ours master && git push && \
     git branch -D mrg_edge_2_master && \
     ### confirmation
     echo && \
