@@ -182,8 +182,7 @@ function master-sq {
     git merge origin/edge && \
     ### merge mrg_edge_2_master to master
     git checkout master && git pull && \
-    git merge --squash mrg_edge_2_master && \
-    git commit . -m "${squash_message} /squash" && git push && \
+    git merge --squash mrg_edge_2_master && git commit . -m "${squash_message} /squash" && git push && \
     ### Go back to dev mode
     git checkout edge && git pull && \
     ### to avoid problems we overide potential conflict with commits from master
