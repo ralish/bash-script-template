@@ -184,13 +184,14 @@ function master-sq {
     git checkout master && \
     git merge --squash mrg_edge_2_master && \
     # git merge mrg_edge_2_master --ff
-    git commit . -m "FEAT: ${squash_message} /squash" && \
+    git commit . -m "${squash_message} /squash" && \
     git push && \
     ### master is up to date
 
     ### Go back to dev mode
-    git branch -D edge && \
     git checkout edge && \
+    git rebase master && \
+    git push && \
     git branch -D mrg_edge_2_master;
 
   else
