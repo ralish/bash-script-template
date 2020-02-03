@@ -142,14 +142,17 @@ function master {
 
     #no prompt
 
-    ### Commit your updates, then merge to master
-    git checkout edge && \
+    ### Commit your updates on edge
+    git checkout edge && git pull && \
+    ### merge edge to mrg_edge_2_master
     git branch -D mrg_edge_2_master || true && \
     git checkout -b mrg_edge_2_master && \
-    git checkout master && \
-    git rebase master && \
-    git merge mrg_edge_2_master && \
-    git push && echo && \
+    git merge origin/edge && \
+    ### merge mrg_edge_2_master to master
+    git checkout master && git pull && \
+    git merge mrg_edge_2_master && git push && \
+    ### confirmation
+    echo && \
     my_message="<edge> was merged to <master>" App_Blue && \
     my_message="back to branch <edge>" App_Blue && \
     echo && \
