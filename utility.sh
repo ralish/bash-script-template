@@ -186,8 +186,8 @@ function master-sq {
     git commit . -m "${squash_message} /squash" && git push && \
     ### Go back to dev mode
     git checkout edge && git pull && \
-    ### to avoid problems we overide potential conflict with commits from master
-    git merge -s ours master && git push && \
+    ### overide potential conflict with commits from master
+    git rebase -s ours master && git push && \
     git branch -D mrg_edge_2_master && \
     ### confirmation
     echo && \
