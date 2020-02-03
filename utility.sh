@@ -206,16 +206,10 @@ function edge {
   if [[ $(git status | grep -c "nothing to commit") == "1" ]]; then
     echo "good, nothing to commit" | 2>/dev/null
     git checkout edge && \
-    git pull origin edge && \
+    git pull && \
     git rebase master && \
     git push && \
-    git branch -D mrg_edge_2_master && \
-    hash_edge_is=$(git rev-parse --short HEAD)
-    #
-    git checkout master
-    hash_master_is=$(git rev-parse --short HEAD)
-    git checkout edge
-    my_message="Diligence: ${hash_master_is} | ${hash_master_is} (master vs edge should be the same)" App_Blue
+    git branch -D mrg_edge_2_master;
 
   else
     my_message="You must push your commit(s) before doing a rebase." App_Pink
