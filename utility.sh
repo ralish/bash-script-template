@@ -180,8 +180,8 @@ function master-sq {
     git checkout edge && \
     git branch -D mrg_edge_2_master || true && \
     git checkout -b mrg_edge_2_master && \
-    git rebase master && \
     git checkout master && \
+    git rebase master && \
     git merge --squash mrg_edge_2_master && \
     # git merge mrg_edge_2_master --ff
     git commit . -m "${squash_message} /squash" && \
