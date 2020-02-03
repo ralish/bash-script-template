@@ -151,14 +151,14 @@ function master {
     git checkout master && \
     git rebase master && \
     git merge -m "${squash_message}" mrg_edge_2_master && \
-    git push && \
-    echo "==> edge was merge to master"
-    echo "==> back to branch edge"
+    git push && echo && \
+    my_message="edge was merge to master" App_Blue && \
+    my_message="back to branch edge" App_Pink && \
+    echo && \
     ### master is up to date
 
     ### Go back to dev mode
     git checkout edge && \
-    git checkout master && \
     git rebase master && \
     git branch -D mrg_edge_2_master;
 
