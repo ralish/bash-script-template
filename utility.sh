@@ -174,24 +174,23 @@ function master-sq {
     my_message="What is this merge is doing?" App_Blue
     read -p "==> " squash_message
 
-    ### Commit your updates, then merge to master
-    git checkout edge && \
+    ### Commit your updates on edge
+    git checkout edge && git pull && \
+    ### merge edge to mrg_edge_2_master
     git branch -D mrg_edge_2_master || true && \
     git checkout -b mrg_edge_2_master && \
-    git checkout master && \
-    git rebase master && \
-    git merge --squash mrg_edge_2_master && \
-    # git merge mrg_edge_2_master --ff
-    git commit . -m "${squash_message} /squash" && \
-    git push && \
-    ### master is up to date
-
+    git merge origin/edge && \
+    ### merge mrg_edge_2_master to master
+    git checkout master && git pull && \
+    git merge --squash mrg_edge_2_master && git commit . -m "${squash_message} /squash" && git push && \
     ### Go back to dev mode
-    git checkout edge && \
-    git rebase master && \
-    git push && \
-    git branch -D mrg_edge_2_master;
-
+    git checkout edge && git pull && \
+    git rebase master && git push && \
+    git branch -D mrg_edge_2_master && \
+    ### confirmation
+    echo && \
+    my_message="Branch <edge> was merged to <master>" App_Blue && \
+    my_message="Back to work!" App_Blue;
   else
     my_message="You must push your commit(s) before doing a rebase." App_Pink
   fi
