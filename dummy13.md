@@ -1,7 +1,3 @@
-part 25
-
-part 26
-
 part 31
 This text is used as a placeholder. Words that will follow won't make any sense and this is fine. At the moment, the goal is to build a structure for our site.
 
