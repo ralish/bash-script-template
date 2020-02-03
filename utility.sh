@@ -159,10 +159,10 @@ function master {
     ### master is up to date
 
     ### Go back to dev mode
-    git checkout edge && \
-    git rebase master && \
-    git push && \
-    git branch -D mrg_edge_2_master;
+    git checkout edge && git pull && \
+    git rebase master && git push && \
+    git branch -D mrg_edge_2_master && \
+    my_message="Let's works!" App_Blue;
 
   else
     my_message="You must push your commit(s) before doing a rebase." App_Pink
