@@ -131,6 +131,136 @@ function sq {
   fi
 }
 
+function stg {
+# think rebase master from edge
+# usage: CMD ./utility.sh master
+
+  # NoAttributes needed
+
+  if [[ $(git status | grep -c "nothing to commit") == "1" ]]; then
+    echo "good, nothing to commit" | 2>/dev/null
+
+    #no prompt
+
+    ### Commit your updates on edge
+    git checkout edge && git pull && \
+    ### merge edge to mrg_edge_2_master
+    git branch -D mrg_edge_2_master || true && \
+    git checkout -b mrg_edge_2_master && \
+    git merge origin/edge && \
+    ### merge mrg_edge_2_master to master
+    git checkout master && git pull && \
+    git merge mrg_edge_2_master && git push && \
+    ### Go back to dev mode
+    git checkout edge && git pull && \
+    git rebase master && git push && \
+    git branch -D mrg_edge_2_master && \
+    ### confirmation
+    echo && \
+    my_message="Branch <edge> was merged to <master>" App_Blue && \
+    my_message="Back to work!" App_Blue;
+  else
+    my_message="You must push your commit(s) before doing a rebase." App_Pink
+  fi
+}
+
+function stg {
+# think rebase stg from edge
+# usage: CMD ./utility.sh master
+# idea from: https://www.gatsbyjs.org/blog/2020-01-08-git-workflows/
+
+  # NoAttributes needed
+
+  if [[ $(git status | grep -c "nothing to commit") == "1" ]]; then
+    echo "good, nothing to commit" | 2>/dev/null
+
+    #no prompt
+
+    # root branch is feat/headless-cms
+
+    git checkout feat/headless-cms-pt2
+    git rebase feat/headless-cms-pt1
+
+    # stage all the changes we just made
+    git add .
+    # wrap up the rebase
+    git rebase --continue
+
+    git push origin feat/headless-cms-pt2 -f
+
+    # PR on github
+    Merge from the first one up (merge pt1 into the root branch,
+    and then merge pt2 into the root branch)
+
+    Merge the earliest open PR into the root branch, using the standard “merge” option.
+    Change the base of the next branch to point at the root branch
+    In this case, we merge:
+    feat/headless-cms-pt1 TO feat/headless-cms
+    then, we merge:
+    feat/headless-cms-pt2 TO feat/headless-cms
+
+    # Update our local state
+    git checkout master
+    git pull origin master
+    # Rebase our root branch
+    git checkout feat/headless-cms
+    git rebase master
+    # Continue down the chain
+    git checkout feat/headless-cms-pt2
+    git rebase feat/headless-cms
+
+    ### confirmation
+    echo && \
+    my_message="Branch <edge> was merged to <master>" App_Blue && \
+    my_message="Back to work!" App_Blue;
+  else
+    my_message="You must push your commit(s) before doing a rebase." App_Pink
+  fi
+}
+
+function masterv2 {
+  # think rebase stg from edge
+  # usage: CMD ./utility.sh master
+  # idea from: https://www.gatsbyjs.org/blog/2020-01-08-git-workflows/
+
+  # NoAttributes needed
+
+  if [[ $(git status | grep -c "nothing to commit") == "1" ]]; then
+    echo "Nothing to commit, good" | 2>/dev/null
+
+    #no prompt
+
+    # single source of thruth is master branch
+    # Update our local state
+    git checkout master
+    git pull origin master
+    # Rebase our root branch from edge
+    git rebase edge
+
+    # At this point, we may have conflicts
+    # Let tell git to use all updates from edge by default
+    # stage all the changes we just made
+    git add .
+    # wrap up the rebase
+    git rebase --continue
+    git push origin master -f
+
+    # Update our local state (if update happened on master)
+    git checkout master
+    git pull origin master
+    # Rebase our edge branch
+    git checkout edge
+    git rebase master
+
+    ### confirmation
+    echo && \
+    my_message="Branch <edge> was merged to <master>" App_Blue && \
+    my_message="Back to work!" App_Blue;
+  else
+    my_message="You must push your commit(s) before doing a rebase." App_Pink
+  fi
+}
+
 function master {
 # think rebase master from edge
 # usage: CMD ./utility.sh master
@@ -408,15 +538,13 @@ EOF
 }
 
 function lint {
-  docker_img="redcoolbeans/dockerlint"
-
   docker run -it --rm \
     -v $(pwd)/Dockerfile:/Dockerfile:ro \
-    ${docker_img}
+    redcoolbeans/dockerlint
 }
 
-function lint_hado_wip {
-# ToDo
+function lint_hado {
+# tk wip
   docker run --rm hadolint/hadolint:v1.16.3-4-gc7f877d hadolint --version && echo;
 
   docker run --rm -i hadolint/hadolint:v1.16.3-4-gc7f877d hadolint \
