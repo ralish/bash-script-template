@@ -20,9 +20,71 @@ set -o pipefail         # Use last non-zero exit code in a pipeline
 		 # #
 		#   #
 function help {
-cat << EOF
 
-CORE WORKFLOW (for https://github.com/firepress-org/ghostfire/)
+rm utility_help.md || true
+cat <<EOF > utility_help.md
+
+## help
+
+The command 'help is too broad'.
+
+## Please choose:
+
+- helpbash
+- helpworkflow
+
+## markdown viewer sources
+https://github.com/axiros/terminal_markdown_viewer
+
+EOF
+input_2="utility_help.md"
+mdv-all
+rm utility_help.md || true
+
+}
+# idea see our docs in Markdown / mdv https://github.com/axiros/terminal_markdown_viewer#installation 
+
+function -h {
+  #alias
+  help
+}
+
+function helpbash {
+
+rm utility_help.md || true
+cat <<EOF > utility_help.md
+
+## Operator	Description
+
+```
+  ! EXPRESSION	  The EXPRESSION is false.
+  -n STRING	      The length of STRING is greater than zero.
+  -z STRING	      The lengh of STRING is zero (ie it is empty).
+  STRING1         = STRING2	STRING1 is equal to STRING2
+  STRING1         != STRING2	STRING1 is not equal to STRING2
+  INTEGER1        -eq INTEGER2	INTEGER1 is numerically equal to INTEGER2
+  INTEGER1        -gt INTEGER2	INTEGER1 is numerically greater than INTEGER2
+  INTEGER1        -lt INTEGER2	INTEGER1 is numerically less than INTEGER2
+      -d FILE	    FILE exists and is a directory.
+      -e FILE	    FILE exists.
+      -r FILE	    FILE exists and the read permission is granted.
+      -s FILE	    FILE exists and its size is greater than zero (ie. it is not empty).
+      -w FILE	    FILE exists and the write permission is granted.
+      -x FILE	    FILE exists and the execute permission is granted.
+```
+EOF
+input_2="utility_help.md"
+mdv-all
+rm utility_help.md || true
+
+}
+
+function helpworkflow {
+
+rm utility_help.md || true
+cat <<EOF > utility_help.md
+
+# CORE WORKFLOW for https://github.com/firepress-org/ghostfire/
 
 ==> from branch edge,
 ==> we want to update ghost.
@@ -31,45 +93,45 @@ run these cmd
 ======> utility.sh master
 ======> utility.sh release 3.3.0
 
-  USE CASE #1:
-    Simple version update on the dockerfile
-    - see CMD version
+## USE CASE #1
 
-  USE CASE #2:
+Simple version update on the dockerfile
+- see CMD version
 
-  EDGE BRANCH
-    - We commit using CMD 'push' some change on (branch) edge
-    - Rebase on master from edge
-    - In CHANGELOG, write a git history of the changes
-    - Git commit with a message
+## USE CASE #2:
 
-  MASTER BRANCH
-    - Tag x.x.x this commit
-    - push tag x.x.x
-    - release on Github with the tag x.x.x along a markdown description that points to our CHANGELOG.md
+### EDGE BRANCH
 
-  That takes time! 
+- We commit using CMD 'push' some change on (branch) edge
+- Rebase on master from edge
+- In CHANGELOG, write a git history of the changes
+- Git commit with a message
 
-    First method (2 steps):
-      - 'master 1.2.3-r4' (rebase master from edge).
-      - Review and optionaly, manually edit file CHANGELOG.md
-      - 'release 1.2.3-r4' (at this point, we are now to edge branch)
+### MASTER BRANCH
 
-    Second method (3 steps):
-      'master' (rebase master from edge)
-      'draft 1.2.3-r4' (it injects the latest commit(s) in CHANGELOG.md)
-          Optionaly, manually edit CHANGELOG.md
-      'release 1.2.3-r4' (at this point, we are now to edge branch)
+- Tag x.x.x this commit
+- push tag x.x.x
+- release on Github with the tag x.x.x along a markdown description that points to our CHANGELOG.md
+
+That takes too much time.
+
+First method (2 steps):
+
+  - 'master 1.2.3-r4' (rebase master from edge).
+  - Review and optionaly, manually edit file CHANGELOG.md
+  - 'release 1.2.3-r4' (at this point, we are now to edge branch)
+
+Second method (3 steps):
+
+-   'master' (rebase master from edge)
+-   'draft 1.2.3-r4' (it injects the latest commit(s) in CHANGELOG.md)
+-       Optionaly, manually edit CHANGELOG.md
+-   'release 1.2.3-r4' (at this point, we are now to edge branch)
 EOF
-}
-# idea see our docs in Markdown / mdv https://github.com/axiros/terminal_markdown_viewer#installation 
+input_2="utility_help.md"
+mdv-all
+rm utility_help.md || true
 
-function -h {
-  echo "######################################################################" && echo && \
-  info && echo && echo && \
-  echo "######################################################################" && echo && \
-  help && echo && echo && \
-  echo "######################################################################" && echo ;
 }
 
 function version {
@@ -92,6 +154,14 @@ function version {
   git commit -m "Updated to version: ${tag_version}" && \
   git push
 }
+
+
+function edge_init {
+  # wip
+  git push --set-upstream origin edge
+}
+
+
 
 function push {
 # push commit all & push all changes
@@ -131,9 +201,10 @@ function sq {
   fi
 }
 
-function master {
-# think rebase master from edge
+function stg {
+# think rebase stg from edge
 # usage: CMD ./utility.sh master
+# idea from: https://www.gatsbyjs.org/blog/2020-01-08-git-workflows/
 
   # NoAttributes needed
 
@@ -142,19 +213,40 @@ function master {
 
     #no prompt
 
-    ### Commit your updates on edge
-    git checkout edge && git pull && \
-    ### merge edge to mrg_edge_2_master
-    git branch -D mrg_edge_2_master || true && \
-    git checkout -b mrg_edge_2_master && \
-    git merge origin/edge && \
-    ### merge mrg_edge_2_master to master
-    git checkout master && git pull && \
-    git merge mrg_edge_2_master && git push && \
-    ### Go back to dev mode
-    git checkout edge && git pull && \
-    git rebase master && git push && \
-    git branch -D mrg_edge_2_master && \
+    # root branch is feat/headless-cms
+
+    git checkout feat/headless-cms-pt2
+    git rebase feat/headless-cms-pt1
+
+# fix conflicts if any
+  # stage all the changes we just made
+  # wrap up the rebase
+  # git add . && \
+  # git rebase --continue || true
+
+    git push origin feat/headless-cms-pt2 -f
+
+    # PR on github
+    # Merge from the first one up (merge pt1 into the root branch,
+    # and then merge pt2 into the root branch)
+
+    # Merge the earliest open PR into the root branch, using the standard “merge” option.
+    # Change the base of the next branch to point at the root branch
+    # In this case, we merge:
+    # feat/headless-cms-pt1 TO feat/headless-cms
+    # then, we merge:
+    # feat/headless-cms-pt2 TO feat/headless-cms
+
+    # Update our local state
+    git checkout master
+    git pull origin master
+    # Rebase our root branch
+    git checkout feat/headless-cms
+    git rebase master
+    # Continue down the chain
+    git checkout feat/headless-cms-pt2
+    git rebase feat/headless-cms
+
     ### confirmation
     echo && \
     my_message="Branch <edge> was merged to <master>" App_Blue && \
@@ -162,57 +254,161 @@ function master {
   else
     my_message="You must push your commit(s) before doing a rebase." App_Pink
   fi
+}
+
+function master {
+# usage: utility.sh master
+# think rebase master from edge (without squash)
+# NoAttributes needed, no prompt
+
+if [[ $(git status | grep -c "nothing to commit") == "1" ]]; then
+  echo "Good, lets continue" | 2>/dev/null
+else
+  my_message="You must push your commit(s) before doing a rebase." App_Pink && App_Stop
+fi
+
+# Update our local state
+git checkout master && \
+git pull origin master && \
+
+# rebase
+git rebase edge && \
+
+# fix conflicts if any
+  # stage all the changes we just made
+  # wrap up the rebase
+  # git add . && \
+  # git rebase --continue || true
+
+# push updates
+git push origin master && \
+
+# back to branch edge
+git checkout edge && \
+git pull origin edge && \
+
+### confirmation
+echo && \
+my_message="Branch <edge> was merged to <master>" App_Blue && \
+my_message="Back to work!" App_Blue;
 }
 
 function master-sq {
-# think rebase master from edge
-# usage: CMD ./utility.sh master
-  if [[ $(git status | grep -c "nothing to commit") == "1" ]]; then
-    echo "good, nothing to commit" | 2>/dev/null
+# usage utility.sh master-sq
+# think squash and rebase edge to master
+# idea from: https://www.gatsbyjs.org/blog/2020-01-08-git-workflows/
 
-    #prompt
-    my_message="What is this merge is doing?" App_Blue
-    read -p "==> " squash_message
+# NoAttributes needed
 
-    ### Commit your updates on edge
-    git checkout edge && git pull && \
-    ### merge edge to mrg_edge_2_master
-    git branch -D mrg_edge_2_master || true && \
-    git checkout -b mrg_edge_2_master && \
-    git merge origin/edge && \
-    ### merge mrg_edge_2_master to master
-    git checkout master && git pull && \
-    git merge --squash mrg_edge_2_master && \
-    git commit . -m "${squash_message} /squash" && git push && \
-    ### Go back to dev mode
-    git checkout edge && git pull && \
-    ### overide potential conflict with commits from master
-    git merge -s ours master && git push && \
-    git branch -D mrg_edge_2_master && \
-    ### confirmation
-    echo && \
-    my_message="Branch <edge> was merged to <master>" App_Blue && \
-    my_message="Back to work!" App_Blue;
-  else
-    my_message="You must push your commit(s) before doing a rebase." App_Pink
-  fi
+if [[ $(git status | grep -c "nothing to commit") == "1" ]]; then
+  echo "Good, lets continue" | 2>/dev/null
+else
+  my_message="You must push your commit(s) before doing a rebase." App_Pink && App_Stop
+fi
+
+# see logs to help writing a good note
+logs
+
+# prompt
+my_message="What are we about to merge here?" App_Blue
+read -p "==> " squash_message
+
+# Update our local state
+git checkout master && \
+git pull origin master && \
+
+# ========================================== #
+# BEGIN / safe squash mecanism
+
+# remove and create our branch
+git branch -D mrg_edge_2_master || true && \
+git checkout -b mrg_edge_2_master && \
+# no need to push it to origin
+
+# merge & squash edge to mrg_edge_2_master
+git merge --squash edge && \
+git commit . -m "${squash_message} /squash" && \
+
+# END / safe squash mecanism
+# ========================================== #
+
+# branch to master
+git checkout master && \
+
+# rebase (commits are already squashed at this point)
+git rebase mrg_edge_2_master && \
+
+# fix conflicts if any
+  # stage all the changes we just made
+  # wrap up the rebase
+  # git add . && \
+  # git rebase --continue || true
+
+# push updates
+git push origin master && \
+
+# clean up
+git branch -D mrg_edge_2_master || true && \
+
+# back to branch edge
+edge
+
+### confirmation
+my_message="Branch <edge> was merged to <master>" App_Blue && \
+my_message="Back to work!" App_Blue;
 }
 
 function edge {
-# think rebase edge from master
-# usage: CMD ./utility.sh edge
+# usage: utility.sh master
+# think rebase edge from master (without squash)
+# NoAttributes needed, no prompt
 
-  if [[ $(git status | grep -c "nothing to commit") == "1" ]]; then
-    echo "good, nothing to commit" | 2>/dev/null
-    git checkout edge && \
-    git pull && \
-    git rebase master && \
-    git push && \
-    git branch -D mrg_edge_2_master;
+if [[ $(git status | grep -c "nothing to commit") == "1" ]]; then
+  echo "Good, lets continue" | 2>/dev/null
+else
+  my_message="You must push your commit(s) before doing a rebase." App_Pink && App_Stop
+fi
+# Update our local state
+git checkout master && \
+git pull origin master && \
 
-  else
-    my_message="You must push your commit(s) before doing a rebase." App_Pink
-  fi
+# rebase
+git checkout edge && \
+git rebase master
+
+# fix conflicts if any
+  # stage all the changes we just made
+  # wrap up the rebase
+  # git add . && \
+  # git rebase --continue || true
+
+git push --set-upstream origin edge -f && \
+
+### confirmation
+echo && \
+my_message="Branch <edge> was merged to <master>" App_Blue && \
+my_message="Back to work!" App_Blue;
+}
+
+function edge-init {
+# usage: utility.sh master
+# think rebase edge from master (without squash)
+# NoAttributes needed, no prompt
+
+if [[ $(git status | grep -c "nothing to commit") == "1" ]]; then
+  echo "Good, lets continue" | 2>/dev/null
+else
+  my_message="You must push your commit(s) before doing a rebase." App_Pink && App_Stop
+fi
+
+git branch -D edge || true && \
+git checkout -b edge && \
+git push --set-upstream origin edge -f
+
+### confirmation
+echo && \
+my_message="Branch <edge> was merged to <master>" App_Blue && \
+my_message="Back to work!" App_Blue;
 }
 
 function cl {
@@ -266,6 +462,7 @@ function release {
 }
 
 function mdv {
+# fuck cat, let's see markdown!
 # markdown viewer for your terminal
 # https://github.com/axiros/terminal_markdown_viewer#installation
 clear
@@ -348,8 +545,10 @@ function list {
 
 function which {
   # list (show) which CMD (functions) are available
+  # the standard path is /usr/local/bin/utility.sh
+
   clear && echo && \
-  cat utility.sh | awk '/function /' | awk '{print $2}' | sort -k2 -n | sed '/App_/d' | sed '/main/d' | sed '/utility/d'
+  cat /usr/local/bin/utility.sh | awk '/function /' | awk '{print $2}' | sort -k2 -n | sed '/App_/d' | sed '/main/d' | sed '/utility/d'
 }
 
 function log {
@@ -387,36 +586,14 @@ function ci {
   hub ci-status -v $(git rev-parse HEAD)
 }
 
-function helpbash {
-cat << EOF
-  Operator	Description
-  ! EXPRESSION	  The EXPRESSION is false.
-  -n STRING	      The length of STRING is greater than zero.
-  -z STRING	      The lengh of STRING is zero (ie it is empty).
-  STRING1         = STRING2	STRING1 is equal to STRING2
-  STRING1         != STRING2	STRING1 is not equal to STRING2
-  INTEGER1        -eq INTEGER2	INTEGER1 is numerically equal to INTEGER2
-  INTEGER1        -gt INTEGER2	INTEGER1 is numerically greater than INTEGER2
-  INTEGER1        -lt INTEGER2	INTEGER1 is numerically less than INTEGER2
-      -d FILE	    FILE exists and is a directory.
-      -e FILE	    FILE exists.
-      -r FILE	    FILE exists and the read permission is granted.
-      -s FILE	    FILE exists and its size is greater than zero (ie. it is not empty).
-      -w FILE	    FILE exists and the write permission is granted.
-      -x FILE	    FILE exists and the execute permission is granted.
-EOF
-}
-
 function lint {
-  docker_img="redcoolbeans/dockerlint"
-
   docker run -it --rm \
     -v $(pwd)/Dockerfile:/Dockerfile:ro \
-    ${docker_img}
+    redcoolbeans/dockerlint
 }
 
-function lint_hado_wip {
-# ToDo
+function lint_hado {
+# tk wip
   docker run --rm hadolint/hadolint:v1.16.3-4-gc7f877d hadolint --version && echo;
 
   docker run --rm -i hadolint/hadolint:v1.16.3-4-gc7f877d hadolint \
@@ -740,8 +917,6 @@ cat <<EOF > .gitignore_template
 # Files
 ############
 .bashcheck.sh
-utility.sh
-test
 .cache
 coverage
 dist
@@ -843,7 +1018,6 @@ TheVolumeSettingsFolder
 .FBCIndex
 .FBCSemaphoreFile
 .FBCLockFolder
-
 EOF
 }
 
@@ -880,13 +1054,13 @@ date_month="$(date +%Y-%m)-XX";
 #export GITHUB_TOKEN="$(cat ~/secrets_open/token_github/token.txt)"
 }
 function App_Pink {
-  echo -e "${col_pink} ERROR: ${my_message}"
+  echo && echo -e "${col_pink} ERROR: ${my_message}"
 }
 function App_Blue {
-  echo -e "${col_blue} ${my_message}"
+  echo && echo -e "${col_blue} ${my_message}"
 }
 function App_Green {
-  echo -e "${col_green} ${my_message}"
+  echo && echo -e "${col_green} ${my_message}"
 }
 
 ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ###
