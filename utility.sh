@@ -218,10 +218,11 @@ function stg {
     git checkout feat/headless-cms-pt2
     git rebase feat/headless-cms-pt1
 
-    # stage all the changes we just made
-    git add .
-    # wrap up the rebase
-    git rebase --continue
+# fix conflicts if any
+  # stage all the changes we just made
+  # wrap up the rebase
+  # git add . && \
+  # git rebase --continue || true
 
     git push origin feat/headless-cms-pt2 -f
 
@@ -255,84 +256,6 @@ function stg {
   fi
 }
 
-function masterv2-sq {
-# think rebase stg from edge
-# usage: CMD ./utility.sh master
-# idea from: https://www.gatsbyjs.org/blog/2020-01-08-git-workflows/
-
-# NoAttributes needed
-
-if [[ $(git status | grep -c "nothing to commit") == "1" ]]; then
-  echo "Good, lets continue" | 2>/dev/null
-else
-  my_message="You must push your commit(s) before doing a rebase." App_Pink && App_Stop
-fi
-
-#no prompt
-
-# Update our local state
-git checkout master
-git pull origin master
-
-# single source of thruth is master branch
-# Update our local state
-git branch -D mrg_edge_2_master || true && \
-git checkout mrg_edge_2_master
-
-# Rebase our root branch from edge
-git rebase mrg_edge_2_master
-
-#prompt
-my_message="What is this merge is doing?" App_Blue
-read -p "==> " squash_message
-
-### merge ege to mrg_edge_2_master
-git merge --squash edge && \
-git commit . -m "${squash_message} /squash" && git push
-
-# at this point we can merge mrg_edge_2_master to master
-# tk tk tk tk tk tk tk tk tk tk tk tk
-}
-
-function masterv1-sq {
-# think rebase master from edge
-# usage: CMD ./utility.sh master
-  if [[ $(git status | grep -c "nothing to commit") == "1" ]]; then
-    echo "good, nothing to commit" | 2>/dev/null
-
-    #prompt
-    my_message="What is this merge is doing?" App_Blue
-    read -p "==> " squash_message
-
-    ### Commit your updates on edge
-    git checkout edge && git pull && \
-
-    ### merge edge to mrg_edge_2_master
-    git branch -D mrg_edge_2_master || true && \
-    git checkout -b mrg_edge_2_master && \
-    git merge origin/edge && \
-
-    ### merge mrg_edge_2_master to master
-    git checkout master && git pull && \
-    git merge --squash mrg_edge_2_master && \
-    git commit . -m "${squash_message} /squash" && git push && \
-
-    ### Go back to dev mode
-    git checkout edge && git pull && \
-
-    ### overide potential conflict with commits from master
-    git merge -s ours master && git push && \
-    git branch -D mrg_edge_2_master && \
-
-    ### confirmation
-    echo && \
-    my_message="Branch <edge> was merged to <master>" App_Blue && \
-    my_message="Back to work!" App_Blue;
-  else
-    my_message="You must push your commit(s) before doing a rebase." App_Pink
-  fi
-}
-
 function master {
 # usage: utility.sh master
 # think rebase master from edge (without squash)
@@ -345,25 +268,24 @@ else
 fi
 
 # Update our local state
-git checkout master
-git pull origin master
+git checkout master && \
+git pull origin master && \
 
 # rebase
-git rebase edge
+git rebase edge && \
 
-# stage all the changes we just made
-git add .
-# wrap up the rebase
-# overide potential conflicts
-# force using updates from edge
-git rebase --continue || true
+# fix conflicts if any
+  # stage all the changes we just made
+  # wrap up the rebase
+  # git add . && \
+  # git rebase --continue || true
 
 # push updates
-git push origin master
+git push origin master && \
 
 # back to branch edge
-git checkout edge
-git pull origin edge
+git checkout edge && \
+git pull origin edge && \
 
 ### confirmation
 echo && \
@@ -371,9 +293,12 @@ my_message="Branch <edge> was merged to <master>" App_Blue && \
 my_message="Back to work!" App_Blue;
 }
 
-function edge {
-# think rebase edge from master
-# usage: CMD ./utility.sh edge
+function master-sq {
+# usage utility.sh master-sq
+# think squash and rebase edge to master
+# idea from: https://www.gatsbyjs.org/blog/2020-01-08-git-workflows/
+
+# NoAttributes needed
 
 if [[ $(git status | grep -c "nothing to commit") == "1" ]]; then
   echo "Good, lets continue" | 2>/dev/null
@@ -381,16 +306,109 @@ else
   my_message="You must push your commit(s) before doing a rebase." App_Pink && App_Stop
 fi
 
+# see logs to help writing a good note
+logs
+
+# prompt
+my_message="What are we about to merge here?" App_Blue
+read -p "==> " squash_message
+
 # Update our local state
-git checkout master
-git pull origin master
+git checkout master && \
+git pull origin master && \
 
-# Rebase our root branch
-git checkout edge
-git pull
+# ========================================== #
+# BEGIN / safe squash mecanism
+
+# remove and create our branch
+git branch -D mrg_edge_2_master || true && \
+git checkout -b mrg_edge_2_master && \
+# no need to push it to origin
+
+# merge & squash edge to mrg_edge_2_master
+git merge --squash edge && \
+git commit . -m "${squash_message} /squash" && \
+
+# END / safe squash mecanism
+# ========================================== #
+
+# branch to master
+git checkout master && \
+
+# rebase (commits are already squashed at this point)
+git rebase mrg_edge_2_master && \
+
+# fix conflicts if any
+  # stage all the changes we just made
+  # wrap up the rebase
+  # git add . && \
+  # git rebase --continue || true
+
+# push updates
+git push origin master && \
+
+# clean up
+git branch -D mrg_edge_2_master || true && \
+
+# back to branch edge
+edge
+
+### confirmation
+my_message="Branch <edge> was merged to <master>" App_Blue && \
+my_message="Back to work!" App_Blue;
+}
+
+function edge {
+# usage: utility.sh master
+# think rebase edge from master (without squash)
+# NoAttributes needed, no prompt
+
+if [[ $(git status | grep -c "nothing to commit") == "1" ]]; then
+  echo "Good, lets continue" | 2>/dev/null
+else
+  my_message="You must push your commit(s) before doing a rebase." App_Pink && App_Stop
+fi
+# Update our local state
+git checkout master && \
+git pull origin master && \
+
+# rebase
+git checkout edge && \
 git rebase master
-git push origin edge
 
+# fix conflicts if any
+  # stage all the changes we just made
+  # wrap up the rebase
+  # git add . && \
+  # git rebase --continue || true
+
+git push --set-upstream origin edge -f && \
+
+### confirmation
+echo && \
+my_message="Branch <edge> was merged to <master>" App_Blue && \
+my_message="Back to work!" App_Blue;
+}
+
+function edge-init {
+# usage: utility.sh master
+# think rebase edge from master (without squash)
+# NoAttributes needed, no prompt
+
+if [[ $(git status | grep -c "nothing to commit") == "1" ]]; then
+  echo "Good, lets continue" | 2>/dev/null
+else
+  my_message="You must push your commit(s) before doing a rebase." App_Pink && App_Stop
+fi
+
+git branch -D edge || true && \
+git checkout -b edge && \
+git push --set-upstream origin edge -f
+
+### confirmation
+echo && \
+my_message="Branch <edge> was merged to <master>" App_Blue && \
+my_message="Back to work!" App_Blue;
 }
 
 function cl {
@@ -1036,13 +1054,13 @@ date_month="$(date +%Y-%m)-XX";
 #export GITHUB_TOKEN="$(cat ~/secrets_open/token_github/token.txt)"
 }
 function App_Pink {
-  echo -e "${col_pink} ERROR: ${my_message}"
+  echo && echo -e "${col_pink} ERROR: ${my_message}"
 }
 function App_Blue {
-  echo -e "${col_blue} ${my_message}"
+  echo && echo -e "${col_blue} ${my_message}"
 }
 function App_Green {
-  echo -e "${col_green} ${my_message}"
+  echo && echo -e "${col_green} ${my_message}"
 }
 
 ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ###
