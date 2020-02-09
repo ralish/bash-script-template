@@ -573,7 +573,7 @@ function App_Stop {
 function help {
 
 rm utility_help.md || true
-cat <<EOF > utility_help.md
+cat <<EOF > bashlava_help.md
 
 # help
 
@@ -600,9 +600,8 @@ cat <<EOF > utility_help.md
 
 - test
 EOF
-input_2="utility_help.md"
-mdv-all && rm utility_help.md || true
-
+input_2="bashlava_help.md"
+mdv-all && rm bashlava_help.md || true
 }
 # idea see our docs in Markdown / mdv https://github.com/axiros/terminal_markdown_viewer#installation 
 
@@ -613,8 +612,8 @@ function -h {
 
 function help-bash {
 
-rm utility_help.md || true
-cat <<EOF > utility_help.md
+rm bashlava_help.md || true
+cat <<EOF > bashlava_help.md
 
 ## Operator	Description
 
@@ -641,8 +640,8 @@ mdv-all && rm utility_help.md || true
 
 function help-workflow {
 
-rm utility_help.md || true
-cat <<EOF > utility_help.md
+rm bashlava_help.md || true
+cat <<EOF > bashlava_help.md
 
 # Workflows
 for https://github.com/firepress-org/ghostfire/
@@ -667,14 +666,14 @@ on branch edge:
 - always start from edge (thanks edge-init)
 
 EOF
-input_2="utility_help.md"
-mdv-all && rm utility_help.md || true
+input_2="bashlava_help.md"
+mdv-all && rm bashlava_help.md || true
 }
 
 function help-pr-process {
 
-rm utility_help.md || true
-cat <<EOF > utility_help.md
+rm bashlava_help.md || true
+cat <<EOF > bashlava_help.md
 
 # Orginal post
 - https://www.gatsbyjs.org/blog/2020-01-08-git-workflows/
@@ -716,8 +715,8 @@ git checkout feat/headless-cms-pt2
 git rebase feat/headless-cms
 
 EOF
-input_2="utility_help.md"
-mdv-all && rm utility_help.md || true
+input_2="bashlava_help.md"
+mdv-all && rm bashlava_help.md || true
 }
 
 ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### #
@@ -996,7 +995,7 @@ function main() {
     input_1=$1
   fi
 
-  if [[ -z "$2" ]] || true; then    #if empty
+  if [[ -z "$2" ]]; then    #if empty
     input_2="not-set"
   else
     input_2=$2
