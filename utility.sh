@@ -284,8 +284,7 @@ git rebase edge && \
 git push origin master && \
 
 # back to branch edge
-git checkout edge && \
-git pull origin edge && \
+edge-init
 
 ### confirmation
 echo && \
@@ -336,7 +335,8 @@ git commit . -m "${squash_message} /squash" && \
 git checkout master && \
 
 # rebase (commits are already squashed at this point)
-git rebase mrg_edge_2_master && \
+#git rebase mrg_edge_2_master && \
+git merge mrg_edge_2_master && \
 
 # fix conflicts if any
   # stage all the changes we just made
@@ -351,49 +351,17 @@ git push origin master && \
 git branch -D mrg_edge_2_master || true && \
 
 # back to branch edge
-edge
+edge-init
 
 ### confirmation
-my_message="Branch <edge> was merged to <master>" App_Blue && \
-my_message="Back to work!" App_Blue;
-}
-
-function edge {
-# usage: utility.sh master
-# think rebase edge from master (without squash)
-# NoAttributes needed, no prompt
-
-if [[ $(git status | grep -c "nothing to commit") == "1" ]]; then
-  echo "Good, lets continue" | 2>/dev/null
-else
-  my_message="You must push your commit(s) before doing a rebase." App_Pink && App_Stop
-fi
-# Update our local state
-git checkout master && \
-git pull origin master && \
-
-# rebase
-git checkout edge && \
-git rebase master
-
-# fix conflicts if any
-  # stage all the changes we just made
-  # wrap up the rebase
-  # git add . && \
-  # git rebase --continue || true
-
-git push --set-upstream origin edge -f && \
-
-### confirmation
-echo && \
-my_message="Branch <edge> was merged to <master>" App_Blue && \
+my_message="<edge> was MERGED into <master>" App_Blue && \
 my_message="Back to work!" App_Blue;
 }
 
 function edge-init {
 # usage: utility.sh master
-# think rebase edge from master (without squash)
-# NoAttributes needed, no prompt
+# think scrap branch edge and recreate it just like I would start a new feat branch
+# it assumes there will be no conflict with anybody else as I'm the only person using 'edge'
 
 if [[ $(git status | grep -c "nothing to commit") == "1" ]]; then
   echo "Good, lets continue" | 2>/dev/null
@@ -407,8 +375,7 @@ git push --set-upstream origin edge -f
 
 ### confirmation
 echo && \
-my_message="Branch <edge> was merged to <master>" App_Blue && \
-my_message="Back to work!" App_Blue;
+my_message="<edge> was reCREATED from <master>" App_Blue
 }
 
 function cl {
@@ -465,14 +432,14 @@ function mdv {
 # fuck cat, let's see markdown!
 # markdown viewer for your terminal
 # https://github.com/axiros/terminal_markdown_viewer#installation
-clear
+
 
 # show the first 60 lines
+clear
 docker run --rm -it \
   -v $(pwd):/sandbox \
   -w /sandbox \
-  devmtl/mdv:1.6.3 \
-    -t 'warm & natural' ${input_2} | sed -n 12,50p
+  devmtl/glow:0.2.0 glow ${input_2} | sed -n 12,50p
 }
 
 function mdv-all {
@@ -481,8 +448,7 @@ clear
 docker run --rm -it \
   -v $(pwd):/sandbox \
   -w /sandbox \
-  devmtl/mdv:1.6.3 \
-    -t 'warm & natural' ${input_2}
+  devmtl/glow:0.2.0 glow ${input_2}
 }
 
 function tag {
