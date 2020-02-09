@@ -1,15 +1,6 @@
 #!/usr/bin/env bash
-
 # Find the latest version of this application:
 # https://github.com/firepress-org/bash-script-template
-#
-set -o errexit          # Exit on most errors (see the manual)
-set -o errtrace         # Make sure any error trap is inherited
-set -o pipefail         # Use last non-zero exit code in a pipeline
-#set -o xtrace          # Trace the execution of the script (debug)
-#set -o nounset          # Disallow expansion of unset variables
-# --- Find bad variables with CMD `./utility.sh test two three`, else disable it
-# --- or remove $1, $2, $3 var defintions in @main
 
 ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### #
 #
@@ -19,150 +10,6 @@ set -o pipefail         # Use last non-zero exit code in a pipeline
 		  #
 		 # #
 		#   #
-function help {
-
-rm utility_help.md || true
-cat <<EOF > utility_help.md
-
-## help
-
-The command 'help is too broad'.
-
-## Please choose:
-
-- helpbash
-- helpworkflow
-
-## markdown viewer sources
-https://github.com/axiros/terminal_markdown_viewer
-
-EOF
-input_2="utility_help.md"
-mdv-all
-rm utility_help.md || true
-
-}
-# idea see our docs in Markdown / mdv https://github.com/axiros/terminal_markdown_viewer#installation 
-
-function -h {
-  #alias
-  help
-}
-
-function helpbash {
-
-rm utility_help.md || true
-cat <<EOF > utility_help.md
-
-## Operator	Description
-
-```
-  ! EXPRESSION	  The EXPRESSION is false.
-  -n STRING	      The length of STRING is greater than zero.
-  -z STRING	      The lengh of STRING is zero (ie it is empty).
-  STRING1         = STRING2	STRING1 is equal to STRING2
-  STRING1         != STRING2	STRING1 is not equal to STRING2
-  INTEGER1        -eq INTEGER2	INTEGER1 is numerically equal to INTEGER2
-  INTEGER1        -gt INTEGER2	INTEGER1 is numerically greater than INTEGER2
-  INTEGER1        -lt INTEGER2	INTEGER1 is numerically less than INTEGER2
-      -d FILE	    FILE exists and is a directory.
-      -e FILE	    FILE exists.
-      -r FILE	    FILE exists and the read permission is granted.
-      -s FILE	    FILE exists and its size is greater than zero (ie. it is not empty).
-      -w FILE	    FILE exists and the write permission is granted.
-      -x FILE	    FILE exists and the execute permission is granted.
-```
-EOF
-input_2="utility_help.md"
-mdv-all
-rm utility_help.md || true
-
-}
-
-function helpworkflow {
-
-rm utility_help.md || true
-cat <<EOF > utility_help.md
-
-# CORE WORKFLOW for https://github.com/firepress-org/ghostfire/
-
-==> from branch edge,
-==> we want to update ghost.
-run these cmd
-======> utility.sh version 3.3.0
-======> utility.sh master
-======> utility.sh release 3.3.0
-
-## USE CASE #1
-
-Simple version update on the dockerfile
-- see CMD version
-
-## USE CASE #2:
-
-### EDGE BRANCH
-
-- We commit using CMD 'push' some change on (branch) edge
-- Rebase on master from edge
-- In CHANGELOG, write a git history of the changes
-- Git commit with a message
-
-### MASTER BRANCH
-
-- Tag x.x.x this commit
-- push tag x.x.x
-- release on Github with the tag x.x.x along a markdown description that points to our CHANGELOG.md
-
-That takes too much time.
-
-First method (2 steps):
-
-  - 'master 1.2.3-r4' (rebase master from edge).
-  - Review and optionaly, manually edit file CHANGELOG.md
-  - 'release 1.2.3-r4' (at this point, we are now to edge branch)
-
-Second method (3 steps):
-
--   'master' (rebase master from edge)
--   'draft 1.2.3-r4' (it injects the latest commit(s) in CHANGELOG.md)
--       Optionaly, manually edit CHANGELOG.md
--   'release 1.2.3-r4' (at this point, we are now to edge branch)
-EOF
-input_2="utility_help.md"
-mdv-all
-rm utility_help.md || true
-
-}
-
-function version {
-# this updates the app's version in our Dockerfile
-# usage: CMD ./utility.sh version 1.50.1
-# what it does:
-  # update tag in Dockerfile
-  # save the commit
-  # tag on the latest commit
-  # push tag to remote
-
-  App_input2_rule
-  tag_version="${input_2}"
-
-  # update tag within the Dockerfile without "-r1" "-r2"
-  ver_in_dockerfile=$(echo ${tag_version} | sed 's/-r.*//g')
-  sed -i '' "s/^ARG VERSION=.*$/ARG VERSION=\"${ver_in_dockerfile}\"/" Dockerfile 
-
-  git add . && \
-  git commit -m "Updated to version: ${tag_version}" && \
-  git push
-}
-
-
-function edge_init {
-  # wip
-  git push --set-upstream origin edge
-}
-
-
-
 function push {
 # push commit all & push all changes
 # usage: CMD ./utility.sh push "Add fct xyz"
@@ -175,126 +22,9 @@ function push {
   git push;
 }
 
-function sq {
-# squash
-# usage: CMD ./utility.sh sq 3 "Add fct xyz"
-
-  App_input2_rule
-  App_input3_rule
-
-  backwards_steps="${input_2}"
-  git_message="${input_3}"
-  usage="sq 3 'Add fct xyz'"
-
-  # think rebase_master_from_edge
-  if [[ $(git status | grep -c "nothing to commit") == "1" ]]; then
-    echo "good, nothing to commit" | 2>/dev/null
-    git reset --hard HEAD~"${backwards_steps}" && \
-    git merge --squash HEAD@{1} && \
-    git push origin HEAD --force && \
-    git status && \
-    git add -A && \
-    git commit -m "${git_message} / squashed" && \
-    git push;
-  else
-    my_message="You must push your commit(s) before doing a rebase." App_Pink
-  fi
-}
-
-function stg {
-# think rebase stg from edge
-# usage: CMD ./utility.sh master
-# idea from: https://www.gatsbyjs.org/blog/2020-01-08-git-workflows/
-
-  # NoAttributes needed
-
-  if [[ $(git status | grep -c "nothing to commit") == "1" ]]; then
-    echo "good, nothing to commit" | 2>/dev/null
-
-    #no prompt
-
-    # root branch is feat/headless-cms
-
-    git checkout feat/headless-cms-pt2
-    git rebase feat/headless-cms-pt1
-
-# fix conflicts if any
-  # stage all the changes we just made
-  # wrap up the rebase
-  # git add . && \
-  # git rebase --continue || true
-
-    git push origin feat/headless-cms-pt2 -f
-
-    # PR on github
-    # Merge from the first one up (merge pt1 into the root branch,
-    # and then merge pt2 into the root branch)
-
-    # Merge the earliest open PR into the root branch, using the standard “merge” option.
-    # Change the base of the next branch to point at the root branch
-    # In this case, we merge:
-    # feat/headless-cms-pt1 TO feat/headless-cms
-    # then, we merge:
-    # feat/headless-cms-pt2 TO feat/headless-cms
-
-    # Update our local state
-    git checkout master
-    git pull origin master
-    # Rebase our root branch
-    git checkout feat/headless-cms
-    git rebase master
-    # Continue down the chain
-    git checkout feat/headless-cms-pt2
-    git rebase feat/headless-cms
-
-    ### confirmation
-    echo && \
-    my_message="Branch <edge> was merged to <master>" App_Blue && \
-    my_message="Back to work!" App_Blue;
-  else
-    my_message="You must push your commit(s) before doing a rebase." App_Pink
-  fi
-}
-
 function master {
-# usage: utility.sh master
-# think rebase master from edge (without squash)
-# NoAttributes needed, no prompt
-
-if [[ $(git status | grep -c "nothing to commit") == "1" ]]; then
-  echo "Good, lets continue" | 2>/dev/null
-else
-  my_message="You must push your commit(s) before doing a rebase." App_Pink && App_Stop
-fi
-
-# Update our local state
-git checkout master && \
-git pull origin master && \
-
-# rebase
-git rebase edge && \
-
-# fix conflicts if any
-  # stage all the changes we just made
-  # wrap up the rebase
-  # git add . && \
-  # git rebase --continue || true
-
-# push updates
-git push origin master && \
-
-# back to branch edge
-edge-init
-
-### confirmation
-echo && \
-my_message="Branch <edge> was merged to <master>" App_Blue && \
-my_message="Back to work!" App_Blue;
-}
-
-function master-sq {
-# usage utility.sh master-sq
-# think squash and rebase edge to master
+# usage utility.sh master
+# think squash and rebase edge to master (with squash for a clean master branch)
 # idea from: https://www.gatsbyjs.org/blog/2020-01-08-git-workflows/
 
 # NoAttributes needed
@@ -305,8 +35,8 @@ else
   my_message="You must push your commit(s) before doing a rebase." App_Pink && App_Stop
 fi
 
-# see logs to help writing a good note
-logs
+# see logs
+clear && logs
 
 # prompt
 my_message="What are we about to merge here?" App_Blue
@@ -316,27 +46,22 @@ read -p "==> " squash_message
 git checkout master && \
 git pull origin master && \
 
-# ========================================== #
-# BEGIN / safe squash mecanism
-
-# remove and create our branch
+# by using mrg_edge_2_master we can make a clean squash
+# remove and create mrg_edge_2_master
 git branch -D mrg_edge_2_master || true && \
 git checkout -b mrg_edge_2_master && \
-# no need to push it to origin
+# no need to push it to origin (local branch only)
 
 # merge & squash edge to mrg_edge_2_master
 git merge --squash edge && \
 git commit . -m "${squash_message} /squash" && \
 
-# END / safe squash mecanism
-# ========================================== #
-
-# branch to master
+# back to master
 git checkout master && \
 
 # rebase (commits are already squashed at this point)
-#git rebase mrg_edge_2_master && \
-git merge mrg_edge_2_master && \
+git rebase mrg_edge_2_master && \
+#git merge mrg_edge_2_master && \
 
 # fix conflicts if any
   # stage all the changes we just made
@@ -354,7 +79,36 @@ git branch -D mrg_edge_2_master || true && \
 edge-init
 
 ### confirmation
-my_message="<edge> was MERGED into <master>" App_Blue && \
+echo && my_message="<edge> was MERGED into <master>" App_Blue && \
+my_message="Back to work!" App_Blue;
+}
+
+function master-nosq {
+# usage: utility.sh master-nosq
+# think rebase master from edge no squash
+# NoAttributes needed, no prompt
+
+if [[ $(git status | grep -c "nothing to commit") == "1" ]]; then
+  echo "Good, lets continue" | 2>/dev/null
+else
+  my_message="You must push your commit(s) before doing a rebase." App_Pink && App_Stop
+fi
+
+# Update our local state
+git checkout master && \
+git pull origin master && \
+
+# rebase
+git rebase edge && \
+
+# push updates
+git push origin master && \
+
+# back to branch edge
+git checkout edge
+
+### confirmation
+echo && my_message="Branch <edge> was merged to <master>" App_Blue && \
 my_message="Back to work!" App_Blue;
 }
 
@@ -376,6 +130,53 @@ git push --set-upstream origin edge -f
 ### confirmation
 echo && \
 my_message="<edge> was reCREATED from <master>" App_Blue
+}
+
+function dk_update {
+# think: dockerfile update version in our Dockerfile
+# usage: utility.sh version 1.50.1
+
+  App_input2_rule
+  tag_version="${input_2}"
+
+  # update tag within the Dockerfile without "-r1" "-r2"
+  ver_in_dockerfile=$(echo ${tag_version} | sed 's/-r.*//g')
+  sed -i '' "s/^ARG VERSION=.*$/ARG VERSION=\"${ver_in_dockerfile}\"/" Dockerfile 
+
+  git add . && \
+  git commit -m "Updated to version: ${tag_version}" && \
+  git push
+}
+
+function dk_view {
+# think: view version in the dockerfile
+  cat Dockerfile | grep -i version
+}
+
+function sq {
+# squash
+# usage: /utility.sh sq 3 "Add fct xyz"
+
+if [[ $(git status | grep -c "nothing to commit") == "1" ]]; then
+  echo "Good, lets continue" | 2>/dev/null
+else
+  my_message="You must push your commit(s) before doing a rebase." App_Pink && App_Stop
+fi
+
+App_input2_rule
+App_input3_rule
+
+backwards_steps="${input_2}"
+git_message="${input_3}"
+usage="sq 3 'Add fct xyz'"
+
+git reset --hard HEAD~"${backwards_steps}" && \
+git merge --squash HEAD@{1} && \
+git push origin HEAD --force && \
+git status && \
+git add -A && \
+git commit -m "${git_message} / squashed" && \
+git push;
 }
 
 function cl {
@@ -429,10 +230,8 @@ function release {
 }
 
 function mdv {
-# fuck cat, let's see markdown!
+# We can do better then cat
 # markdown viewer for your terminal
-# https://github.com/axiros/terminal_markdown_viewer#installation
-
 
 # show the first 60 lines
 clear
@@ -452,7 +251,7 @@ docker run --rm -it \
 }
 
 function tag {
-# you should use release as its a sub fct of release
+# usually used as a sub fct of release
 # usage: CMD ./utility.sh tag 1.50.1
 
   App_input2_rule
@@ -504,17 +303,15 @@ function release_find_the_latest {
   fi
 }
 
-function list {
-  # shortcut
-  which
-}
-
 function which {
   # list (show) which CMD (functions) are available
-  # the standard path is /usr/local/bin/utility.sh
-
+  # we expect that utility is installed here /usr/local/bin/utility.sh
   clear && echo && \
   cat /usr/local/bin/utility.sh | awk '/function /' | awk '{print $2}' | sort -k2 -n | sed '/App_/d' | sed '/main/d' | sed '/utility/d'
+}
+
+function list {
+  which # alias
 }
 
 function log {
@@ -528,27 +325,22 @@ function hash {
   git rev-parse --short HEAD
 }
 
+function status {
+  git status
+}
 function stats {
   status # alias
 }
 function stat {
   status # alias
 }
-function status {
-  git status
-}
-
-function info {
-  # the need is to quickly see the version of our app
-  cat Dockerfile
-}
 
 function diff {
-  check && echo
   git diff
 }
 
 function ci {
+  # work along Github Actions CI
   hub ci-status -v $(git rev-parse HEAD)
 }
 
@@ -571,7 +363,6 @@ function lint_hado {
 }
 
 function prt {
-# pr theme, theme containous
 # work in progress
 
 # pre-requirments
@@ -741,13 +532,12 @@ function example_array {
 }
 
 function example_figlet {
-  docker_image="devmtl/figlet:1.0"
   message="Hey figlet"
-
   App_figlet
 }
 
 function App_figlet {
+  docker_image="devmtl/figlet:1.0"
   docker run --rm ${docker_image} ${message}
 }
 
@@ -774,6 +564,164 @@ function App_Stop {
 
 ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### #
 #
+# help and README
+#
+### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### #
+		  #
+		 # #
+		#   #
+function help {
+
+rm utility_help.md || true
+cat <<EOF > utility_help.md
+
+# help
+
+## See all available commands
+
+- which
+
+## More help:
+
+- help-bash
+- help-workflow
+
+## Git repo
+
+- https://github.com/firepress-org/bash-script-template
+
+## Requirements
+
+- [Docker](https://docs.docker.com/install/)
+- [Hub](https://github.com/github/hub#installation)
+- [Terminal Markdown Viewer](https://github.com/axiros/terminal_markdown_viewer)
+
+## Test your installation
+
+- test
+EOF
+input_2="utility_help.md"
+mdv-all && rm utility_help.md || true
+
+}
+# idea see our docs in Markdown / mdv https://github.com/axiros/terminal_markdown_viewer#installation 
+
+function -h {
+  #alias
+  help
+}
+
+function help-bash {
+
+rm utility_help.md || true
+cat <<EOF > utility_help.md
+
+## Operator	Description
+
+```
+  ! EXPRESSION	  The EXPRESSION is false.
+  -n STRING	      The length of STRING is greater than zero.
+  -z STRING	      The lengh of STRING is zero (ie it is empty).
+  STRING1         = STRING2	STRING1 is equal to STRING2
+  STRING1         != STRING2	STRING1 is not equal to STRING2
+  INTEGER1        -eq INTEGER2	INTEGER1 is numerically equal to INTEGER2
+  INTEGER1        -gt INTEGER2	INTEGER1 is numerically greater than INTEGER2
+  INTEGER1        -lt INTEGER2	INTEGER1 is numerically less than INTEGER2
+      -d FILE	    FILE exists and is a directory.
+      -e FILE	    FILE exists.
+      -r FILE	    FILE exists and the read permission is granted.
+      -s FILE	    FILE exists and its size is greater than zero (ie. it is not empty).
+      -w FILE	    FILE exists and the write permission is granted.
+      -x FILE	    FILE exists and the execute permission is granted.
+```
+EOF
+input_2="utility_help.md"
+mdv-all && rm utility_help.md || true
+}
+
+function help-workflow {
+
+rm utility_help.md || true
+cat <<EOF > utility_help.md
+
+# Workflows
+for https://github.com/firepress-org/ghostfire/
+
+## 1) basic worklow
+- update code on edge
+- master to create a clean commit on master
+- cl
+- master
+- tag and release
+- always start from edge (thanks edge-init)
+
+## 2) Dockerfile workflow
+Example when updating for https://github.com/firepress-org/ghostfire/
+
+on branch edge:
+
+- version 3.5.0
+- cl
+- master
+- tag and release
+- always start from edge (thanks edge-init)
+
+EOF
+input_2="utility_help.md"
+mdv-all && rm utility_help.md || true
+}
+
+function help-pr-process {
+
+rm utility_help.md || true
+cat <<EOF > utility_help.md
+
+# Orginal post
+- https://www.gatsbyjs.org/blog/2020-01-08-git-workflows/
+
+# Notes
+
+# root branch is feat/headless-cms
+
+git checkout feat/headless-cms-pt2
+git rebase feat/headless-cms-pt1
+
+# fix conflicts if any
+# stage all the changes we just made
+# wrap up the rebase
+# git add . && \
+# git rebase --continue || true
+
+git push origin feat/headless-cms-pt2 -f
+
+# PR on github
+# Merge from the first one up (merge pt1 into the root branch,
+# and then merge pt2 into the root branch)
+
+# Merge the earliest open PR into the root branch, using the standard “merge” option.
+# Change the base of the next branch to point at the root branch
+# In this case, we merge:
+# feat/headless-cms-pt1 TO feat/headless-cms
+# then, we merge:
+# feat/headless-cms-pt2 TO feat/headless-cms
+
+# Update our local state
+git checkout master
+git pull origin master
+# Rebase our root branch
+git checkout feat/headless-cms
+git rebase master
+# Continue down the chain
+git checkout feat/headless-cms-pt2
+git rebase feat/headless-cms
+
+EOF
+input_2="utility_help.md"
+mdv-all && rm utility_help.md || true
+}
+
+### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### #
+#
 # utilities
 #
 ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### #
@@ -781,13 +729,16 @@ function App_Stop {
 		 # #
 		#   #
 function passgen {
+  # password generator # no i,I,L,l,o,O,0
   grp1=$(openssl rand -base64 32 | sed 's/[^123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghjkmnpqrstuvwxyz]//g' | cut -c11-14) && \
   grp2=$(openssl rand -base64 32 | sed 's/[^123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghjkmnpqrstuvwxyz]//g' | cut -c2-25) && \
   grp3=$(openssl rand -base64 32 | sed 's/[^123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghjkmnpqrstuvwxyz]//g' | cut -c21-24) && \
   clear && \
   echo "${grp1}_${grp2}_${grp3}"
 }
-
+function pass {
+  passgen #alias
+}
 function passgen_long {
   grp1=$(openssl rand -base64 32 | sed 's/[^123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghjkmnpqrstuvwxyz]//g' | cut -c11-14) && \
   grp2=$(openssl rand -base64 48 | sed 's/[^123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghjkmnpqrstuvwxyz]//g' | cut -c2-50) && \
@@ -800,7 +751,7 @@ function add_license {
 # add changelog
 
 cat << EOF > LICENSE_template
-Copyright (C) 2019
+Copyright (C) 2020
 by Pascal Andy | https://pascalandy.com/blog/now/
 
 Project:
@@ -810,7 +761,6 @@ Find the GNU General Public License V3 at:
 https://github.com/pascalandy/GNU-GENERAL-PUBLIC-LICENSE/blob/master/LICENSE.md
 
 Basically, you have to credit the author AND keep the code free and open source.
-
 EOF
 }
 
@@ -835,7 +785,6 @@ Based on this [template](https://gist.github.com/pascalandy/af709db02d3fe132a3e6
 ## 0.0.0
 ### ⚡️ Updates
 - placeholder
-
 EOF
 }
 
@@ -849,7 +798,6 @@ dist
 node_modules
 npm-debug
 .git
-
 EOF
 }
 
@@ -873,7 +821,6 @@ ARG DOCKERHUB_USER="devmtl"
 ARG GITHUB_USER="firepress"
 ARG GITHUB_ORG="firepress-org"
 ARG GITHUB_REGISTRY="registry"
-
 EOF
 }
 function add_gitignore {
@@ -1007,26 +954,26 @@ date_month="$(date +%Y-%m)-XX";
 
 #==============================================
 #	Define color for echo prompts:
-  export col_std="\e[39m——>\e[39m"
-  export col_grey="\e[39m——>\e[39m"
-  export col_blue="\e[34m——>\e[39m"
-  export col_pink="\e[35m——>\e[39m"
-  export col_green="\e[36m——>\e[39m"
-  export col_white="\e[97m——>\e[39m"
-  export col_def="\e[39m"
+export col_std="\e[39m——>\e[39m"
+export col_grey="\e[39m——>\e[39m"
+export col_blue="\e[34m——>\e[39m"
+export col_pink="\e[35m——>\e[39m"
+export col_green="\e[36m——>\e[39m"
+export col_white="\e[97m——>\e[39m"
+export col_def="\e[39m"
 
 #==============================================
 #	Placeholders
 #export GITHUB_TOKEN="$(cat ~/secrets_open/token_github/token.txt)"
 }
 function App_Pink {
-  echo && echo -e "${col_pink} ERROR: ${my_message}"
+  echo -e "${col_pink} ERROR: ${my_message}"
 }
 function App_Blue {
-  echo && echo -e "${col_blue} ${my_message}"
+  echo -e "${col_blue} ${my_message}"
 }
 function App_Green {
-  echo && echo -e "${col_green} ${my_message}"
+  echo -e "${col_green} ${my_message}"
 }
 
 ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ###
@@ -1036,13 +983,10 @@ function main() {
 
   trap script_trap_err ERR
   trap script_trap_exit EXIT
-
-  # shellcheck source=.bashcheck.sh
-  source "$(dirname "${BASH_SOURCE[0]}")/.bashcheck.sh"
-
+  source "$(dirname "${BASH_SOURCE[0]}")/.bashcheck.sh"  # shellcheck 
   App_DefineVariables
 
-  # input management
+  # set empty input. The user must provide 1 to 3 attributes
   input_1=$1
   if [[ -z "$1" ]]; then    #if empty
     clear
@@ -1052,7 +996,7 @@ function main() {
     input_1=$1
   fi
 
-  if [[ -z "$2" ]]; then    #if empty
+  if [[ -z "$2" ]] || true; then    #if empty
     input_2="not-set"
   else
     input_2=$2
@@ -1063,6 +1007,10 @@ function main() {
   else
     input_3=$3
   fi
+
+  # safety (must be after setting the empty input)
+  set -eou pipefail
+    # set -o xtrace # <== Trace the execution of the script (debug)
 
   script_init "$@"
   cron_init
@@ -1077,5 +1025,3 @@ function main() {
 
 main "$@"
 echo
-
-# https://github.com/firepress-org/bash-script-template
