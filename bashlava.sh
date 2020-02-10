@@ -76,7 +76,7 @@ git push origin master && \
 git branch -D mrg_edge_2_master || true && \
 
 # back to branch edge
-edge-init
+edge
 
 ### confirmation
 echo && my_message="<edge> was MERGED into <master>" App_Blue && \
@@ -112,7 +112,7 @@ echo && my_message="Branch <edge> was merged to <master>" App_Blue && \
 my_message="Back to work!" App_Blue;
 }
 
-function edge-init {
+function edge {
 # usage: bashlava.sh master
 # think scrap branch edge and recreate it just like I would start a new feat branch
 # it assumes there will be no conflict with anybody else as I'm the only person using 'edge'
@@ -252,7 +252,7 @@ function release {
 
   App_Tag
   App_release
-  edge-init
+  edge
 }
 
 function App_Is_master {
