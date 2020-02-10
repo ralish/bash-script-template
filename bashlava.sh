@@ -35,6 +35,11 @@ else
   my_message="You must push your commit(s) before doing a rebase." App_Pink && App_Stop
 fi
 
+# it case we forget
+App_Is_changelog
+App_Is_dockerfile
+App_Is_gitignore
+
 # see logs
 clear && logs
 
@@ -234,27 +239,6 @@ function cl-read {
   App_glow50
 }
 
-function release {
-# think push release + tags to github
-# at this point we commited our changelog and rebase to master
-# usage: bashlava.sh release 1.50.1
-
-  App_input2_rule
-  App_Is_master
-  App_Is_Dockerfile
-
-  # give time to user to CTRL-C if he changes is mind
-  min=1 max=4 message="WARNING: is CHANGELOG.md is updated using /cl_update/"
-  for ACTION in $(seq ${min} ${max}); do
-    echo -e "${col_pink} ${message} ${col_pink}" && sleep 0.4 && clear && \
-    echo -e "${col_blue} ${message} ${col_blue}" && sleep 0.4 && clear
-  done
-
-  App_Tag
-  App_release
-  edge
-}
-
 function App_Is_master {
   currentBranch=$(git rev-parse --abbrev-ref HEAD)
   if [[ "${currentBranch}" == "master" ]]; then
@@ -265,7 +249,7 @@ function App_Is_master {
   fi
 }
 
-function App_Is_Dockerfile {
+function App_Is_dockerfile {
   if [ -f Dockerfile ]; then
     echo "Good, lets continue" | 2>/dev/null
   else
@@ -281,6 +265,36 @@ function App_Is_changelog {
     init_changelog && \
     App_Stop && echo
   fi
+}
+
+function App_Is_gitignore {
+  if [ -f .gitignore ]; then
+    echo "Good, lets continue" | 2>/dev/null
+  else
+    my_message=".gitignore does not exit. Let's create one." App_Blue
+    init_gitignore && \
+    App_Stop && echo
+  fi
+}
+function release {
+# think push release + tags to github
+# at this point we commited our changelog and rebase to master
+# usage: bashlava.sh release 1.50.1
+
+  App_input2_rule
+  App_Is_master
+  App_Is_dockerfile
+
+  # give time to user to CTRL-C if he changes is mind
+  min=1 max=4 message="WARNING: is CHANGELOG.md is updated using /cl_update/"
+  for ACTION in $(seq ${min} ${max}); do
+    echo -e "${col_pink} ${message} ${col_pink}" && sleep 0.4 && clear && \
+    echo -e "${col_blue} ${message} ${col_blue}" && sleep 0.4 && clear
+  done
+
+  App_Tag
+  App_release
+  edge
 }
 
 function App_Tag {
