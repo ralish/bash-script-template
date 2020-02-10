@@ -7,7 +7,7 @@ Make your bash scripts as piece of cakes.
 
 <p align="center">
   <a href="https://github.com/firepress-org/bashlava">
-    <img src="https://user-images.githubusercontent.com/6694151/74113494-746ee100-4b72-11ea-9601-bd7b1d786b41.jpg" width="340px" alt="FirePress" />
+    <img src="https://user-images.githubusercontent.com/6694151/74113494-746ee100-4b72-11ea-9601-bd7b1d786b41.jpg" width="1024px" alt="FirePress" />
   </a>
 </p>
 

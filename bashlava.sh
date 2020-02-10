@@ -11,15 +11,37 @@
 		 # #
 		#   #
 function push {
-# push commit all & push all changes
-# usage: bashlava.sh push "Add fct xyz"
+# think: commit all changes & push on git repo
+# usage: bashlava.sh push "Feat: add the hability to see CICD status". The signs <"> are required!
   App_input2_rule
+  git status && git add -A && \
+  git commit -m "${input_2}" && clear && git push;
+}
 
-  git status && \
-  git add -A && \
-  git commit -m "${input_2}" && \
-  clear && \
-  git push;
+function dk_version {
+  # think: dockerfile update version in our Dockerfile
+  # usage: bashlava.sh version 1.50.1
+  App_input2_rule
+  App_Is_edge
+
+  tag_version="${input_2}"
+  App_UpdateDockerfileVersion && \
+
+  App_GetVarFromDockerile
+  
+  git add . && \
+  git commit . -m "Update ${app_name} to version ${app_version}" && \
+  git push origin master
+
+  # emulate input_2 for <release>
+  input_2="${app_version}"
+  release
+}
+
+function dk_view {
+  # think: view app version from the Dockerfile
+  App_GetVarFromDockerile
+  my_message="${app_version} < Actual version in the Dockerfile" App_Blue
 }
 
 function master {
@@ -27,8 +49,7 @@ function master {
   # think squash and rebase edge to master (with squash for a clean master branch)
 
   if [[ "${input_2}" == "not-set" ]]; then
-    actual_version=$(cat Dockerfile | grep VERSION= | head -n 1 | grep -o '".*"' | sed 's/"//g')
-    my_message="The actual version is: ${actual_version}" App_Blue
+    dk_view
   fi
 
   App_input2_rule
@@ -56,7 +77,7 @@ function master {
 
   # merge & squash edge to mrg_edge_2_master
   git merge --squash edge && \
-  git commit . -m "${squash_message} /squash" && \
+  git commit . -m "${squash_message} /squashed" && \
 
   # back to master
   git checkout master && \
@@ -85,8 +106,7 @@ function master-nosq {
   # think rebase master from edge NO_SQUASH
 
   if [[ "${input_2}" == "not-set" ]]; then
-    actual_version=$(cat Dockerfile | grep VERSION= | head -n 1 | grep -o '".*"' | sed 's/"//g')
-    my_message="The actual version is: ${actual_version}" App_Blue
+    dk_view
   fi
   
   App_input2_rule
@@ -94,6 +114,9 @@ function master-nosq {
   App_Is_changelog
   App_Is_dockerfile
   App_Is_gitignore
+
+  # see logs
+  clear && logs
 
   # Update our local state
   git checkout master && \
@@ -111,26 +134,15 @@ function master-nosq {
 function cl {
   # think update the CHANGELOG.md by define on which version we are
   # usage: bashlava.sh cl 3.5.1
-
   App_input2_rule
   App_Is_master
   App_Is_changelog
 
-  ### update version within the Dockerfile.
-  # sometimes we push 3.15.2-r4, this will clean "-r4"
-  version_before=$(cat Dockerfile | grep VERSION= | head -n 1 | grep -o '".*"' | sed 's/"//g')
-  tag_version_clean=$(echo $tag_version | sed 's/-r.*//g')
-  sed -i '' "s/^ARG VERSION=.*$/ARG VERSION=\"$tag_version_clean\"/" Dockerfile
-  version_after=$(cat Dockerfile | grep VERSION= | head -n 1 | grep -o '".*"' | sed 's/"//g')
+   # give time to user to CTRL-C if he changes is mind
+  clear && echo && \
+  my_message="Let's update our CHANGELOG to v:${app_version}:" App_Blue && sleep 1
 
-  if [[ "${version_before}" == "${version_after}" ]]; then
-    my_message="${version_before} <== Dockerfile version before" App_Pink
-    my_message="${version_after} <== Dockerfile version after" App_Pink
-    my_message="The versions did NOT changed. Is it ok?" App_Pink && sleep 5
-  else
-    my_message="${version_before} <== Dockerfile version before" App_Green
-    my_message="${version_after} <== Dockerfile version after" App_Green
-  fi
+  App_UpdateDockerfileVersion
 
 # build the message to insert in the CHANGELOG
   touch ~/temp/tmpfile && rm ~/temp/tmpfile || true
@@ -184,9 +196,8 @@ function cl-push {
   # think: automatically commit & push pre-formatted message: "Update $APP_NAME to $VERSION"
   App_Is_master
 
-  app_name=$(cat Dockerfile | grep APP_NAME= | head -n 1 | grep -o '".*"' | sed 's/"//g')
-  app_version=$(cat Dockerfile | grep VERSION= | head -n 1 | grep -o '".*"' | sed 's/"//g')
-  git commit . -m "Update ${app_name} to v${app_version}" && \
+  App_GetVarFromDockerile
+  git commit . -m "Update ${app_name} to version ${app_version}" && \
   git push origin master
 
   # emulate input_2 for <release>
@@ -195,35 +206,28 @@ function cl-push {
 }
 
 function release {
-# think push release + tags to github
-# at this point we commited our changelog and rebase to master
-# usage: bashlava.sh release 1.50.1
-
+  # think push release + tags to github
+  # at this point we commited our changelog and rebase to master
+  # usage: bashlava.sh release 1.50.1
   App_input2_rule
   App_Is_commit_unpushed
   App_Is_master
   App_Is_dockerfile
   App_Is_hub_installed
+  App_GetVarFromDockerile
 
    # give time to user to CTRL-C if he changes is mind
   clear && echo && \
   my_message="Let's release version: ${app_version}:" App_Blue && sleep 1
 
-  # Tag
-  # update version within the Dockerfile. It might be already updated but sometimes it's not.
-  app_version=$(cat Dockerfile | grep VERSION= | head -n 1 | grep -o '".*"' | sed 's/"//g')
-  git tag ${app_version} && \
-  git push --tags && echo
+  # Tag our release
+  git tag ${app_version} && git push --tags && echo
 
-  # Gather vars to include in the release
-  app_name=$(cat Dockerfile | grep APP_NAME= | head -n 1 | grep -o '".*"' | sed 's/"//g')
-  github_user=$(cat Dockerfile | grep GITHUB_USER= | head -n 1 | grep -o '".*"' | sed 's/"//g')
-  git_repo_url="https://github.com/${github_user}/${app_name}"
-  release_message1="Refer to CHANGELOG.md for details about this release."
-  release_message2="This release was quickly prepared, packaged, tagged and published using https://github.com/firepress-org/bashlava"
+  # prepared release
+  release_message1="Refer to [CHANGELOG.md](https://github.com/${github_user}/${app_name}/blob/master/CHANGELOG.md) for details about this release."
+  release_message2="Thanks to [bashLaVa](https://github.com/firepress-org/bashlava), we can quickly push commits, update CHANGELOG, rebase or merge, squash (when needed), tag and push the release. All without leaving the terminal!"
 
-  App_release_check_vars && \
- 
+  # push release
   hub release create -oc \
     -m "${app_version}" \
     -m "${release_message1}" \
@@ -231,7 +235,7 @@ function release {
     -t "$(git rev-parse HEAD)" \
     "${app_version}" && \
 
-  echo && my_message="${git_repo_url}/releases/tag/${app_version}" App_Blue && \
+  echo && my_message="https://github.com/${github_user}/${app_name}/releases/tag/${app_version}" App_Blue && \
   edge
 }
 
@@ -239,43 +243,18 @@ function edge {
   # usage: bashlava.sh master
   # think scrap branch edge and recreate it just like I would start a new feat branch
   # it assumes there will be no conflict with anybody else as I'm the only person using 'edge'
-
   App_Is_commit_unpushed
 
   git branch -D edge || true && \
   git checkout -b edge && \
-  git push --set-upstream origin edge -f
+  git push --set-upstream origin edge -f && \
 
-  ### confirmation
-  echo && \
-  my_message="<edge> was reCREATED from <master>" App_Blue
-}
-
-function dk_version {
-# think: dockerfile update version in our Dockerfile
-# usage: bashlava.sh version 1.50.1
-
-  App_input2_rule
-  tag_version="${input_2}"
-
-  # update version within the Dockerfile without "-r1" "-r2"
-  ver_in_dockerfile=$(echo ${tag_version} | sed 's/-r.*//g')
-  sed -i '' "s/^ARG VERSION=.*$/ARG VERSION=\"${ver_in_dockerfile}\"/" Dockerfile 
-
-  git add . && \
-  git commit -m "Updated to version: ${tag_version}" && \
-  git push
-}
-
-function dk_view {
-# think: view app version from the Dockerfile
-  cat Dockerfile | grep -i version
+  echo && my_message="<edge> was reCREATED from <master>" App_Blue
 }
 
 function sq {
   # usage: bashlava.sh sq 3 "Add fct xyz"
   # think: squash. The fct master does squash our commits as well
-
   App_Is_commit_unpushed
   App_input2_rule
   App_input3_rule
@@ -289,7 +268,7 @@ function sq {
   git push origin HEAD --force && \
   git status && \
   git add -A && \
-  git commit -m "${git_message} / squashed" && \
+  git commit -m "${git_message} /squashed" && \
   git push;
 }
 
@@ -309,11 +288,11 @@ function pr {
 }
 
 function release_find_the_latest {
-# tk work in progress, buggy
-# find the latest release that was pushed on github
+  # tk work in progress
+  # not working
+  # find the latest release that was pushed on github
 
-  app_name=$(cat Dockerfile | grep APP_NAME= | head -n 1 | grep -o '".*"' | sed 's/"//g')
-  github_user=$(cat Dockerfile | grep GITHUB_USER= | head -n 1 | grep -o '".*"' | sed 's/"//g')
+  App_GetVarFromDockerile
 
   if [[ -z "${app_name}" ]] ; then    #if empty
     clear
@@ -324,19 +303,17 @@ function release_find_the_latest {
     my_message="Can't find GITHUB_USER in the Dockerfile." App_Pink
     App_Stop
   else
-
     my_message=$(curl -s https://api.github.com/repos/${github_user}/${app_name}/releases/latest | \
       grep tag_name | \
       awk -F ': "' '{ print $2 }' | \
       awk -F '",' '{ print $1 }')
-
     App_Blue
   fi
 }
 
 ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### #
 #
-# Rules
+# Child Apps / the user never directly call these
 #
 ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### #
 
@@ -347,6 +324,15 @@ function App_Is_master {
   else
     my_message="You must be on the master branch to perform this action." App_Pink
     my_message="Try: go-m" App_Blue && App_Stop
+  fi
+}
+function App_Is_edge {
+  currentBranch=$(git rev-parse --abbrev-ref HEAD)
+  if [[ "${currentBranch}" == "edge" ]]; then
+    echo "Good, lets continue" | 2>/dev/null
+  else
+    my_message="You must be on the master branch to perform this action." App_Pink
+    my_message="Try: go-e" App_Blue && App_Stop
   fi
 }
 function App_Is_commit_unpushed {
@@ -425,7 +411,7 @@ function App_release_check_vars {
   if [[ -z "${app_name}" ]]; then
     my_message="ERROR: app_name is empty." App_Pink App_Stop
   elif [[ -z "${app_version}" ]]; then
-    my_message="ERROR: git_repo_url is empty." App_Pink App_Stop
+    my_message="ERROR: app_version is empty." App_Pink App_Stop
   elif [[ -z "${git_repo_url}" ]]; then
     my_message="ERROR: git_repo_url is empty." App_Pink App_Stop
   elif [[ -z "${release_message1}" ]]; then
@@ -438,6 +424,41 @@ function App_release_check_vars {
   App_Curlurl
 }
 
+function App_UpdateDockerfileVersion {
+  # expect VAR: $tag_version
+  # update ap VERSION  within the Dockerfile.
+
+  # version before
+  App_GetVarFromDockerile
+  version_before=${app_version}
+
+  # apply update
+  tag_version_clean=$(echo $tag_version | sed 's/-r.*//g')
+  # sometimes we push 3.15.2-r4, this will clean "-r4"
+  sed -i '' "s/^ARG VERSION=.*$/ARG VERSION=\"$tag_version_clean\"/" Dockerfile
+
+  # version after
+  App_GetVarFromDockerile
+  version_after=${app_version}
+
+  # confirm change was well executed
+  App_GetVarFromDockerile
+  if [[ "${version_before}" == "${version_after}" ]]; then
+    my_message="${version_before} <== Dockerfile version before" App_Pink
+    my_message="${version_after} <== Dockerfile version after" App_Pink
+    my_message="The versions did NOT changed. Is it ok?" App_Pink && sleep 5
+  else
+    my_message="${version_before} <== Dockerfile version before" App_Green
+    my_message="${version_after} <== Dockerfile version after" App_Green
+  fi
+}
+
+function App_GetVarFromDockerile {
+  # Extract vars from our Dockerfile
+  app_name=$(cat Dockerfile | grep APP_NAME= | head -n 1 | grep -o '".*"' | sed 's/"//g')
+  app_version=$(cat Dockerfile | grep VERSION= | head -n 1 | grep -o '".*"' | sed 's/"//g')
+  github_user=$(cat Dockerfile | grep GITHUB_USER= | head -n 1 | grep -o '".*"' | sed 's/"//g')
+}
 ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### #
 #
 # utilities
