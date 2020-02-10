@@ -59,6 +59,8 @@ function dk {
   git add . && \
   git commit . -m "Update ${app_name} to version ${app_version}" && \
   git push origin edge
+
+  my_message="cmd <ci> can be useful at this point when our Dockerfile is built on Github Actions." App_Blue
 }
 
 function dk-view {
