@@ -121,6 +121,8 @@ function master {
   # update CHANGELOG
   export tag_version="${input_2}"
   App_Changelog_Update
+
+  # next setp ==> release
 }
 
 function master-nosq {
@@ -151,26 +153,8 @@ function master-nosq {
   # update CHANGELOG
   export tag_version="${input_2}"
   App_Changelog_Update
-}
 
-function cl {
-  # think: automatically commit & push commits we just did on our CHANGELOG"
-  App_Is_master
-
-  App_GetVarFromDockerile
-  git commit . -m "Update ${app_name} to version ${app_version}" && \
-  git push origin master
-
-  # emulate input_2 for <release>
-  input_2="${app_version}"
-  release
-}
-
-function cl-view {
-  # think: Show me the CHANGELOG.md
-  input_2="CHANGELOG.md"
-  App_input2_rule
-  App_glow50
+  # next setp ==> release
 }
 
 function release {
@@ -183,6 +167,10 @@ function release {
   App_Is_dockerfile
   App_Is_hub_installed
   App_GetVarFromDockerile
+
+  # push updates made on CHANGELOG.md
+  git commit . -m "Update ${app_name} to version ${app_version}" && \
+  git push origin master
 
    # give time to user to CTRL-C if he changes is mind
   clear && echo && \
@@ -207,8 +195,15 @@ function release {
   edge
 
   # let's cheers up a bit!
-  clear && figlet_message="Good job :-p" App_figlet;
-  figlet_message="${app_version} is up!" App_figlet;
+  clear && figlet_message="Good job!" App_figlet;
+  figlet_message="${app_version} is up." App_figlet;
+}
+
+function cl-view {
+  # think: Show me the CHANGELOG.md
+  input_2="CHANGELOG.md"
+  App_input2_rule
+  App_glow50
 }
 
 function edge {
