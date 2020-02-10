@@ -118,7 +118,6 @@ function cl {
 
   # update version within the Dockerfile.
   # sometimes we push 3.15.2-r4, this will clean "-r4"
-  tag_version="${input_2}"
   tag_version_clean=$(echo $tag_version | sed 's/-r.*//g')
   sed -i '' "s/^ARG VERSION=.*$/ARG VERSION=\"$tag_version_clean\"/" Dockerfile
 
@@ -172,7 +171,6 @@ function cl-push {
   git commit . -m "Update ${app_name} to v${app_version}" && \
   git push origin master
 
-  export input_2=${app_version}
   release
 }
 
@@ -196,36 +194,35 @@ function release {
 
   # give time to user to CTRL-C if he changes is mind
   clear
-  my_message="We are about to create a release:" App_Blue && sleep 3
+  my_message="We are about to create a release:" App_Blue && sleep 1
 
   # Tag
   # update version within the Dockerfile. It might be already updated but sometimes it's not.
-  tag_version=${input_2}
-  git add . && \
-  git commit -m "Push Tag to v${tag_version}" && sleep 1 && \
-  git push && sleep 1 && \
-  git tag ${tag_version} && sleep 1 && \
+  app_version=$(cat Dockerfile | grep VERSION= | head -n 1 | grep -o '".*"' | sed 's/"//g')
+  git tag ${app_version} && sleep 1 && \
   git push --tags && sleep 1 && echo
 
   # Gather vars to include in the release
   app_name=$(cat Dockerfile | grep APP_NAME= | head -n 1 | grep -o '".*"' | sed 's/"//g')
+  github_user=$(cat Dockerfile | grep GITHUB_USER= | head -n 1 | grep -o '".*"' | sed 's/"//g')
   git_repo_url="https://github.com/${github_user}/${app_name}"
   release_message1="Refer to CHANGELOG.md for details about this release."
   release_message2="This release was quickly prepared, packaged, tagged and published using https://github.com/firepress-org/bashlava"
 
   App_release_check_vars && \
  
-  echo "Let's release version: ${tag_version}" && sleep 2 && \
+   # give time to user to CTRL-C if he changes is mind
   clear && echo && \
+  my_message="Let's release version: ${app_version}:" App_Blue && sleep 1
 
   hub release create -oc \
-    -m "${tag_version}" \
+    -m "${app_version}" \
     -m "${release_message1}" \
     -m "${release_message2}" \
     -t "$(git rev-parse HEAD)" \
-    "${tag_version}" && \
+    "${app_version}" && \
 
-  echo && my_message="${git_repo_url}/releases/tag/${tag_version}" App_Blue && \
+  echo && my_message="${git_repo_url}/releases/tag/${app_version}" App_Blue && \
   edge
 }
 
@@ -417,6 +414,8 @@ function App_Curlurl {
 function App_release_check_vars {
   if [[ -z "${app_name}" ]]; then
     my_message="ERROR: app_name is empty." App_Pink App_Stop
+  elif [[ -z "${app_version}" ]]; then
+    my_message="ERROR: git_repo_url is empty." App_Pink App_Stop
   elif [[ -z "${git_repo_url}" ]]; then
     my_message="ERROR: git_repo_url is empty." App_Pink App_Stop
   elif [[ -z "${release_message1}" ]]; then
@@ -424,11 +423,6 @@ function App_release_check_vars {
   elif [[ -z "${release_message2}" ]]; then
     my_message="ERROR: release_message2 is empty." App_Pink App_Stop
   fi
-
-  echo "${app_name} < app_name"
-  echo "${git_repo_url} < git_repo_url"
-  echo "${release_message1} < release_message1"
-  echo "${release_message2} < release_message2"
 
   url_to_check=${git_repo_url}
   App_Curlurl
