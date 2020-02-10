@@ -116,10 +116,21 @@ function cl {
   App_Is_master
   App_Is_changelog
 
-  # update version within the Dockerfile.
+  ### update version within the Dockerfile.
   # sometimes we push 3.15.2-r4, this will clean "-r4"
+  version_before=$(cat Dockerfile | grep VERSION= | head -n 1 | grep -o '".*"' | sed 's/"//g')
   tag_version_clean=$(echo $tag_version | sed 's/-r.*//g')
   sed -i '' "s/^ARG VERSION=.*$/ARG VERSION=\"$tag_version_clean\"/" Dockerfile
+  version_after=$(cat Dockerfile | grep VERSION= | head -n 1 | grep -o '".*"' | sed 's/"//g')
+
+  if [[ "${version_before}" != "${version_after}" ]]; then
+    my_message="${version_before} <== Dockerfile version before" App_Pink
+    my_message="${version_before} <== Dockerfile version before" App_Pink
+    my_message="The version did NOT changed. Is it ok?" App_Pink && sleep 5
+  else
+    my_message="${version_before} <== Dockerfile version before" App_Blue
+    my_message="${version_after} <== Dockerfile version after" App_Blue && sleep 1
+  fi
 
 # build the message to insert in the CHANGELOG
   touch ~/temp/tmpfile && rm ~/temp/tmpfile || true
@@ -162,6 +173,13 @@ function cl {
   # then release
 }
 
+function cl-view {
+  # think: Show me the CHANGELOG.md
+  input_2="CHANGELOG.md"
+  App_input2_rule
+  App_glow50
+}
+
 function cl-push {
   # think: commit & push message: "Update APP_NAME to APP_VERSION"
   App_Is_master
@@ -171,14 +189,9 @@ function cl-push {
   git commit . -m "Update ${app_name} to v${app_version}" && \
   git push origin master
 
+  # emulate input_2 for <release>
+  input_2="${app_version}"
   release
-}
-
-function cl-view {
-  # think: Show me the CHANGELOG.md
-  input_2="CHANGELOG.md"
-  App_input2_rule
-  App_glow50
 }
 
 function release {
