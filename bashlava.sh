@@ -94,15 +94,8 @@ function master-nosq {
   git push origin master && \
 
   # edit changelog
-  tag_version="${input_2}"
-  cl ${tag_version}
-}
-
-function cl-read {
-  # think: Show me the CHANGELOG.md
-  input_2="CHANGELOG.md"
-  App_input2_rule
-  App_glow50
+  export tag_version="${input_2}"
+  cl
 }
 
 function cl {
@@ -153,6 +146,12 @@ function cl {
   # then commit the updates
   # then release
 }
+function cl-read {
+  # think: Show me the CHANGELOG.md
+  input_2="CHANGELOG.md"
+  App_input2_rule
+  App_glow50
+}
 
 function release {
 # think push release + tags to github
@@ -190,10 +189,9 @@ function release {
   release_message2="This release was quickly prepared, packaged, tagged and published using https://github.com/firepress-org/bashlava"
 
   App_release_check_vars && \
-  my_message="checkpoint 333" App_Blue && sleep 5 && \
  
+  echo "Let's release version: ${tag_version}" && sleep 2 && \
   clear && echo && \
-  echo "Let's release version: ${tag_version}" && sleep 0.4 && \
 
   hub release create -oc \
     -m "${tag_version}" \
@@ -202,13 +200,8 @@ function release {
     -t "$(git rev-parse HEAD)" \
     "${tag_version}" && \
 
-  echo "${git_repo_url}/releases/tag/${tag_version}" && \
-
-  my_message="checkpoint 334" App_Blue && sleep 5 && \
-
-  edge && \
-
-  my_message="checkpoint 335" App_Blue && sleep 5;
+  echo && my_message="${git_repo_url}/releases/tag/${tag_version}" App_Blue && \
+  edge
 }
 
 function edge {
