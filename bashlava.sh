@@ -490,8 +490,7 @@ function App_input3_rule {
 }
 
 function App_Stop {
-  my_message="Exit 1. Bye bye." App_Pink && sleep 1 && \
-  echo && exit 1
+  my_message="Exit 1. Bye bye." App_Pink && echo && exit 1
 }
 
 		  #
