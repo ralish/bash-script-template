@@ -6,8 +6,8 @@ Make your bash scripts as piece of cakes.
 </p>
 
 <p align="center">
-  <a href="https://github.com/firepress-org">
-    <img src="https://user-images.githubusercontent.com/6694151/74095739-d839d100-4ac2-11ea-8dcb-3017269a9e7c.jpg" width="340px" alt="FirePress" />
+  <a href="https://github.com/firepress-org/bashlava">
+    <img src="![bashlava-main-rect](https://user-images.githubusercontent.com/6694151/74113494-746ee100-4b72-11ea-9601-bd7b1d786b41.jpg)" width="340px" alt="FirePress" />
   </a>
 </p>
 
@@ -155,17 +155,19 @@ If you are looking for an alternative to WordPress, [Ghost](https://firepress.or
 
 ### Installation
 
-Copy those two files in your path:
+You shoud syslink these to the git repo to make future update easy.
 
-- `/usr/local/bin/utility.sh`
-- `/usr/local/bin/bashcheck.sh`
+example:
+```
+ln -s $HOME/Github/firepress-org/bashlava/bashlava.sh /usr/local/bin/bashlava.sh
+ln -s $HOME/Github/firepress-org/bashlava/.bashcheck.sh /usr/local/bin/.bashcheck.sh
+```
 
-### syslink suggestion
+Assuming your $path is:
 
 ```
-ln -s $HOME/Github/firepress-org/bash-script-template/utility.sh /usr/local/bin/utility.sh
-
-ln -s $HOME/Github/firepress-org/bash-script-template/.bashcheck.sh /usr/local/bin/.bashcheck.sh
+/usr/local/bin/utility.sh
+/usr/local/bin/bashcheck.sh
 ```
 
 ## Requirements
