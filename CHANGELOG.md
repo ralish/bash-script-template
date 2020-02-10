@@ -10,8 +10,12 @@ Based on this [template](https://gist.github.com/pascalandy/af709db02d3fe132a3e6
 - 🛑 Removed
 - 🔑 Security
 
-## 0.9.0
+## 0.9.1
+### ⚡️ Updates
+- FIX img url in README
+- c2f8e617e29df22cdcd7dbcc00dcae347f767a03 add checkpoint to fct release
 
+## 0.9.0
 This is a important release as it's introducting add-ons. This will be important to scale to project and leave the core elements at there place.
 
 ### 🚀 New feat.
