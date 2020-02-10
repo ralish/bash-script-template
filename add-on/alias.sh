@@ -8,6 +8,8 @@ function -h { help
 }
 function m { master
 }
+function m-no { master-nosq
+}
 function e { edge
 }
 function r { release
