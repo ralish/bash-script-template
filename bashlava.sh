@@ -184,14 +184,7 @@ function cl {
   # usage: bashlava.sh cl 3.5.1
 
   App_input2_rule
-
-  # are we on master?
-  currentBranch=$(git rev-parse --abbrev-ref HEAD)
-  if [[ "${currentBranch}" == "master" ]]; then
-    echo "Good, lets continue" | 2>/dev/null
-  else
-    my_message="You must be on the master branch to perform this action." App_Pink && App_Stop
-  fi
+  App_Is_master
 
   if [ -f CHANGELOG.md ]; then
     echo "Good, lets continue" | 2>/dev/null
@@ -254,22 +247,8 @@ function release {
 # usage: bashlava.sh release 1.50.1
 
   App_input2_rule
-
-  # are we on master?
-  currentBranch=$(git rev-parse --abbrev-ref HEAD)
-  if [[ "${currentBranch}" == "master" ]]; then
-    echo "Good, lets continue" | 2>/dev/null
-  else
-    my_message="You must be on the master branch to perform this action." App_Pink && App_Stop
-  fi
-
-  if [ -f Dockerfile ]; then
-    echo "Good, lets continue" | 2>/dev/null
-  else
-    my_message="Dockerfile does not exit. Let's create one." App_Pink 
-    init_dockerfile && \
-    App_Stop && echo
-  fi
+  App_Is_master
+  App_Is_Dockerfile
 
   # give time to user to CTRL-C if he changes is mind
   min=1 max=4 message="WARNING: is CHANGELOG.md is updated using /cl_update/"
@@ -278,21 +257,38 @@ function release {
     echo -e "${col_blue} ${message} ${col_blue}" && sleep 0.4 && clear
   done
 
-  tag_version="${input_2}"
-  App_tag
+  App_Tag
   App_release
   edge-init
 }
 
-function App_tag {
+function App_Is_master {
+  currentBranch=$(git rev-parse --abbrev-ref HEAD)
+  if [[ "${currentBranch}" == "master" ]]; then
+    echo "Good, lets continue" | 2>/dev/null
+  else
+    my_message="You must be on the master branch to perform this action." App_Pink
+    my_message="Try: go-m" App_Pink && App_Stop
+  fi
+}
+
+function App_Is_Dockerfile {
+  if [ -f Dockerfile ]; then
+    echo "Good, lets continue" | 2>/dev/null
+  else
+    my_message="Dockerfile does not exit. Let's create one." App_Pink && init_dockerfile && App_Stop
+  fi
+}
+
+function App_Tag {
 # usage: bashlava.sh tag 1.50.1
 # usually used as a sub fct of release
 
   App_input2_rule
-
-  tag_version="${input_2}"
+  App_Is_master
 
   # update tag within the Dockerfile without "-r1" "-r2"
+  tag_version="${input_2}"
   ver_in_dockerfile=$(echo $tag_version | sed 's/-r.*//g')
   sed -i '' "s/^ARG VERSION=.*$/ARG VERSION=\"$ver_in_dockerfile\"/" Dockerfile 
 
@@ -317,6 +313,13 @@ function which {
   cat /usr/local/bin/bashlava.sh | awk '/function /' | awk '{print $2}' \
     | sort -k2 -n | sed '/App_/d' | sed '/main/d' | sed '/MYCONFIG/d' \
     | sed '/\/usr\/local\/bin\//d' | sed '/utility/d'
+}
+
+function go-m {
+  git checkout master # go to master
+}
+function go-e {
+  git checkout edge # go to edge
 }
 
 function log {
