@@ -53,7 +53,7 @@ help-template
 function init_dockerfile {
 cat << EOF > Dockerfile_template
 ###################################
-# REQUIRED BY OUR GITHUB ACTION CI
+# REQUIRED BY bashLaVa https://github.com/firepress-org/bashlava 
 ###################################
 
 ARG VERSION="notset"
@@ -61,7 +61,7 @@ ARG APP_NAME="notset"
 ARG GITHUB_USER="notset"
 
 ###################################
-# REQUIRED BY THIS SPECIFIC BUILD (start you Dockerile from here if any)
+# Start you Dockerfile from here (if any)
 ###################################
 EOF
 help-template
