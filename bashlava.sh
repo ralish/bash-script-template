@@ -93,7 +93,7 @@ function master {
   git checkout -b mrg_edge_2_master && \
   # no need to push it to origin (local branch only)
 
-  # merge & squash edge to mrg_edge_2_master
+  # merge & squash edge into mrg_edge_2_master
   git merge --squash edge && \
   git commit . -m "${squash_message} /squashed" && \
 
@@ -103,9 +103,9 @@ function master {
   # rebase (commits are already squashed at this point)
   git rebase mrg_edge_2_master && \
 
-  # fix conflicts manually if any, then
-  # git add . && \
-  # git rebase --continue || true
+    # fix conflicts manually if any, then
+    # git add . && \
+    # git rebase --continue || true
 
   # push updates
   git push origin master && \
@@ -157,7 +157,7 @@ function cl {
 
    # give time to user to CTRL-C if he changes is mind
   clear && echo && \
-  my_message="Let's update our CHANGELOG to v:${app_version}:" App_Blue && sleep 1
+  my_message="Let's update our CHANGELOG to v:${tag_version}:" App_Blue && sleep 1
 
   App_UpdateDockerfileVersion
 
@@ -256,7 +256,8 @@ function release {
   edge
 
   # let's cheers up a bit!
-  clear && figlet_message="Bravo for ${app_version}" App_figlet;
+  clear && figlet_message="Good job!" App_figlet;
+  clear && figlet_message="for deploying v${app_version}" App_figlet;
 }
 
 function edge {
@@ -269,7 +270,7 @@ function edge {
   git checkout -b edge && \
   git push --set-upstream origin edge -f && \
 
-  echo && my_message="<edge> was reCREATED from <master>" App_Blue
+  echo && my_message="<edge> was create from scratch (from <master>)" App_Blue
 }
 
 function sq {
@@ -500,9 +501,9 @@ function App_GetVarFromDockerile {
   elif [[ -z "$github_user" ]]; then    #if empty
     github_user="not-set"
   fi
-  
-  # Confirm vars
-  my_message="${app_name} ${app_version} ${github_user}" App_Blue
+
+  # debug if needed
+  # my_message="Available vars: ${app_name}, ${app_version}, ${github_user}" App_Blue && sleep 11
 }
 
 function App_figlet {
