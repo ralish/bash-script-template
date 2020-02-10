@@ -206,7 +206,7 @@ function release {
 
   # let's cheers up a bit!
   clear && figlet_message="Good job!" App_figlet;
-  clear && figlet_message="for deploying v${app_version}" App_figlet;
+  clear && figlet_message="v ${app_version}" App_figlet;
 }
 
 function edge {
