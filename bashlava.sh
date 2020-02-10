@@ -181,7 +181,7 @@ function cl-view {
 }
 
 function cl-push {
-  # think: commit & push message: "Update APP_NAME to APP_VERSION"
+  # think: automatically commit & push pre-formatted message: "Update $APP_NAME to $VERSION"
   App_Is_master
 
   app_name=$(cat Dockerfile | grep APP_NAME= | head -n 1 | grep -o '".*"' | sed 's/"//g')
@@ -205,15 +205,15 @@ function release {
   App_Is_dockerfile
   App_Is_hub_installed
 
-  # give time to user to CTRL-C if he changes is mind
-  clear
-  my_message="We are about to create a release:" App_Blue && sleep 1
+   # give time to user to CTRL-C if he changes is mind
+  clear && echo && \
+  my_message="Let's release version: ${app_version}:" App_Blue && sleep 1
 
   # Tag
   # update version within the Dockerfile. It might be already updated but sometimes it's not.
   app_version=$(cat Dockerfile | grep VERSION= | head -n 1 | grep -o '".*"' | sed 's/"//g')
-  git tag ${app_version} && sleep 1 && \
-  git push --tags && sleep 1 && echo
+  git tag ${app_version} && \
+  git push --tags && echo
 
   # Gather vars to include in the release
   app_name=$(cat Dockerfile | grep APP_NAME= | head -n 1 | grep -o '".*"' | sed 's/"//g')
@@ -224,10 +224,6 @@ function release {
 
   App_release_check_vars && \
  
-   # give time to user to CTRL-C if he changes is mind
-  clear && echo && \
-  my_message="Let's release version: ${app_version}:" App_Blue && sleep 1
-
   hub release create -oc \
     -m "${app_version}" \
     -m "${release_message1}" \
@@ -422,6 +418,7 @@ function App_Curlurl {
     my_message="${url_to_check} <== is online" App_Green
   elif [ "$UPTIME_TEST" != "$MATCH_UPTIME_TEST1" ] || [ "$UPTIME_TEST" = "$MATCH_UPTIME_TEST2" ]; then
     my_message="${url_to_check} <== is offline" App_Pink
+    my_message="The git up repo is not responding as expected :-/" App_Pink && sleep 5
   fi
 }
 function App_release_check_vars {
