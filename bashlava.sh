@@ -118,7 +118,7 @@ function master {
 
   # update CHANGELOG
   export tag_version="${input_2}"
-  cl
+  App_Changelog_Update
 }
 
 function master-nosq {
@@ -148,64 +148,11 @@ function master-nosq {
 
   # update CHANGELOG
   export tag_version="${input_2}"
-  cl
+  App_Changelog_Update
 }
 
 function cl {
-  # think update the CHANGELOG.md by define on which version we are
-  # usage: bashlava.sh cl 3.5.1
-  App_input2_rule
-  App_Is_master
-  App_Is_changelog
-
-   # give time to user to CTRL-C if he changes is mind
-  clear && echo && \
-  my_message="Let's update our CHANGELOG to v:${tag_version}:" App_Blue && sleep 1
-
-  App_UpdateDockerfileVersion
-
-# build the message to insert in the CHANGELOG
-  touch ~/temp/tmpfile && rm ~/temp/tmpfile || true
-  touch ~/temp/tmpfile2 && rm ~/temp/tmpfile2 || true
-  touch ~/temp/tmpfile3 && rm ~/temp/tmpfile3 || true
-  touch ~/temp/tmpfile4 && rm ~/temp/tmpfile4 || true
-
-  git_logs="$(git --no-pager log --abbrev-commit --decorate=short --pretty=oneline -n25 | \
-    awk '/HEAD ->/{flag=1} /tag:/{flag=0} flag' | \
-    sed -e 's/([^()]*)//g' | \
-    awk '$1=$1')"
-
-  echo -e "${git_logs}" >> ~/temp/tmpfile2
-  # add space at the begining of a line
-  sed 's/^/ /' ~/temp/tmpfile2 > ~/temp/tmpfile3
-  # add sign "-" at the begining of a line
-  sed 's/^/-/' ~/temp/tmpfile3 > ~/temp/tmpfile4
-
-  echo -e "" >> ~/temp/tmpfile
-  # insert version
-  echo -e "## ${input_2}" >> ~/temp/tmpfile
-  echo -e "### ⚡️ Updates" >> ~/temp/tmpfile
-  cat ~/temp/tmpfile4 >> ~/temp/tmpfile
-  bottle="$(cat ~/temp/tmpfile)"
-
-  # Insert our release notes after pattern "# Release"
-  awk -vbottle="$bottle" '/# Releases/{print;print bottle;next}1' CHANGELOG.md > ~/temp/tmpfile
-  cat ~/temp/tmpfile | awk 'NF > 0 {blank=0} NF == 0 {blank++} blank < 2' > CHANGELOG.md
-
-  # clean
-  rm ~/temp/tmpfile || true
-  rm ~/temp/tmpfile2 || true
-  rm ~/temp/tmpfile3 || true
-  rm ~/temp/tmpfile4 || true
-
-  # Manually edit CHANGELOG in terminal
-  nano CHANGELOG.md
-
-  # then run: cl-push
-}
-
-function cl-push {
-  # think: automatically commit & push pre-formatted message: "Update $APP_NAME to $VERSION"
+  # think: automatically commit & push commits we just did on our CHANGELOG"
   App_Is_master
 
   App_GetVarFromDockerile
@@ -352,6 +299,59 @@ function wip-release_latest {
     #
   #
 #
+
+function App_Changelog_Update {
+  # think update the CHANGELOG.md by define on which version we are
+  # usage: bashlava.sh cl 3.5.1
+  App_input2_rule
+  App_Is_master
+  App_Is_changelog
+
+   # give time to user to CTRL-C if he changes is mind
+  clear && echo && \
+  my_message="Let's update our CHANGELOG to v:${tag_version}:" App_Blue && sleep 1
+
+  App_UpdateDockerfileVersion
+
+# build the message to insert in the CHANGELOG
+  touch ~/temp/tmpfile && rm ~/temp/tmpfile || true
+  touch ~/temp/tmpfile2 && rm ~/temp/tmpfile2 || true
+  touch ~/temp/tmpfile3 && rm ~/temp/tmpfile3 || true
+  touch ~/temp/tmpfile4 && rm ~/temp/tmpfile4 || true
+
+  git_logs="$(git --no-pager log --abbrev-commit --decorate=short --pretty=oneline -n25 | \
+    awk '/HEAD ->/{flag=1} /tag:/{flag=0} flag' | \
+    sed -e 's/([^()]*)//g' | \
+    awk '$1=$1')"
+
+  echo -e "${git_logs}" >> ~/temp/tmpfile2
+  # add space at the begining of a line
+  sed 's/^/ /' ~/temp/tmpfile2 > ~/temp/tmpfile3
+  # add sign "-" at the begining of a line
+  sed 's/^/-/' ~/temp/tmpfile3 > ~/temp/tmpfile4
+
+  echo -e "" >> ~/temp/tmpfile
+  # insert version
+  echo -e "## ${input_2}" >> ~/temp/tmpfile
+  echo -e "### ⚡️ Updates" >> ~/temp/tmpfile
+  cat ~/temp/tmpfile4 >> ~/temp/tmpfile
+  bottle="$(cat ~/temp/tmpfile)"
+
+  # Insert our release notes after pattern "# Release"
+  awk -vbottle="$bottle" '/# Releases/{print;print bottle;next}1' CHANGELOG.md > ~/temp/tmpfile
+  cat ~/temp/tmpfile | awk 'NF > 0 {blank=0} NF == 0 {blank++} blank < 2' > CHANGELOG.md
+
+  # clean
+  rm ~/temp/tmpfile || true
+  rm ~/temp/tmpfile2 || true
+  rm ~/temp/tmpfile3 || true
+  rm ~/temp/tmpfile4 || true
+
+  # Manually edit CHANGELOG in terminal
+  nano CHANGELOG.md
+
+  # then run: cl
+}
 
 function App_Is_master {
   currentBranch=$(git rev-parse --abbrev-ref HEAD)
