@@ -44,6 +44,11 @@ function push {
 function dk {
   # think: dockerfile update version in our Dockerfile
   # usage: bashlava.sh version 1.50.1
+
+  if [[ "${input_2}" == "not-set" ]]; then
+    dk-view
+  fi
+  
   App_input2_rule
   App_Is_edge
 
