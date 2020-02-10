@@ -14,7 +14,6 @@ Based on this [template](https://gist.github.com/pascalandy/af709db02d3fe132a3e6
 
 ## 0.9.3
 ### ⚡️ Updates
-- f600a92 FIX var
 - c6570d8 FIX tag when release AND add checkpoints when updating Dockerfile version /squash
 
 ## 0.9.2
