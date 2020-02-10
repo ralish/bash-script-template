@@ -12,6 +12,10 @@ Based on this [template](https://gist.github.com/pascalandy/af709db02d3fe132a3e6
 
 # Releases
 
+## 0.9.3
+### ⚡️ Updates
+- c6570d8 FIX tag when release AND add checkpoints when updating Dockerfile version /squash
+
 ## 0.9.2
 ### ⚡️ Updates
 - ffbfbfa Add logic to see actual version when not providing a version in fct master

@@ -125,11 +125,11 @@ function cl {
 
   if [[ "${version_before}" != "${version_after}" ]]; then
     my_message="${version_before} <== Dockerfile version before" App_Pink
-    my_message="${version_before} <== Dockerfile version before" App_Pink
+    my_message="${version_after} <== Dockerfile version after" App_Pink
     my_message="The version did NOT changed. Is it ok?" App_Pink && sleep 5
   else
-    my_message="${version_before} <== Dockerfile version before" App_Blue
-    my_message="${version_after} <== Dockerfile version after" App_Blue && sleep 1
+    my_message="${version_before} <== Dockerfile version before" App_Green
+    my_message="${version_after} <== Dockerfile version after" App_Green && sleep 1
   fi
 
 # build the message to insert in the CHANGELOG
