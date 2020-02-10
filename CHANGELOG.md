@@ -12,6 +12,15 @@ Based on this [template](https://gist.github.com/pascalandy/af709db02d3fe132a3e6
 
 # Releases
 
+## 0.9.2
+### ⚡️ Updates
+- ffbfbfa Add logic to see actual version when not providing a version in fct master
+- 1addff9 help-workflow /major copy update
+- 1c28961 fix lost && sign, rename cl-read to cl-view, FIX version within the Dockerfile
+- 567788a add alias: dk-show, cl-show
+- fb13a87 init cl-push, Update Dockerfile version
+- 932756a FIX missing title in CHANGELOG.md
+
 ## 0.9.1
 ### ⚡️ Updates
 - FIX img url in README
