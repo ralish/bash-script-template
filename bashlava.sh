@@ -1,18 +1,41 @@
 #!/usr/bin/env bash
-# Find the latest version of this application:
-# https://github.com/firepress-org/bash-script-template
 
+#
+  #
+    #
+      #
+        #
+          #
 ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### #
 #
-# Core git workflow
+# GIT WORKFLOW
+#
+#   push commits, update CHANGELOG, rebase or merge, squash (when needed)
+#   tag and push the release. All without leaving the terminal!
 #
 ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### #
-		  #
-		 # #
-		#   #
+          #
+        #
+      #
+    #
+  #
+#
+
+function help {
+  # available alias: -h h bashlava
+  figlet_message="bashLaVa" App_figlet && help-main && which
+}
+
 function push {
 # think: commit all changes & push on git repo
-# usage: bashlava.sh push "Feat: add the hability to see CICD status". The signs <"> are required!
+# usage: bashlava.sh push "Feat: add the hability to see CICD status".
+# The signs <"> are required!
+
+  # if no attribute were past, well... let's see what changed then:
+  if [[ "${input_2}" == "not-set" ]]; then
+    diff
+  fi
+
   App_input2_rule
   git status && git add -A && \
   git commit -m "${input_2}" && clear && git push;
@@ -28,20 +51,15 @@ function dk_version {
   App_UpdateDockerfileVersion && \
 
   App_GetVarFromDockerile
-  
   git add . && \
   git commit . -m "Update ${app_name} to version ${app_version}" && \
-  git push origin master
-
-  # emulate input_2 for <release>
-  input_2="${app_version}"
-  release
+  git push origin edge
 }
 
 function dk_view {
   # think: view app version from the Dockerfile
   App_GetVarFromDockerile
-  my_message="${app_version} < Actual version in the Dockerfile" App_Blue
+  my_message="${app_version} < version found in Dockerfile" App_Blue
 }
 
 function master {
@@ -69,7 +87,7 @@ function master {
   git checkout master && \
   git pull origin master && \
 
-  # by using mrg_edge_2_master we can make a clean squash
+  # by using mrg_edge_2_master we create one clean squashed commit
   # remove and create mrg_edge_2_master
   git branch -D mrg_edge_2_master || true && \
   git checkout -b mrg_edge_2_master && \
@@ -84,7 +102,6 @@ function master {
 
   # rebase (commits are already squashed at this point)
   git rebase mrg_edge_2_master && \
-  #git merge mrg_edge_2_master && \
 
   # fix conflicts manually if any, then
   # git add . && \
@@ -237,6 +254,9 @@ function release {
 
   echo && my_message="https://github.com/${github_user}/${app_name}/releases/tag/${app_version}" App_Blue && \
   edge
+
+  # let's cheers up a bit!
+  clear && figlet_message="Bravo for ${app_version}" App_figlet;
 }
 
 function edge {
@@ -272,7 +292,7 @@ function sq {
   git push;
 }
 
-function pr {
+function wip-pr {
   # tk work in progress
   # hub pull-request
 
@@ -287,7 +307,7 @@ function pr {
   git push -u origin mrg-dev-to-staging
 }
 
-function release_find_the_latest {
+function wip-release_latest {
   # tk work in progress
   # not working
   # find the latest release that was pushed on github
@@ -311,11 +331,24 @@ function release_find_the_latest {
   fi
 }
 
+#
+  #
+    #
+      #
+        #
+          #
 ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### #
 #
-# Child Apps / the user never directly call these
+# CHILD APPS
+#   (the user never directly call these)
 #
 ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### #
+          #
+        #
+      #
+    #
+  #
+#
 
 function App_Is_master {
   currentBranch=$(git rev-parse --abbrev-ref HEAD)
@@ -458,15 +491,66 @@ function App_GetVarFromDockerile {
   app_name=$(cat Dockerfile | grep APP_NAME= | head -n 1 | grep -o '".*"' | sed 's/"//g')
   app_version=$(cat Dockerfile | grep VERSION= | head -n 1 | grep -o '".*"' | sed 's/"//g')
   github_user=$(cat Dockerfile | grep GITHUB_USER= | head -n 1 | grep -o '".*"' | sed 's/"//g')
+
+  # set empty input (if any)
+  if [[ -z "$app_name" ]]; then    #if empty
+    app_name="not-set"
+  elif [[ -z "$app_version" ]]; then    #if empty
+    app_version="not-set"
+  elif [[ -z "$github_user" ]]; then    #if empty
+    github_user="not-set"
+  fi
+  
+  # Confirm vars
+  my_message="${app_name} ${app_version} ${github_user}" App_Blue
 }
+
+function App_figlet {
+  docker_image="devmtl/figlet:1.0"
+  docker run --rm ${docker_image} ${figlet_message}
+}
+
+function App_glow50 {
+# markdown viewer for your terminal. Better than cat!
+  docker run --rm -it \
+    -v $(pwd):/sandbox \
+    -w /sandbox \
+    devmtl/glow:0.2.0 glow ${input_2} | sed -n 12,50p # show the first 60 lines
+}
+
+function App_glow {
+  docker run --rm -it \
+    -v $(pwd):/sandbox \
+    -w /sandbox \
+    devmtl/glow:0.2.0 glow ${input_2}
+}
+
+function App_Pink { echo -e "${col_pink} ERROR: ${my_message}"
+}
+function App_Blue { echo -e "${col_blue} ${my_message}"
+}
+function App_Green { echo -e "${col_green} ${my_message}"
+}
+function App_Stop { echo "——> exit 1" echo && exit 1
+}
+
+#
+  #
+    #
+      #
+        #
+          #
 ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### #
 #
-# utilities
+# UTILITIES
 #
 ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### #
-		  #
-		 # #
-		#   #
+          #
+        #
+      #
+    #
+  #
+#
 
 function test {
 # test our script & fct. Idempotent bash script
@@ -487,83 +571,49 @@ function which {
   help-which
   cat /usr/local/bin/bashlava.sh | awk '/function /' | awk '{print $2}' \
     | sort -k2 -n | sed '/App_/d' | sed '/main/d' | sed '/MYCONFIG/d' \
-    | sed '/\/usr\/local\/bin\//d' | sed '/utility/d'
+    | sed '/\/usr\/local\/bin\//d' | sed '/utility/d' | sed '/If/d' | sed '/tk/d' | sed '/add_on/d'
 }
 
-function App_Stop {
-  echo "——> exit 1" echo && exit 1
+# password generator. See also "passgen_long" These char are not part of the password to minimize human error: i,I,L,l,o,O,0
+function passgen { docker run ctr.run/github.com/firepress-org/alpine:master sh -c "/usr/local/bin/random3.sh";
+}
+function go-m { git checkout master # basic checkout to master
+}
+function go-e { git checkout edge   # basic checkout to edge
+}
+function log { git --no-pager log --decorate=short --pretty=oneline -n25
+}
+function hash { git rev-parse HEAD && git rev-parse --short HEAD 
+}
+function status { git status
+}
+function diff { git diff
+}
+# Valid for Github Actions CI. Usually the CI build our Dockerfiles
+function ci { hub ci-status -v $(git rev-parse HEAD)
 }
 
-function help {
-  figlet_message="bashLaVa"
-  App_figlet && \
-  help-main && \
-  which
-}
-
-function App_figlet {
-  docker_image="devmtl/figlet:1.0"
-  docker run --rm ${docker_image} ${figlet_message}
-}
-
-function App_glow50 {
-# markdown viewer for your terminal. Better than cat!
-
-docker run --rm -it \
-  -v $(pwd):/sandbox \
-  -w /sandbox \
-  devmtl/glow:0.2.0 glow ${input_2} | sed -n 12,50p # show the first 60 lines
-}
-
-function App_glow {
-
-docker run --rm -it \
-  -v $(pwd):/sandbox \
-  -w /sandbox \
-  devmtl/glow:0.2.0 glow ${input_2}
-}
-
-function passgen {
-  # password generator. See also "passgen_long" These char are not part of the password to minimize human error: i,I,L,l,o,O,0
-  docker run ctr.run/github.com/firepress-org/alpine:master sh -c "/usr/local/bin/random3.sh";
-}
-
-function go-m {
-  git checkout master # go to master
-}
-function go-e {
-  git checkout edge # go to edge
-}
-
-function log {
-  git --no-pager log --decorate=short --pretty=oneline -n25
-}
-
-function hash {
-  git rev-parse --short HEAD
-}
-
-function status {
-  git status
-}
-
-function diff {
-  git diff
-}
-
-function ci {
-  # work along Github Actions CI
-  hub ci-status -v $(git rev-parse HEAD)
-}
-
+#
+  #
+    #
+      #
+        #
+          #
 ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### #
 #
-# bashlava low-level logic
+# BASHLAVA engine (lol)
+#   low-level logic
 #
 ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### #
+          #
+        #
+      #
+    #
+  #
+#
 
 function add_on {
-  # think: every script that should not be under the main bashlava.sh should threated as an add-on.
+  # think: every script that should not be under the main bashlava.sh shell script, should threated as an add-on.
   # This will make easier to maintain de project, minimise cluter, minimise break changes, easy to accept PR
   source "${addon_fct_path}/help.sh"
   source "${addon_fct_path}/alias.sh"
@@ -572,9 +622,9 @@ function add_on {
   source "${addon_fct_path}/docker.sh"
   source "${addon_fct_path}/utilities.sh"
 
+  # MYCONFIG
   # Define your own custom add-on scripts. 
   # `custom_*.sh` file are in part .gitignore so they will not be commited.
-  # MYCONFIG
   source "${addon_fct_path}/custom_pascal.sh"
 }
 
@@ -608,16 +658,6 @@ export col_pink="\e[35m——>\e[39m"
 export col_green="\e[36m——>\e[39m"
 export col_white="\e[97m——>\e[39m"
 export col_def="\e[39m"
-}
-
-function App_Pink {
-  echo -e "${col_pink} ERROR: ${my_message}"
-}
-function App_Blue {
-  echo -e "${col_blue} ${my_message}"
-}
-function App_Green {
-  echo -e "${col_green} ${my_message}"
 }
 
 function main() {
