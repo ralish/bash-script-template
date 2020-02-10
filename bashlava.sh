@@ -39,6 +39,7 @@ fi
 App_Is_changelog
 App_Is_dockerfile
 App_Is_gitignore
+App_is_env_local_path
 
 # see logs
 clear && logs
@@ -192,43 +193,6 @@ function cl-read {
   App_glow50
 }
 
-function App_Is_master {
-  currentBranch=$(git rev-parse --abbrev-ref HEAD)
-  if [[ "${currentBranch}" == "master" ]]; then
-    echo "Good, lets continue" | 2>/dev/null
-  else
-    my_message="You must be on the master branch to perform this action." App_Pink
-    my_message="Try: go-m" App_Pink && App_Stop
-  fi
-}
-
-function App_Is_dockerfile {
-  if [ -f Dockerfile ]; then
-    echo "Good, lets continue" | 2>/dev/null
-  else
-    my_message="Dockerfile does not exit. Let's create one." App_Pink && init_dockerfile && App_Stop
-  fi
-}
-
-function App_Is_changelog {
-  if [ -f CHANGELOG.md ]; then
-    echo "Good, lets continue" | 2>/dev/null
-  else
-    my_message="CHANGELOG.md does not exit. Let's create one." App_Blue
-    init_changelog && \
-    App_Stop && echo
-  fi
-}
-
-function App_Is_gitignore {
-  if [ -f .gitignore ]; then
-    echo "Good, lets continue" | 2>/dev/null
-  else
-    my_message=".gitignore does not exit. Let's create one." App_Blue
-    init_gitignore && \
-    App_Stop && echo
-  fi
-}
 function release {
 # think push release + tags to github
 # at this point we commited our changelog and rebase to master
@@ -237,6 +201,7 @@ function release {
   App_input2_rule
   App_Is_master
   App_Is_dockerfile
+  App_Is_hub_installed
 
   # give time to user to CTRL-C if he changes is mind
   min=1 max=4 message="WARNING: is CHANGELOG.md is updated using /cl_update/"
@@ -260,12 +225,10 @@ function release {
   clear && echo && \
   echo "Let's release version: ${tag_version}" && sleep 0.4 && \
 
-  # finally, let's push on the release section the git repo
   hub release create -oc \
     -m "${tag_version}" \
     -m "${release_message1}" \
     -m "${release_message2}" \
-    -m "${release_message3}" \
     -t "$(git rev-parse HEAD)" \
     "${tag_version}"
 
@@ -274,44 +237,6 @@ function release {
   echo "${git_repo_url}/releases/tag/${tag_version}"
 
   edge
-}
-
-function App_release_check_vars {
-  if [[ -z "${first_name_author}" ]]; then
-    my_message="ERROR: first_name_author is empty." App_Pink App_Stop
-  elif [[ -z "${tag_version}" ]]; then
-    my_message="ERROR: tag_version is empty." App_Pink App_Stop
-  elif [[ -z "${app_name}" ]]; then
-    my_message="ERROR: APP_NAME is empty." App_Pink App_Stop
-  elif [[ -z "${github_user}" ]]; then
-    my_message="ERROR: GITHUB_USER is empty." App_Pink App_Stop
-  elif [[ -z "${git_repo_url}" ]]; then
-    my_message="ERROR: git_repo_url is empty." App_Pink App_Stop
-  elif [[ -z "${release_message1}" ]]; then
-    my_message="ERROR: release_message1 is empty." App_Pink App_Stop
-  elif [[ -z "${release_message2}" ]]; then
-    my_message="ERROR: release_message2 is empty." App_Pink App_Stop
-  elif [[ -z "${release_message3}" ]]; then
-    my_message="ERROR: release_message3 is empty." App_Pink App_Stop
-  fi
-
-  url_to_check=${git_repo_url}
-  App_Curlurl
-}
-
-function App_Curlurl {
-  # must receive var: url_to_check
-
-  UPTIME_TEST=$(curl -Is ${url_to_check} | grep -io OK | head -1);
-  MATCH_UPTIME_TEST1="OK";
-  MATCH_UPTIME_TEST2="ok";
-  #
-  if [ "$UPTIME_TEST" = "$MATCH_UPTIME_TEST1" ] || [ "$UPTIME_TEST" = "$MATCH_UPTIME_TEST2" ]; then
-    my_message="${url_to_check} <== is online" App_Green
-    
-  elif [ "$UPTIME_TEST" != "$MATCH_UPTIME_TEST1" ] || [ "$UPTIME_TEST" = "$MATCH_UPTIME_TEST2" ]; then
-    my_message="${url_to_check} <== is offline" App_Pink
-  fi
 }
 
 function App_Tag {
@@ -388,12 +313,236 @@ git commit -m "${git_message} / squashed" && \
 git push;
 }
 
+function pr {
+  # work in progress
+  # hub pull-request
+
+  # pre-requirments
+    #git checkout ghostv3-dev && git pull ghostv3-dev # I'm here
+    #bashlava.sh push "my change dummy file"
+
+  git checkout ghostv3-staging && git pull ghostv3-staging
+  # hub sync
+  git checkout -b mrg-dev-to-staging
+  git merge --no-ff origin/ghostv3-dev # no fast forward
+  git push -u origin mrg-dev-to-staging
+}
+
+function release_find_the_latest {
+# buggy tk
+# find the latest release that was pushed on github
+
+  app_name=$(cat Dockerfile | grep APP_NAME= | head -n 1 | grep -o '".*"' | sed 's/"//g')
+  github_user=$(cat Dockerfile | grep GITHUB_USER= | head -n 1 | grep -o '".*"' | sed 's/"//g')
+
+  if [[ -z "${app_name}" ]] ; then    #if empty
+    clear
+    my_message="Can't find APP_NAME in the Dockerfile." App_Pink
+    App_Stop
+  elif [[ -z "${github_user}" ]] ; then    #if empty
+    clear
+    my_message="Can't find GITHUB_USER in the Dockerfile." App_Pink
+    App_Stop
+  else
+
+    my_message=$(curl -s https://api.github.com/repos/${github_user}/${app_name}/releases/latest | \
+      grep tag_name | \
+      awk -F ': "' '{ print $2 }' | \
+      awk -F '",' '{ print $1 }')
+
+    App_Blue
+  fi
+}
+
+### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### #
+#
+# Rules
+#
+### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### #
+
+function App_Is_master {
+  currentBranch=$(git rev-parse --abbrev-ref HEAD)
+  if [[ "${currentBranch}" == "master" ]]; then
+    echo "Good, lets continue" | 2>/dev/null
+  else
+    my_message="You must be on the master branch to perform this action." App_Pink
+    my_message="Try: go-m" App_Pink && App_Stop
+  fi
+}
+
+function App_Is_dockerfile {
+  if [ -f Dockerfile ]; then
+    echo "Good, lets continue" | 2>/dev/null
+  else
+    my_message="Dockerfile does not exit. Let's create one." App_Pink && init_dockerfile && App_Stop
+  fi
+}
+
+function App_Is_changelog {
+  if [ -f CHANGELOG.md ]; then
+    echo "Good, lets continue" | 2>/dev/null
+  else
+    my_message="CHANGELOG.md does not exit. Let's create one." App_Blue
+    init_changelog && \
+    App_Stop && echo
+  fi
+}
+
+function App_Is_gitignore {
+  if [ -f .gitignore ]; then
+    echo "Good, lets continue" | 2>/dev/null
+  else
+    my_message=".gitignore does not exit. Let's create one." App_Blue
+    init_gitignore && \
+    App_Stop && echo
+  fi
+}
+
+function App_Is_env_local_path {
+  if [ -f env_local_path.sh ]; then
+    echo "Good, lets continue" | 2>/dev/null
+  else
+    my_message="env_local_path.sh does not exit. Let's create one." App_Blue
+    init_env_local_path && \
+    App_Stop && echo
+  fi
+}
+
+function App_Is_hub_installed {
+  if [[ $(hub version | grep -c "hub version") == "1" ]]; then
+    echo && my_message="Hub is installed." App_Blue
+  else
+    echo && my_message="Hub is missing. https://github.com/firepress-org/bash-script-template#requirements" App_Pink
+  fi
+}
+
+function App_Is_docker_installed {
+  if [[ $(docker version | grep -c "Client: Docker Engine") == "1" ]]; then
+    my_message="Docker is installed." App_Blue
+  else
+    my_message="Docker is missing. https://github.com/firepress-org/bash-script-template#requirements" App_Pink
+  fi
+}
+
+function App_input2_rule {
+# ensure the second attribute is not empty to continue
+  if [[ "${input_2}" == "not-set" ]]; then
+    my_message="You must provide a valid attribute!" App_Pink
+    App_Stop
+  fi
+}
+
+function App_input3_rule {
+# ensure the third attribute is not empty to continue
+  if [[ "${input_3}" == "not-set" ]]; then
+    my_message="You must provide a valid attribute!" App_Pink
+    App_Stop
+  fi
+}
+
+function App_release_check_vars {
+  if [[ -z "${first_name_author}" ]]; then
+    my_message="ERROR: first_name_author is empty." App_Pink App_Stop
+  elif [[ -z "${tag_version}" ]]; then
+    my_message="ERROR: tag_version is empty." App_Pink App_Stop
+  elif [[ -z "${app_name}" ]]; then
+    my_message="ERROR: APP_NAME is empty." App_Pink App_Stop
+  elif [[ -z "${github_user}" ]]; then
+    my_message="ERROR: GITHUB_USER is empty." App_Pink App_Stop
+  elif [[ -z "${git_repo_url}" ]]; then
+    my_message="ERROR: git_repo_url is empty." App_Pink App_Stop
+  elif [[ -z "${release_message1}" ]]; then
+    my_message="ERROR: release_message1 is empty." App_Pink App_Stop
+  elif [[ -z "${release_message2}" ]]; then
+    my_message="ERROR: release_message2 is empty." App_Pink App_Stop
+  fi
+
+  url_to_check=${git_repo_url}
+  App_Curlurl
+}
+
+function App_Curlurl {
+  # must receive var: url_to_check
+
+  UPTIME_TEST=$(curl -Is ${url_to_check} | grep -io OK | head -1);
+  MATCH_UPTIME_TEST1="OK";
+  MATCH_UPTIME_TEST2="ok";
+  #
+  if [ "$UPTIME_TEST" = "$MATCH_UPTIME_TEST1" ] || [ "$UPTIME_TEST" = "$MATCH_UPTIME_TEST2" ]; then
+    my_message="${url_to_check} <== is online" App_Green
+    
+  elif [ "$UPTIME_TEST" != "$MATCH_UPTIME_TEST1" ] || [ "$UPTIME_TEST" = "$MATCH_UPTIME_TEST2" ]; then
+    my_message="${url_to_check} <== is offline" App_Pink
+  fi
+}
+
+### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### #
+#
+# utilities
+#
+### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### #
+		  #
+		 # #
+		#   #
+
+function test {
+# test our script & fct. Idempotent bash script
+
+  echo "\$1 value is: ${input_1}"
+  echo "\$2 value is: ${input_2}"
+  echo "\$3 value is: ${input_3}"
+  # Useful when trying to find bad variables along 'set -o nounset'
+
+  App_Is_hub_installed 
+  App_Is_docker_installed 
+
+  my_message="Date is: ${date_sec}" App_Blue
+}
+
 function which {
   # If needed, you can list your add-on function here as well. We don't list them by default to minimize cluter.
   help-which
   cat /usr/local/bin/bashlava.sh | awk '/function /' | awk '{print $2}' \
     | sort -k2 -n | sed '/App_/d' | sed '/main/d' | sed '/MYCONFIG/d' \
     | sed '/\/usr\/local\/bin\//d' | sed '/utility/d'
+}
+
+function App_Stop {
+  my_message="(exit 1)" App_Pink && echo && exit 1
+}
+
+function help {
+  figlet_message="bashLaVa"
+  App_figlet && \
+  help-main && \
+  which
+}
+
+function App_figlet {
+  docker_image="devmtl/figlet:1.0"
+  docker run --rm ${docker_image} ${figlet_message}
+}
+
+function App_glow50 {
+# markdown viewer for your terminal. Better than cat!
+
+docker run --rm -it \
+  -v $(pwd):/sandbox \
+  -w /sandbox \
+  devmtl/glow:0.2.0 glow ${input_2} | sed -n 12,50p # show the first 60 lines
+}
+
+function App_glow {
+
+docker run --rm -it \
+  -v $(pwd):/sandbox \
+  -w /sandbox \
+  devmtl/glow:0.2.0 glow ${input_2}
+}
+
+function passgen {
+  # password generator. See also "passgen_long" These char are not part of the password to minimize human error: i,I,L,l,o,O,0
+  docker run ctr.run/github.com/firepress-org/alpine:master sh -c "/usr/local/bin/random3.sh";
 }
 
 function go-m {
@@ -424,168 +573,33 @@ function ci {
   hub ci-status -v $(git rev-parse HEAD)
 }
 
-function pr {
-# work in progress
-# hub pull-request
-
-# pre-requirments
-  #git checkout ghostv3-dev && git pull ghostv3-dev # I'm here
-  #bashlava.sh push "my change dummy file"
-
-git checkout ghostv3-staging && git pull ghostv3-staging
-# hub sync
-git checkout -b mrg-dev-to-staging
-git merge --no-ff origin/ghostv3-dev # no fast forward
-git push -u origin mrg-dev-to-staging
-}
-
-
-function release_find_the_latest {
-# buggy tk
-# find the latest release that was pushed on github
-
-  app_name=$(cat Dockerfile | grep APP_NAME= | head -n 1 | grep -o '".*"' | sed 's/"//g')
-  github_user=$(cat Dockerfile | grep GITHUB_USER= | head -n 1 | grep -o '".*"' | sed 's/"//g')
-
-  if [[ -z "${app_name}" ]] ; then    #if empty
-    clear
-    my_message="Can't find APP_NAME in the Dockerfile." App_Pink
-    App_Stop
-  elif [[ -z "${github_user}" ]] ; then    #if empty
-    clear
-    my_message="Can't find GITHUB_USER in the Dockerfile." App_Pink
-    App_Stop
-  else
-
-    my_message=$(curl -s https://api.github.com/repos/${github_user}/${app_name}/releases/latest | \
-      grep tag_name | \
-      awk -F ': "' '{ print $2 }' | \
-      awk -F '",' '{ print $1 }')
-
-    App_Blue
-  fi
-}
-
-function test {
-# test our script & fct. Idempotent bash script
-
-  echo "\$1 is now ${input_1}"
-  echo "\$2 is now ${input_2}"
-  echo "\$3 is now ${input_3}"
-  # Useful when trying to find bad variables along 'set -o nounset'
-
-  if [[ ! -z "${input_2}" ]] && [[ "${input_2}" != not-set ]]; then
-    my_message="input_2 is not empty" 
-    echo && App_Green 
-  fi
-
-  # validate that hub is installed
-  if [[ $(hub version | grep -c "hub version") == "1" ]]; then
-    echo && my_message="Hub is installed." App_Blue
-  else
-    echo && my_message="Hub is missing. https://github.com/firepress-org/bash-script-template#requirements" App_Pink
-  fi
-
-  # validate that Docker is installed
-  if [[ $(docker version | grep -c "Client: Docker Engine") == "1" ]]; then
-    my_message="Docker is installed." App_Blue
-  else
-    my_message="Docker is missing. https://github.com/firepress-org/bash-script-template#requirements" App_Pink
-  fi
-
-  # validate if current directory is a Git repository
-  # git rev-parse --is-inside-work-tree
-
-  my_message="Date is: ${date_sec}" App_Blue
-}
-
-function App_input2_rule {
-# ensure the second attribute is not empty to continue
-  if [[ "${input_2}" == "not-set" ]]; then
-    my_message="You must provide a valid attribute!" App_Pink
-    App_Stop
-  fi
-}
-
-function App_input3_rule {
-# ensure the third attribute is not empty to continue
-  if [[ "${input_3}" == "not-set" ]]; then
-    my_message="You must provide a valid attribute!" App_Pink
-    App_Stop
-  fi
-}
-
-function App_Stop {
-  my_message="(exit 1)" App_Pink && echo && exit 1
-}
-
-		  #
-		 # #
-		#   #
-function help {
-  figlet_message="bashLaVa"
-  App_figlet && \
-  help-main && \
-  which
-}
-
-function App_figlet {
-  docker_image="devmtl/figlet:1.0"
-  docker run --rm ${docker_image} ${figlet_message}
-}
-
-function App_glow50 {
-# markdown viewer for your terminal. Better than cat!
-
-docker run --rm -it \
-  -v $(pwd):/sandbox \
-  -w /sandbox \
-  devmtl/glow:0.2.0 glow ${input_2} | sed -n 12,50p # show the first 60 lines
-}
-
-function App_glow {
-
-docker run --rm -it \
-  -v $(pwd):/sandbox \
-  -w /sandbox \
-  devmtl/glow:0.2.0 glow ${input_2}
-}
-
 ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### #
 #
-# utilities
+# bashlava low-level logic
 #
 ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### #
-		  #
-		 # #
-		#   #
-function passgen {
-  # password generator. See also "passgen_long" These char are not part of the password to minimize human error: i,I,L,l,o,O,0
 
-  docker run ctr.run/github.com/firepress-org/alpine:master sh -c "/usr/local/bin/random3.sh";
-}
-
-#==============================================
 function add_on {
-
-  # think: every script that should not be under the main bashlava.sh
+  # think: every script that should not be under the main bashlava.sh should threated as an add-on.
   # This will make easier to maintain de project, minimise cluter, minimise break changes, easy to accept PR
-
   source "${addon_fct_path}/help.sh"
   source "${addon_fct_path}/alias.sh"
   source "${addon_fct_path}/examples.sh"
   source "${addon_fct_path}/templates.sh"
+  source "${addon_fct_path}/docker.sh"
+  source "${addon_fct_path}/utilities.sh"
 
-  # MYCONFIG / Define your own custom add-on scripts. `custom_*.sh` is part of .gitignore
+  # Define your own custom add-on scripts. 
+  # `custom_*.sh` file are in part .gitignore so they will not be commited.
+  # MYCONFIG
   source "${addon_fct_path}/custom_pascal.sh"
 }
 
-#==============================================
 function App_DefineVariables {
 
-# MYCONFIG / bashlava git repo location. Required to call your add-on scripts (absolut path)
-git_repo_path="/Volumes/960G/_pascalandy/11_FirePress/Github/firepress-org/bashlava"
-addon_fct_path="${git_repo_path}/add-on"
+# MYCONFIG
+source "./env_local_path.sh"
+addon_fct_path="${bashlava_project_local_path}/add-on"
 
 #	Date generators
  date_nano="$(date +%Y-%m-%d_%HH%Ms%S-%N)";
@@ -603,7 +617,6 @@ date_month="$(date +%Y-%m)-XX";
           # 2017-02-XX
           # 2017-XX-XX
 
-#==============================================
 #	Define color for echo prompts:
 export col_std="\e[39m——>\e[39m"
 export col_grey="\e[39m——>\e[39m"
@@ -612,11 +625,8 @@ export col_pink="\e[35m——>\e[39m"
 export col_green="\e[36m——>\e[39m"
 export col_white="\e[97m——>\e[39m"
 export col_def="\e[39m"
-
-#==============================================
-#	Placeholders
-#export GITHUB_TOKEN="$(cat ~/secrets_open/token_github/token.txt)"
 }
+
 function App_Pink {
   echo -e "${col_pink} ERROR: ${my_message}"
 }
@@ -627,10 +637,8 @@ function App_Green {
   echo -e "${col_green} ${my_message}"
 }
 
-### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ###
-# ENTRYPOINT
-### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ###
 function main() {
+  # ENTRYPOINT
 
   trap script_trap_err ERR
   trap script_trap_exit EXIT
@@ -668,7 +676,7 @@ function main() {
   cron_init
   colour_init
 
-  # Source your add-on script from here
+  # Use add-on scripts
   add_on
 
   #lock_init system
