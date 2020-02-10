@@ -67,17 +67,6 @@ EOF
 help-template
 }
 
-function init_env_local_path {
-cat << EOF > env_local_path-template.sh
-#!/usr/bin/env bash
-
-# bashlava git repo local path Required to call your add-on scripts (absolut path)
-# MYCONFIG
-export bashlava_project_local_path="/myser/Documents/Github/firepress-org/bashlava"
-EOF
-help-template
-}
-
 function init_gitignore {
 cat <<EOF > .gitignore_template
 # Files

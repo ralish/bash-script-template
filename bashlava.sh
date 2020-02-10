@@ -39,7 +39,6 @@ fi
 App_Is_changelog
 App_Is_dockerfile
 App_Is_gitignore
-App_is_env_local_path
 
 # see logs
 clear && logs
@@ -398,16 +397,6 @@ function App_Is_gitignore {
   fi
 }
 
-function App_Is_env_local_path {
-  if [ -f env_local_path.sh ]; then
-    echo "Good, lets continue" | 2>/dev/null
-  else
-    my_message="env_local_path.sh does not exit. Let's create one." App_Blue
-    init_env_local_path && \
-    App_Stop && echo
-  fi
-}
-
 function App_Is_hub_installed {
   if [[ $(hub version | grep -c "hub version") == "1" ]]; then
     echo && my_message="Hub is installed." App_Blue
@@ -598,8 +587,8 @@ function add_on {
 function App_DefineVariables {
 
 # MYCONFIG
-source "./env_local_path.sh"
-addon_fct_path="${bashlava_project_local_path}/add-on"
+local_bashlava_path="/Volumes/960G/_pascalandy/11_FirePress/Github/firepress-org/bashlava"
+addon_fct_path="${local_bashlava_path}/add-on"
 
 #	Date generators
  date_nano="$(date +%Y-%m-%d_%HH%Ms%S-%N)";
