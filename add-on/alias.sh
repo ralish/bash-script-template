@@ -1,5 +1,8 @@
 #!/usr/bin/env bash
 
+function r {
+  release
+}
 function appversion {
   dk_update
 }
