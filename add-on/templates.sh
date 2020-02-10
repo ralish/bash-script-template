@@ -66,18 +66,30 @@ ARG GITHUB_USER="notset"
 EOF
 help-template
 }
+
+function init_env_local_path {
+cat << EOF > env_local_path-template.sh
+#!/usr/bin/env bash
+
+# bashlava git repo local path Required to call your add-on scripts (absolut path)
+# MYCONFIG
+export bashlava_project_local_path="/myser/Documents/Github/firepress-org/bashlava"
+EOF
+help-template
+}
+
 function init_gitignore {
 cat <<EOF > .gitignore_template
 # Files
 ############
-.bashcheck.sh
+custom_*.sh
+env_local_path.sh
+.env
 .cache
 coverage
 dist
 node_modules
 npm-debug
-.env
-var-config.sh
 
 # Directories
 ############
