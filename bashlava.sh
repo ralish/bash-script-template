@@ -244,7 +244,7 @@ function release {
 
   # prepared release
   release_message1="Refer to [CHANGELOG.md](https://github.com/${github_user}/${app_name}/blob/master/CHANGELOG.md) for details about this release."
-  release_message2="Thanks to [bashLaVa](https://github.com/firepress-org/bashlava), we can quickly push commits, update CHANGELOG, rebase or merge, squash (when needed), tag and push the release. All without leaving the terminal!"
+  release_message2="With to [bashLaVa](https://github.com/firepress-org/bashlava), we quickly: push commits, update CHANGELOG, rebase or merge code (squash it when needed), tag and push the release. All of this without ever leaving the terminal or use the GitHub GUI. You should try it, it's addictive."
 
   # push release
   hub release create -oc \
