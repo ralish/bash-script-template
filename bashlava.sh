@@ -290,10 +290,10 @@ function App_Tag {
   App_input2_rule
   App_Is_master
 
-  # update tag within the Dockerfile without "-r1" "-r2"
+  # update tag within the Dockerfile. It might be already updated but sometimes it's not.
   tag_version="${input_2}"
   ver_in_dockerfile=$(echo $tag_version | sed 's/-r.*//g')
-  sed -i '' "s/^ARG VERSION=.*$/ARG VERSION=\"$ver_in_dockerfile\"/" Dockerfile 
+  sed -i '' "s/^ARG VERSION=.*$/ARG VERSION=\"$ver_in_dockerfile\"/" Dockerfile
 
   git add . && \
   git commit -m "Updated to version: $tag_version" && \
@@ -346,8 +346,9 @@ function ci {
   hub ci-status -v $(git rev-parse HEAD)
 }
 
-function prt {
+function pr {
 # work in progress
+# hub pull-request
 
 # pre-requirments
   #git checkout ghostv3-dev && git pull ghostv3-dev # I'm here
@@ -358,9 +359,6 @@ git checkout ghostv3-staging && git pull ghostv3-staging
 git checkout -b mrg-dev-to-staging
 git merge --no-ff origin/ghostv3-dev # no fast forward
 git push -u origin mrg-dev-to-staging
-
-# hub pull-request
-
 }
 
 ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### #
@@ -412,9 +410,8 @@ function App_release {
     app_name=$(cat Dockerfile | grep APP_NAME= | head -n 1 | grep -o '".*"' | sed 's/"//g')
     github_user=$(cat Dockerfile | grep GITHUB_USER= | head -n 1 | grep -o '".*"' | sed 's/"//g')
     git_repo_url="https://github.com/${github_user}/${app_name}"
-    release_message1="Refer to CHANGELOG.md for details about this release."
-    release_message2="This release was packaged and published using https://github.com/firepress-org/bash-script-template"
-    release_message3="Enjoy!"
+    release_message1="- Refer to CHANGELOG.md for details about this release."
+    release_message2="- This release was packaged and published using https://github.com/firepress-org/bashlava"
 
     App_release_check_vars
     
