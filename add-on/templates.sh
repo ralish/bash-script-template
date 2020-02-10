@@ -56,26 +56,21 @@ EOF
 help-template
 }
 
-function tpl_dockerfile {
+function init_dockerfile {
 # add changelog
 
 cat << EOF > Dockerfile_template
-# This is a fake Dockerfile.
-
-# Those vars are used broadly outside this very Dockerfile
-# Github Action CI and release script (./utility.sh) is consuming variables from here.
+###################################
+# REQUIRED BY OUR GITHUB ACTION CI
+###################################
 
 ARG VERSION="notset"
 ARG APP_NAME="notset"
-ARG GIT_PROJECT_NAME="notset-in-docker"
-#
-ARG ALPINE_VERSION="3.10"
-ARG USER="notset"
-#
-ARG DOCKERHUB_USER="devmtl"
-ARG GITHUB_USER="firepress"
-ARG GITHUB_ORG="firepress-org"
-ARG GITHUB_REGISTRY="registry"
+ARG GITHUB_USER="notset"
+
+###################################
+# REQUIRED BY THIS SPECIFIC BUILD (start you Dockerile from here if any)
+###################################
 EOF
 help-template
 }
