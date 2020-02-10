@@ -162,15 +162,16 @@ function release {
   # at this point we commited our changelog and rebase to master
   # usage: bashlava.sh release 1.50.1
   App_input2_rule
-  App_Is_commit_unpushed
   App_Is_master
-  App_Is_dockerfile
-  App_Is_hub_installed
   App_GetVarFromDockerile
+  log
 
   # push updates made on CHANGELOG.md
   git commit . -m "Update ${app_name} to version ${app_version}" && \
   git push origin master
+
+  App_Is_dockerfile
+  App_Is_hub_installed
 
    # give time to user to CTRL-C if he changes is mind
   clear && echo && \
@@ -306,7 +307,7 @@ function App_Changelog_Update {
 
    # give time to user to CTRL-C if he changes is mind
   clear && echo && \
-  my_message="Let's update our CHANGELOG to v:${tag_version}:" App_Blue && sleep 1
+  my_message="Update CHANGELOG.md to v${tag_version}:" App_Blue && sleep 1
 
   App_UpdateDockerfileVersion
 
@@ -355,7 +356,7 @@ function App_Is_master {
   if [[ "${currentBranch}" == "master" ]]; then
     echo "Good, lets continue" | 2>/dev/null
   else
-    my_message="You must be on the <master> branch to perform this action." App_Pink
+    my_message="You must be on <master> branch to perform this action." App_Pink
     my_message="Try: go-m" App_Blue && App_Stop
   fi
 }
@@ -364,7 +365,7 @@ function App_Is_edge {
   if [[ "${currentBranch}" == "edge" ]]; then
     echo "Good, lets continue" | 2>/dev/null
   else
-    my_message="You must be on the <edge> branch to perform this action." App_Pink
+    my_message="You must be on <edge> branch to perform this action." App_Pink
     my_message="Try: go-e" App_Blue && App_Stop
   fi
 }
