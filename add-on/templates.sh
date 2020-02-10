@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-function tpl_license {
+function init_license {
 # add changelog
 
 cat << EOF > LICENSE_template
@@ -17,7 +17,7 @@ Basically, you have to credit the author AND keep the code free and open source.
 EOF
 }
 
-function tpl_changelog {
+function init_changelog {
 # add changelog
 
 cat << EOF > CHANGELOG_template.md
@@ -39,9 +39,10 @@ Based on this [template](https://gist.github.com/pascalandy/af709db02d3fe132a3e6
 ### ⚡️ Updates
 - placeholder
 EOF
+help-template
 }
 
-function tpl_dockerignore {
+function init_dockerignore {
 # add dockerignore
 
 cat << EOF > .dockerignore_template
@@ -52,6 +53,7 @@ node_modules
 npm-debug
 .git
 EOF
+help-template
 }
 
 function tpl_dockerfile {
@@ -75,8 +77,9 @@ ARG GITHUB_USER="firepress"
 ARG GITHUB_ORG="firepress-org"
 ARG GITHUB_REGISTRY="registry"
 EOF
+help-template
 }
-function tpl_gitignore {
+function init_gitignore {
 # add gitignore
 
 cat <<EOF > .gitignore_template
@@ -128,6 +131,7 @@ var-config.sh
 ######################
 .DS_Store
 .DS_Store?
+custom_*.sh
 .vscode
 .Trashes
 ehthumbs.db
@@ -185,4 +189,5 @@ TheVolumeSettingsFolder
 .FBCSemaphoreFile
 .FBCLockFolder
 EOF
+help-template
 }

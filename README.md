@@ -172,8 +172,9 @@ Assuming your $path is:
 
 ## Requirements
 
-- [Docker](https://docs.docker.com/install/)
-- [Hub](https://github.com/github/hub#installation) needed to push release
+- [Docker](https://docs.docker.com/install/): use launch few ephemere container like a markdown viewer or a password generator.
+- [Hub](https://github.com/github/hub#installation): needed to push release.
+- nano (brew install nano): needed to edit your changelog (system prompt).
 
 </p>
 </details>

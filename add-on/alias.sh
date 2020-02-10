@@ -1,5 +1,8 @@
 #!/usr/bin/env bash
 
+function c {
+  push # think commit
+}
 function bashlava {
   help
 }
