@@ -137,53 +137,6 @@ echo && \
 my_message="<edge> was reCREATED from <master>" App_Blue
 }
 
-function dk_update {
-# think: dockerfile update version in our Dockerfile
-# usage: bashlava.sh version 1.50.1
-
-  App_input2_rule
-  tag_version="${input_2}"
-
-  # update tag within the Dockerfile without "-r1" "-r2"
-  ver_in_dockerfile=$(echo ${tag_version} | sed 's/-r.*//g')
-  sed -i '' "s/^ARG VERSION=.*$/ARG VERSION=\"${ver_in_dockerfile}\"/" Dockerfile 
-
-  git add . && \
-  git commit -m "Updated to version: ${tag_version}" && \
-  git push
-}
-
-function dk_view {
-# think: view version in the dockerfile
-  cat Dockerfile | grep -i version
-}
-
-function sq {
-# usage: bashlava.sh sq 3 "Add fct xyz"
-# think: squash. The fct master does squash our commits as well
-
-if [[ $(git status | grep -c "nothing to commit") == "1" ]]; then
-  echo "Good, lets continue" | 2>/dev/null
-else
-  my_message="You must push your commit(s) before doing a rebase." App_Pink && App_Stop
-fi
-
-App_input2_rule
-App_input3_rule
-
-backwards_steps="${input_2}"
-git_message="${input_3}"
-usage="sq 3 'Add fct xyz'"
-
-git reset --hard HEAD~"${backwards_steps}" && \
-git merge --squash HEAD@{1} && \
-git push origin HEAD --force && \
-git status && \
-git add -A && \
-git commit -m "${git_message} / squashed" && \
-git push;
-}
-
 function cl {
   # think update the CHANGELOG.md by define on which version we are
   # usage: bashlava.sh cl 3.5.1
@@ -293,8 +246,72 @@ function release {
   done
 
   App_Tag
-  App_release
+
+  first_name_author=$(git log | awk '/Author:/' | head -n1 | awk '{print $2}')
+  tag_version="${input_2}"
+  app_name=$(cat Dockerfile | grep APP_NAME= | head -n 1 | grep -o '".*"' | sed 's/"//g')
+  github_user=$(cat Dockerfile | grep GITHUB_USER= | head -n 1 | grep -o '".*"' | sed 's/"//g')
+  git_repo_url="https://github.com/${github_user}/${app_name}"
+  release_message1="- Refer to CHANGELOG.md for details about this release."
+  release_message2="- This release was packaged and published using https://github.com/firepress-org/bashlava"
+
+  App_release_check_vars
+  
+  clear && echo && \
+  echo "Let's release version: ${tag_version}" && sleep 0.4 && \
+
+  # finally, let's push on the release section the git repo
+  hub release create -oc \
+    -m "${tag_version}" \
+    -m "${release_message1}" \
+    -m "${release_message2}" \
+    -m "${release_message3}" \
+    -t "$(git rev-parse HEAD)" \
+    "${tag_version}"
+
+  # https://hub.github.com/hub-release.1.html
+
+  echo "${git_repo_url}/releases/tag/${tag_version}"
+
   edge
+}
+
+function App_release_check_vars {
+  if [[ -z "${first_name_author}" ]]; then
+    my_message="ERROR: first_name_author is empty." App_Pink App_Stop
+  elif [[ -z "${tag_version}" ]]; then
+    my_message="ERROR: tag_version is empty." App_Pink App_Stop
+  elif [[ -z "${app_name}" ]]; then
+    my_message="ERROR: APP_NAME is empty." App_Pink App_Stop
+  elif [[ -z "${github_user}" ]]; then
+    my_message="ERROR: GITHUB_USER is empty." App_Pink App_Stop
+  elif [[ -z "${git_repo_url}" ]]; then
+    my_message="ERROR: git_repo_url is empty." App_Pink App_Stop
+  elif [[ -z "${release_message1}" ]]; then
+    my_message="ERROR: release_message1 is empty." App_Pink App_Stop
+  elif [[ -z "${release_message2}" ]]; then
+    my_message="ERROR: release_message2 is empty." App_Pink App_Stop
+  elif [[ -z "${release_message3}" ]]; then
+    my_message="ERROR: release_message3 is empty." App_Pink App_Stop
+  fi
+
+  url_to_check=${git_repo_url}
+  App_Curlurl
+}
+
+function App_Curlurl {
+  # must receive var: url_to_check
+
+  UPTIME_TEST=$(curl -Is ${url_to_check} | grep -io OK | head -1);
+  MATCH_UPTIME_TEST1="OK";
+  MATCH_UPTIME_TEST2="ok";
+  #
+  if [ "$UPTIME_TEST" = "$MATCH_UPTIME_TEST1" ] || [ "$UPTIME_TEST" = "$MATCH_UPTIME_TEST2" ]; then
+    my_message="${url_to_check} <== is online" App_Green
+    
+  elif [ "$UPTIME_TEST" != "$MATCH_UPTIME_TEST1" ] || [ "$UPTIME_TEST" = "$MATCH_UPTIME_TEST2" ]; then
+    my_message="${url_to_check} <== is offline" App_Pink
+  fi
 }
 
 function App_Tag {
@@ -322,6 +339,53 @@ function App_Tag {
   # save the commit
   # tag on the latest commit
   # push tag to remote
+}
+
+function dk_update {
+# think: dockerfile update version in our Dockerfile
+# usage: bashlava.sh version 1.50.1
+
+  App_input2_rule
+  tag_version="${input_2}"
+
+  # update tag within the Dockerfile without "-r1" "-r2"
+  ver_in_dockerfile=$(echo ${tag_version} | sed 's/-r.*//g')
+  sed -i '' "s/^ARG VERSION=.*$/ARG VERSION=\"${ver_in_dockerfile}\"/" Dockerfile 
+
+  git add . && \
+  git commit -m "Updated to version: ${tag_version}" && \
+  git push
+}
+
+function dk_view {
+# think: view version in the dockerfile
+  cat Dockerfile | grep -i version
+}
+
+function sq {
+# usage: bashlava.sh sq 3 "Add fct xyz"
+# think: squash. The fct master does squash our commits as well
+
+if [[ $(git status | grep -c "nothing to commit") == "1" ]]; then
+  echo "Good, lets continue" | 2>/dev/null
+else
+  my_message="You must push your commit(s) before doing a rebase." App_Pink && App_Stop
+fi
+
+App_input2_rule
+App_input3_rule
+
+backwards_steps="${input_2}"
+git_message="${input_3}"
+usage="sq 3 'Add fct xyz'"
+
+git reset --hard HEAD~"${backwards_steps}" && \
+git merge --squash HEAD@{1} && \
+git push origin HEAD --force && \
+git status && \
+git add -A && \
+git commit -m "${git_message} / squashed" && \
+git push;
 }
 
 function which {
@@ -375,14 +439,7 @@ git merge --no-ff origin/ghostv3-dev # no fast forward
 git push -u origin mrg-dev-to-staging
 }
 
-### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### #
-#
-# child fct
-#
-### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### #
-		  #
-		 # #
-		#   #
+
 function release_find_the_latest {
 # buggy tk
 # find the latest release that was pushed on github
@@ -406,87 +463,6 @@ function release_find_the_latest {
       awk -F '",' '{ print $1 }')
 
     App_Blue
-  fi
-}
-
-function App_release {
-# it's a child fct of release
-# ensure that 'version' has tag the latest commit
-# then, release on github
-
-  App_input2_rule
-
-  currentBranch=$(git rev-parse --abbrev-ref HEAD)
-  if [[ "${currentBranch}" == "master" ]]; then
-
-    first_name_author=$(git log | awk '/Author:/' | head -n1 | awk '{print $2}')
-    tag_version="${input_2}"
-    app_name=$(cat Dockerfile | grep APP_NAME= | head -n 1 | grep -o '".*"' | sed 's/"//g')
-    github_user=$(cat Dockerfile | grep GITHUB_USER= | head -n 1 | grep -o '".*"' | sed 's/"//g')
-    git_repo_url="https://github.com/${github_user}/${app_name}"
-    release_message1="- Refer to CHANGELOG.md for details about this release."
-    release_message2="- This release was packaged and published using https://github.com/firepress-org/bashlava"
-
-    App_release_check_vars
-    
-    clear && echo && \
-    echo "Let's release version: ${tag_version}" && sleep 0.4 && \
-
-    hub release create -oc \
-      -m "${tag_version}" \
-      -m "${release_message1}" \
-      -m "${release_message2}" \
-      -m "${release_message3}" \
-      -t "$(git rev-parse HEAD)" \
-      "${tag_version}"
-
-    # https://hub.github.com/hub-release.1.html
-
-    echo "${git_repo_url}/releases/tag/${tag_version}"
-    
-  else
-    my_message="You must be a master branch." App_Pink
-  fi
-}
-
-function App_release_check_vars {
-  if [[ -z "${first_name_author}" ]]; then
-    my_message="ERROR: first_name_author is empty." App_Pink App_Stop
-  elif [[ -z "${tag_version}" ]]; then
-    my_message="ERROR: tag_version is empty." App_Pink App_Stop
-  elif [[ -z "${app_name}" ]]; then
-    my_message="ERROR: APP_NAME is empty." App_Pink App_Stop
-  elif [[ -z "${github_user}" ]]; then
-    my_message="ERROR: GITHUB_USER is empty." App_Pink App_Stop
-  elif [[ -z "${git_repo_url}" ]]; then
-    my_message="ERROR: git_repo_url is empty." App_Pink App_Stop
-  elif [[ -z "${release_message1}" ]]; then
-    my_message="ERROR: release_message1 is empty." App_Pink App_Stop
-  elif [[ -z "${release_message2}" ]]; then
-    my_message="ERROR: release_message2 is empty." App_Pink App_Stop
-  elif [[ -z "${release_message3}" ]]; then
-    my_message="ERROR: release_message3 is empty." App_Pink App_Stop
-  fi
-
-  url_to_check=${git_repo_url}
-  App_Curlurl
-}
-
-		  #
-		 # #
-		#   #
-function App_Curlurl {
-  # must receive var: url_to_check
-
-  UPTIME_TEST=$(curl -Is ${url_to_check} | grep -io OK | head -1);
-  MATCH_UPTIME_TEST1="OK";
-  MATCH_UPTIME_TEST2="ok";
-  #
-  if [ "$UPTIME_TEST" = "$MATCH_UPTIME_TEST1" ] || [ "$UPTIME_TEST" = "$MATCH_UPTIME_TEST2" ]; then
-    my_message="${url_to_check} <== is online" App_Green
-    
-  elif [ "$UPTIME_TEST" != "$MATCH_UPTIME_TEST1" ] || [ "$UPTIME_TEST" = "$MATCH_UPTIME_TEST2" ]; then
-    my_message="${url_to_check} <== is offline" App_Pink
   fi
 }
 
