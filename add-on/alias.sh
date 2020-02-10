@@ -1,20 +1,22 @@
 #!/usr/bin/env bash
 
-function r { release
-}
-function appversion { dk_version
-}
-function version { my_message="version was too generic. Try: appversion" App_Blue
-}
-function c { push # think commit
-}
 function bashlava { help
 }
 function h { help
 }
 function -h { help
 }
+function r { release
+}
+function c { push # think push commit commit
+}
+function commit { push # think push commit
+}
 function dk-show { dk-view
+}
+function version { my_message="version is too generic. Are you looking for: dk-version" App_Blue
+}
+function udpate { my_message="update is too generic. Are you looking for: dk-version" App_Blue
 }
 function cl-show { cl-view
 }

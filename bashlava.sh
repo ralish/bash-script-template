@@ -41,7 +41,7 @@ function push {
   git commit -m "${input_2}" && clear && git push;
 }
 
-function dk_version {
+function dk-version {
   # think: dockerfile update version in our Dockerfile
   # usage: bashlava.sh version 1.50.1
   App_input2_rule
@@ -56,7 +56,7 @@ function dk_version {
   git push origin edge
 }
 
-function dk_view {
+function dk-view {
   # think: view app version from the Dockerfile
   App_GetVarFromDockerile
   my_message="${app_version} < version found in Dockerfile" App_Blue
@@ -67,7 +67,7 @@ function master {
   # think squash and rebase edge to master (with squash for a clean master branch)
 
   if [[ "${input_2}" == "not-set" ]]; then
-    dk_view
+    dk-view
   fi
 
   App_input2_rule
@@ -120,7 +120,7 @@ function master-nosq {
   # think rebase master from edge NO_SQUASH
 
   if [[ "${input_2}" == "not-set" ]]; then
-    dk_view
+    dk-view
   fi
   
   App_input2_rule
