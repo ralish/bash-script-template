@@ -99,7 +99,6 @@ function master {
 
   # back to master
   git checkout master && \
-
   # rebase (commits are already squashed at this point)
   git rebase mrg_edge_2_master && \
 
@@ -109,13 +108,11 @@ function master {
 
   # push updates
   git push origin master && \
-
   # clean up
   git branch -D mrg_edge_2_master || true true && echo;
 
-  # edit changelog
-  export tag_version="${input_2}"
-  cl
+  # update CHANGELOG
+  export tag_version="${input_2}" cl
 }
 
 function master-nosq {
@@ -143,9 +140,8 @@ function master-nosq {
   git rebase edge && \
   git push origin master && echo;
 
-  # edit changelog
-  export tag_version="${input_2}"
-  cl
+  # update CHANGELOG
+  export tag_version="${input_2}" cl
 }
 
 function cl {
@@ -198,15 +194,7 @@ function cl {
   # Manually edit CHANGELOG in terminal
   nano CHANGELOG.md
 
-  # then commit the updates
-  # then release
-}
-
-function cl-view {
-  # think: Show me the CHANGELOG.md
-  input_2="CHANGELOG.md"
-  App_input2_rule
-  App_glow50
+  # then run: cl-push
 }
 
 function cl-push {
@@ -220,6 +208,13 @@ function cl-push {
   # emulate input_2 for <release>
   input_2="${app_version}"
   release
+}
+
+function cl-view {
+  # think: Show me the CHANGELOG.md
+  input_2="CHANGELOG.md"
+  App_input2_rule
+  App_glow50
 }
 
 function release {
