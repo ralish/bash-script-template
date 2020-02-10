@@ -106,6 +106,11 @@ function cl {
   App_Is_master
   App_Is_changelog
 
+  # update tag within the Dockerfile. It might be already updated but sometimes it's not.
+  tag_version="${input_2}"
+  tag_version_clean=$(echo $tag_version | sed 's/-r.*//g')
+  sed -i '' "s/^ARG VERSION=.*$/ARG VERSION=\"$tag_version_clean\"/" Dockerfile
+
 # build the message to insert in the CHANGELOG
   touch ~/temp/tmpfile && rm ~/temp/tmpfile || true
   touch ~/temp/tmpfile2 && rm ~/temp/tmpfile2 || true
@@ -146,6 +151,20 @@ function cl {
   # then commit the updates
   # then release
 }
+
+function cl-push {
+  # think: commit & push message: "Update APP_NAME to APP_VERSION"
+  App_Is_commit_unpushed
+  App_Is_master
+
+  app_name=$(cat Dockerfile | grep APP_NAME= | head -n 1 | grep -o '".*"' | sed 's/"//g')
+  app_version=$(cat Dockerfile | grep VERSION= | head -n 1 | grep -o '".*"' | sed 's/"//g')
+  git commit . -m "Update ${app_name} to v${app_version}"
+
+  input_2=${app_version}
+  release
+}
+
 function cl-read {
   # think: Show me the CHANGELOG.md
   input_2="CHANGELOG.md"
@@ -171,8 +190,8 @@ function release {
   # Tag
   # update tag within the Dockerfile. It might be already updated but sometimes it's not.
   tag_version="${input_2}"
-  ver_in_dockerfile=$(echo $tag_version | sed 's/-r.*//g')
-  sed -i '' "s/^ARG VERSION=.*$/ARG VERSION=\"$ver_in_dockerfile\"/" Dockerfile
+  tag_version_clean=$(echo $tag_version | sed 's/-r.*//g')
+  sed -i '' "s/^ARG VERSION=.*$/ARG VERSION=\"$tag_version_clean\"/" Dockerfile
 
   git add . && \
   git commit -m "Updated to version: $tag_version" && \
