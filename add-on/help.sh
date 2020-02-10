@@ -75,24 +75,22 @@ cat <<EOF > bashlava_help.md
 # Workflows
 for https://github.com/firepress-org/ghostfire/
 
-## 1) basic worklow
-- update code on edge
-- master to create a clean commit on master
-- cl
-- master
-- tag and release
-- always start from edge (thanks edge-init)
+## A1) classic worklow
 
-## 2) Dockerfile workflow
-Example when updating for https://github.com/firepress-org/ghostfire/
+1. cmd <edge> (update code on edge)
+2. cmd <master 3.5.1>  (to squash commits on branch master)
+                      (the system will prompt to edit the CHANGELOG.md)
+3. cmd <release 3.5.1> (will push tag and release on github)
+4. At this point, we are back on fresh <edge> branch 
 
-on branch edge:
+## A2) alternative worklow
 
-- version 3.5.0
-- cl
-- master
-- tag and release
-- always start from edge (thanks edge-init)
+2. cmd <master-nosq 3.5.1>  (without squashing commits on branch master)
+
+## B) Dockerfile workflow
+
+- During step 1 above <appversion 3.5.1> to update the Dockerfile
+- Example when updating for https://github.com/firepress-org/ghostfire/
 
 EOF
 
