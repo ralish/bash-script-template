@@ -13,32 +13,24 @@ cat <<EOF > bashlava_help.md
 
 # help
 
-## See all available commands
-
-- which
-
 ## More help:
 
 - help-bash
 - help-workflow
 
-Edit the these help file under directory /add_on.
+## See all available commands
 
-## Git repo
+- which
 
-- https://github.com/firepress-org/bash-script-template
-
-## Requirements
-
-We expect that bashlava is installed here /usr/local/bin/bashlava.sh
-
-- [Docker](https://docs.docker.com/install/)
-- [Hub](https://github.com/github/hub#installation)
-- [Terminal Markdown Viewer](https://github.com/axiros/terminal_markdown_viewer)
 
 ## To test bashlava
 
 - test
+
+## Project sources & README
+
+- https://github.com/firepress-org/bashlava
+
 EOF
 input_2="bashlava_help.md"
 App_glow && rm bashlava_help.md || true
