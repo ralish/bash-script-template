@@ -182,12 +182,21 @@ git push;
 function cl {
   # think update the CHANGELOG.md by define on which version we are
   # usage: bashlava.sh cl 3.5.1
+
   App_input2_rule
+
+  # are we on master?
+  currentBranch=$(git rev-parse --abbrev-ref HEAD)
+  if [[ "${currentBranch}" == "master" ]]; then
+    echo "Good, lets continue" | 2>/dev/null
+  else
+    my_message="You must be on the master branch to perform this action." App_Pink && App_Stop
+  fi
 
   if [ -f CHANGELOG.md ]; then
     echo "Good, lets continue" | 2>/dev/null
   else
-    my_message="CHANGELOG.md does not exit. Let's create one." App_Pink 
+    my_message="CHANGELOG.md does not exit. Let's create one." App_Blue
     init_changelog && \
     App_Stop && echo
   fi
@@ -246,6 +255,22 @@ function release {
 
   App_input2_rule
 
+  # are we on master?
+  currentBranch=$(git rev-parse --abbrev-ref HEAD)
+  if [[ "${currentBranch}" == "master" ]]; then
+    echo "Good, lets continue" | 2>/dev/null
+  else
+    my_message="You must be on the master branch to perform this action." App_Pink && App_Stop
+  fi
+
+  if [ -f Dockerfile ]; then
+    echo "Good, lets continue" | 2>/dev/null
+  else
+    my_message="Dockerfile does not exit. Let's create one." App_Pink 
+    init_dockerfile && \
+    App_Stop && echo
+  fi
+
   # give time to user to CTRL-C if he changes is mind
   min=1 max=4 message="WARNING: is CHANGELOG.md is updated using /cl_update/"
   for ACTION in $(seq ${min} ${max}); do
@@ -253,16 +278,10 @@ function release {
     echo -e "${col_blue} ${message} ${col_blue}" && sleep 0.4 && clear
   done
 
-  if [[ "${currentBranch}" == "master" ]]; then
-    echo "Good, lets continue" | 2>/dev/null
-  else
-    my_message="You must be on the master branch to perform this action." App_Pink && App_Stop
-  fi
-
   tag_version="${input_2}"
   App_tag
   App_release
-  edge
+  edge-init
 }
 
 function App_tag {
@@ -290,32 +309,6 @@ function App_tag {
   # save the commit
   # tag on the latest commit
   # push tag to remote
-}
-
-function release_find_the_latest {
-# buggy tk
-# find the latest release that was pushed on github
-
-  APP_NAME=$(cat Dockerfile | grep APP_NAME= | head -n 1 | grep -o '".*"' | sed 's/"//g')
-  GITHUB_ORG=$(cat Dockerfile | grep GITHUB_ORG= | head -n 1 | grep -o '".*"' | sed 's/"//g')
-
-  if [[ -z "${APP_NAME}" ]] ; then    #if empty
-    clear
-    my_message="Can't find APP_NAME in the Dockerfile." App_Pink
-    App_Stop
-  elif [[ -z "${GITHUB_ORG}" ]] ; then    #if empty
-    clear
-    my_message="Can't find GITHUB_ORG in the Dockerfile." App_Pink
-    App_Stop
-  else
-
-    my_message=$(curl -s https://api.github.com/repos/${GITHUB_ORG}/${APP_NAME}/releases/latest | \
-      grep tag_name | \
-      awk -F ': "' '{ print $2 }' | \
-      awk -F '",' '{ print $1 }')
-
-    App_Blue
-  fi
 }
 
 function which {
@@ -372,6 +365,32 @@ git push -u origin mrg-dev-to-staging
 		  #
 		 # #
 		#   #
+function release_find_the_latest {
+# buggy tk
+# find the latest release that was pushed on github
+
+  app_name=$(cat Dockerfile | grep APP_NAME= | head -n 1 | grep -o '".*"' | sed 's/"//g')
+  github_user=$(cat Dockerfile | grep GITHUB_USER= | head -n 1 | grep -o '".*"' | sed 's/"//g')
+
+  if [[ -z "${app_name}" ]] ; then    #if empty
+    clear
+    my_message="Can't find APP_NAME in the Dockerfile." App_Pink
+    App_Stop
+  elif [[ -z "${github_user}" ]] ; then    #if empty
+    clear
+    my_message="Can't find GITHUB_USER in the Dockerfile." App_Pink
+    App_Stop
+  else
+
+    my_message=$(curl -s https://api.github.com/repos/${github_user}/${app_name}/releases/latest | \
+      grep tag_name | \
+      awk -F ': "' '{ print $2 }' | \
+      awk -F '",' '{ print $1 }')
+
+    App_Blue
+  fi
+}
+
 function App_release {
 # it's a child fct of release
 # ensure that 'version' has tag the latest commit
@@ -384,9 +403,9 @@ function App_release {
 
     first_name_author=$(git log | awk '/Author:/' | head -n1 | awk '{print $2}')
     tag_version="${input_2}"
-    git_project_name=$(cat Dockerfile | grep GIT_PROJECT_NAME= | head -n 1 | grep -o '".*"' | sed 's/"//g')
-    github_org=$(cat Dockerfile | grep GITHUB_ORG= | head -n 1 | grep -o '".*"' | sed 's/"//g')
-    git_repo_url="https://github.com/${github_org}/${git_project_name}"
+    app_name=$(cat Dockerfile | grep APP_NAME= | head -n 1 | grep -o '".*"' | sed 's/"//g')
+    github_user=$(cat Dockerfile | grep GITHUB_USER= | head -n 1 | grep -o '".*"' | sed 's/"//g')
+    git_repo_url="https://github.com/${github_user}/${app_name}"
     release_message1="Refer to CHANGELOG.md for details about this release."
     release_message2="This release was packaged and published using https://github.com/firepress-org/bash-script-template"
     release_message3="Enjoy!"
@@ -418,10 +437,10 @@ function App_release_check_vars {
     my_message="ERROR: first_name_author is empty." App_Pink App_Stop
   elif [[ -z "${tag_version}" ]]; then
     my_message="ERROR: tag_version is empty." App_Pink App_Stop
-  elif [[ -z "${git_project_name}" ]]; then
-    my_message="ERROR: git_project_name is empty." App_Pink App_Stop
-  elif [[ -z "${github_org}" ]]; then
-    my_message="ERROR: github_org is empty." App_Pink App_Stop
+  elif [[ -z "${app_name}" ]]; then
+    my_message="ERROR: APP_NAME is empty." App_Pink App_Stop
+  elif [[ -z "${github_user}" ]]; then
+    my_message="ERROR: GITHUB_USER is empty." App_Pink App_Stop
   elif [[ -z "${git_repo_url}" ]]; then
     my_message="ERROR: git_repo_url is empty." App_Pink App_Stop
   elif [[ -z "${release_message1}" ]]; then
@@ -430,6 +449,27 @@ function App_release_check_vars {
     my_message="ERROR: release_message2 is empty." App_Pink App_Stop
   elif [[ -z "${release_message3}" ]]; then
     my_message="ERROR: release_message3 is empty." App_Pink App_Stop
+  fi
+
+  url_to_check=${git_repo_url}
+  App_Curlurl
+}
+
+		  #
+		 # #
+		#   #
+function App_Curlurl {
+  # must receive var: url_to_check
+
+  UPTIME_TEST=$(curl -Is ${url_to_check} | grep -io OK | head -1);
+  MATCH_UPTIME_TEST1="OK";
+  MATCH_UPTIME_TEST2="ok";
+  #
+  if [ "$UPTIME_TEST" = "$MATCH_UPTIME_TEST1" ] || [ "$UPTIME_TEST" = "$MATCH_UPTIME_TEST2" ]; then
+    my_message="${url_to_check} <== is online" App_Green
+    
+  elif [ "$UPTIME_TEST" != "$MATCH_UPTIME_TEST1" ] || [ "$UPTIME_TEST" = "$MATCH_UPTIME_TEST2" ]; then
+    my_message="${url_to_check} <== is offline" App_Pink
   fi
 }
 
