@@ -9,7 +9,6 @@ function appversion {
 function version {
     my_message="version was too generic. Try: appversion" App_Blue
 }
-
 function c {
   push # think commit
 }
@@ -19,8 +18,11 @@ function bashlava {
 function -h {
   help
 }
-function cl-view {
-  cl-read
+function dk-show {
+  dk-view
+}
+function cl-show {
+  cl-view
 }
 function list {
   which
