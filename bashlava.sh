@@ -123,13 +123,13 @@ function cl {
   sed -i '' "s/^ARG VERSION=.*$/ARG VERSION=\"$tag_version_clean\"/" Dockerfile
   version_after=$(cat Dockerfile | grep VERSION= | head -n 1 | grep -o '".*"' | sed 's/"//g')
 
-  if [[ "${version_before}" != "${version_after}" ]]; then
+  if [[ "${version_before}" == "${version_after}" ]]; then
     my_message="${version_before} <== Dockerfile version before" App_Pink
     my_message="${version_after} <== Dockerfile version after" App_Pink
     my_message="The versions did NOT changed. Is it ok?" App_Pink && sleep 5
   else
     my_message="${version_before} <== Dockerfile version before" App_Green
-    my_message="${version_after} <== Dockerfile version after" App_Green && sleep 1
+    my_message="${version_after} <== Dockerfile version after" App_Green
   fi
 
 # build the message to insert in the CHANGELOG

@@ -99,8 +99,8 @@ cat <<EOF > bashlava_help.md
 
 EOF
 
-input_2="utility_help.md"
-App_glow && rm utility_help.md || true
+input_2="bashlava_help.md"
+App_glow && rm bashlava_help.md || true
 }
 
 function help-pr-process {
