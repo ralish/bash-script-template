@@ -68,11 +68,11 @@ function master {
   git push origin master && \
 
   # clean up
-  git branch -D mrg_edge_2_master || true && \
+  git branch -D mrg_edge_2_master || true true && echo;
 
   # edit changelog
-  tag_version="${input_2}"
-  cl ${tag_version}
+  export tag_version="${input_2}"
+  cl
 }
 
 function master-nosq {
@@ -91,7 +91,7 @@ function master-nosq {
 
   # rebase
   git rebase edge && \
-  git push origin master && \
+  git push origin master && echo;
 
   # edit changelog
   export tag_version="${input_2}"
@@ -106,7 +106,7 @@ function cl {
   App_Is_master
   App_Is_changelog
 
-  # update tag within the Dockerfile. It might be already updated but sometimes it's not.
+  # update version within the Dockerfile. It might be already updated but sometimes it's not.
   tag_version="${input_2}"
   tag_version_clean=$(echo $tag_version | sed 's/-r.*//g')
   sed -i '' "s/^ARG VERSION=.*$/ARG VERSION=\"$tag_version_clean\"/" Dockerfile
@@ -154,18 +154,18 @@ function cl {
 
 function cl-push {
   # think: commit & push message: "Update APP_NAME to APP_VERSION"
-  App_Is_commit_unpushed
   App_Is_master
 
   app_name=$(cat Dockerfile | grep APP_NAME= | head -n 1 | grep -o '".*"' | sed 's/"//g')
   app_version=$(cat Dockerfile | grep VERSION= | head -n 1 | grep -o '".*"' | sed 's/"//g')
-  git commit . -m "Update ${app_name} to v${app_version}"
+  git commit . -m "Update ${app_name} to v${app_version}" && \
+  git push origin master
 
   input_2=${app_version}
   release
 }
 
-function cl-read {
+function cl-view {
   # think: Show me the CHANGELOG.md
   input_2="CHANGELOG.md"
   App_input2_rule
@@ -188,7 +188,7 @@ function release {
   my_message="We are about to create a release:" App_Blue && sleep 3
 
   # Tag
-  # update tag within the Dockerfile. It might be already updated but sometimes it's not.
+  # update version within the Dockerfile. It might be already updated but sometimes it's not.
   tag_version="${input_2}"
   tag_version_clean=$(echo $tag_version | sed 's/-r.*//g')
   sed -i '' "s/^ARG VERSION=.*$/ARG VERSION=\"$tag_version_clean\"/" Dockerfile
@@ -197,7 +197,7 @@ function release {
   git commit -m "Updated to version: $tag_version" && \
   git push && sleep 1 && \
   git tag ${tag_version} && \
-  git push --tags && \
+  git push --tags && echo
   # Tag is done
 
   # Gather vars to include in the release
@@ -246,7 +246,7 @@ function dk_version {
   App_input2_rule
   tag_version="${input_2}"
 
-  # update tag within the Dockerfile without "-r1" "-r2"
+  # update version within the Dockerfile without "-r1" "-r2"
   ver_in_dockerfile=$(echo ${tag_version} | sed 's/-r.*//g')
   sed -i '' "s/^ARG VERSION=.*$/ARG VERSION=\"${ver_in_dockerfile}\"/" Dockerfile 
 
