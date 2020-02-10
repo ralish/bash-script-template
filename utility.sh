@@ -595,7 +595,7 @@ function add_on {
 function App_DefineVariables {
 
 # MYCONFIG / bashlava git repo location. Required to call your add-on scripts (absolut path)
-git_repo_path="/Volumes/960G/_pascalandy/11_FirePress/Github/firepress-org/bash-script-template"
+git_repo_path="/Volumes/960G/_pascalandy/11_FirePress/Github/firepress-org/bashlava"
 addon_fct_path="${git_repo_path}/add-on"
 
 #	Date generators
