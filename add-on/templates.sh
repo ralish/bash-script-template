@@ -1,8 +1,6 @@
 #!/usr/bin/env bash
 
 function init_license {
-# add changelog
-
 cat << EOF > LICENSE_template
 Copyright (C) 2020
 by Pascal Andy | https://pascalandy.com/blog/now/
@@ -18,8 +16,6 @@ EOF
 }
 
 function init_changelog {
-# add changelog
-
 cat << EOF > CHANGELOG_template.md
 ### About this changelog
 
@@ -43,8 +39,6 @@ help-template
 }
 
 function init_dockerignore {
-# add dockerignore
-
 cat << EOF > .dockerignore_template
 .cache
 coverage
@@ -57,8 +51,6 @@ help-template
 }
 
 function init_dockerfile {
-# add changelog
-
 cat << EOF > Dockerfile_template
 ###################################
 # REQUIRED BY OUR GITHUB ACTION CI
@@ -75,8 +67,6 @@ EOF
 help-template
 }
 function init_gitignore {
-# add gitignore
-
 cat <<EOF > .gitignore_template
 # Files
 ############
