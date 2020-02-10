@@ -1,27 +1,17 @@
 &nbsp;
 
 <p align="center">
-    Brought to you by
+<h1>BashLava</h1><br>
+Make your bash scripts as piece of cakes.
 </p>
 
 <p align="center">
-  <a href="https://firepress.org/">
-    <img src="https://user-images.githubusercontent.com/6694151/50166045-2cc53000-02b4-11e9-8f7f-5332089ec331.jpg" width="340px" alt="FirePress" />
+  <a href="https://github.com/firepress-org">
+    <img src="https://user-images.githubusercontent.com/6694151/74095739-d839d100-4ac2-11ea-8dcb-3017269a9e7c.jpg" width="340px" alt="FirePress" />
   </a>
 </p>
 
-<p align="center">
-    <a href="https://firepress.org/">FirePress.org</a> |
-    <a href="https://play-with-ghost.com/">play-with-ghost</a> |
-    <a href="https://github.com/firepress-org/">GitHub</a> |
-    <a href="https://twitter.com/askpascalandy">Twitter</a>
-    <br /> <br />
-</p>
-
 &nbsp;
-
-# [bash-script-template](https://github.com/firepress-org/bash-script-template)
-
 
 ## What is this?
 

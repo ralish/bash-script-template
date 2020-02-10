@@ -195,11 +195,7 @@ function cl-read {
   # is expecting a version
   App_input2_rule
 
-  mdv-all
-}
-function cl-view {
-  #alias
-  cl-read
+  glow-all
 }
 
 function release {
@@ -227,27 +223,6 @@ function release {
   else
     my_message="You must be in the master branch." App_Pink
   fi
-}
-
-function mdv {
-# We can do better then cat
-# markdown viewer for your terminal
-
-# show the first 60 lines
-clear
-docker run --rm -it \
-  -v $(pwd):/sandbox \
-  -w /sandbox \
-  devmtl/glow:0.2.0 glow ${input_2} | sed -n 12,50p
-}
-
-function mdv-all {
-clear
-
-docker run --rm -it \
-  -v $(pwd):/sandbox \
-  -w /sandbox \
-  devmtl/glow:0.2.0 glow ${input_2}
 }
 
 function tag {
@@ -308,17 +283,14 @@ function which {
   # we expect that utility is installed here /usr/local/bin/utility.sh
   clear && echo && \
   cat /usr/local/bin/utility.sh | awk '/function /' | awk '{print $2}' | sort -k2 -n | sed '/App_/d' | sed '/main/d' | sed '/utility/d'
+
+  # MYCONFIG If you want, you could list your add-on function here as well.
 }
 
-function list {
-  which # alias
-}
+
 
 function log {
   git --no-pager log --decorate=short --pretty=oneline -n25
-}
-function logs {
-  log # alias
 }
 
 function hash {
@@ -328,12 +300,6 @@ function hash {
 function status {
   git status
 }
-function stats {
-  status # alias
-}
-function stat {
-  status # alias
-}
 
 function diff {
   git diff
@@ -342,24 +308,6 @@ function diff {
 function ci {
   # work along Github Actions CI
   hub ci-status -v $(git rev-parse HEAD)
-}
-
-function lint {
-  docker run -it --rm \
-    -v $(pwd)/Dockerfile:/Dockerfile:ro \
-    redcoolbeans/dockerlint
-}
-
-function lint_hado {
-# tk wip
-  docker run --rm hadolint/hadolint:v1.16.3-4-gc7f877d hadolint --version && echo;
-
-  docker run --rm -i hadolint/hadolint:v1.16.3-4-gc7f877d hadolint \
-    --ignore DL3000 \
-    - < Dockerfile && \
-
-  echo && \
-  docker run -v `pwd`/Dockerfile:/Dockerfile replicated/dockerfilelint /Dockerfile
 }
 
 function prt {
@@ -381,7 +329,7 @@ git push -u origin mrg-dev-to-staging
 
 ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### #
 #
-# sub fct
+# child fct
 #
 ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### #
 		  #
@@ -430,7 +378,7 @@ function App_Draft {
 }
 
 function App_release {
-# it's a sub fct of release
+# it's a child fct of release
 # ensure that 'version' has tag the latest commit
 # then, release on github
 
@@ -523,23 +471,7 @@ function test {
   my_message="Date is: ${date_sec}" App_Blue
 }
 
-function example_array {
-  arr=( "hello" "world" "three" )
-  
-  for i in "${arr[@]}"; do
-    echo ${i}
-  done
-}
 
-function example_figlet {
-  message="Hey figlet"
-  App_figlet
-}
-
-function App_figlet {
-  docker_image="devmtl/figlet:1.0"
-  docker run --rm ${docker_image} ${message}
-}
 
 function App_input2_rule {
 # ensure the second attribute is not empty to continue
@@ -562,161 +494,61 @@ function App_Stop {
   echo && exit 1
 }
 
-### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### #
-#
-# help and README
-#
-### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### #
 		  #
 		 # #
 		#   #
 function help {
-
-rm utility_help.md || true
-cat <<EOF > bashlava_help.md
-
-# help
-
-## See all available commands
-
-- which
-
-## More help:
-
-- help-bash
-- help-workflow
-
-## Git repo
-
-- https://github.com/firepress-org/bash-script-template
-
-## Requirements
-
-- [Docker](https://docs.docker.com/install/)
-- [Hub](https://github.com/github/hub#installation)
-- [Terminal Markdown Viewer](https://github.com/axiros/terminal_markdown_viewer)
-
-## Test your installation
-
-- test
-EOF
-input_2="bashlava_help.md"
-mdv-all && rm bashlava_help.md || true
-}
-# idea see our docs in Markdown / mdv https://github.com/axiros/terminal_markdown_viewer#installation 
-
-function -h {
-  #alias
-  help
+  figlet_message="bashLaVa"
+  App_figlet && \
+  help-bashlava
 }
 
-function help-bash {
-
-rm bashlava_help.md || true
-cat <<EOF > bashlava_help.md
-
-## Operator	Description
-
-```
-  ! EXPRESSION	  The EXPRESSION is false.
-  -n STRING	      The length of STRING is greater than zero.
-  -z STRING	      The lengh of STRING is zero (ie it is empty).
-  STRING1         = STRING2	STRING1 is equal to STRING2
-  STRING1         != STRING2	STRING1 is not equal to STRING2
-  INTEGER1        -eq INTEGER2	INTEGER1 is numerically equal to INTEGER2
-  INTEGER1        -gt INTEGER2	INTEGER1 is numerically greater than INTEGER2
-  INTEGER1        -lt INTEGER2	INTEGER1 is numerically less than INTEGER2
-      -d FILE	    FILE exists and is a directory.
-      -e FILE	    FILE exists.
-      -r FILE	    FILE exists and the read permission is granted.
-      -s FILE	    FILE exists and its size is greater than zero (ie. it is not empty).
-      -w FILE	    FILE exists and the write permission is granted.
-      -x FILE	    FILE exists and the execute permission is granted.
-```
-EOF
-input_2="utility_help.md"
-mdv-all && rm utility_help.md || true
+### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### #
+#
+# Apps in Docker
+#
+### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### #
+function App_figlet {
+  docker_image="devmtl/figlet:1.0"
+  docker run --rm ${docker_image} ${figlet_message}
 }
 
-function help-workflow {
+function glow {
+# We can do better then cat
+# markdown viewer for your terminal
 
-rm bashlava_help.md || true
-cat <<EOF > bashlava_help.md
+# show the first 60 lines
 
-# Workflows
-for https://github.com/firepress-org/ghostfire/
-
-## 1) basic worklow
-- update code on edge
-- master to create a clean commit on master
-- cl
-- master
-- tag and release
-- always start from edge (thanks edge-init)
-
-## 2) Dockerfile workflow
-Example when updating for https://github.com/firepress-org/ghostfire/
-
-on branch edge:
-
-- version 3.5.0
-- cl
-- master
-- tag and release
-- always start from edge (thanks edge-init)
-
-EOF
-input_2="bashlava_help.md"
-mdv-all && rm bashlava_help.md || true
+docker run --rm -it \
+  -v $(pwd):/sandbox \
+  -w /sandbox \
+  devmtl/glow:0.2.0 glow ${input_2} | sed -n 12,50p
 }
 
-function help-pr-process {
+function glow-all {
 
-rm bashlava_help.md || true
-cat <<EOF > bashlava_help.md
+docker run --rm -it \
+  -v $(pwd):/sandbox \
+  -w /sandbox \
+  devmtl/glow:0.2.0 glow ${input_2}
+}
 
-# Orginal post
-- https://www.gatsbyjs.org/blog/2020-01-08-git-workflows/
+function lint {
+  docker run -it --rm \
+    -v $(pwd)/Dockerfile:/Dockerfile:ro \
+    redcoolbeans/dockerlint
+}
 
-# Notes
+function lint_hado {
+# tk wip
+  docker run --rm hadolint/hadolint:v1.16.3-4-gc7f877d hadolint --version && echo;
 
-# root branch is feat/headless-cms
+  docker run --rm -i hadolint/hadolint:v1.16.3-4-gc7f877d hadolint \
+    --ignore DL3000 \
+    - < Dockerfile && \
 
-git checkout feat/headless-cms-pt2
-git rebase feat/headless-cms-pt1
-
-# fix conflicts if any
-# stage all the changes we just made
-# wrap up the rebase
-# git add . && \
-# git rebase --continue || true
-
-git push origin feat/headless-cms-pt2 -f
-
-# PR on github
-# Merge from the first one up (merge pt1 into the root branch,
-# and then merge pt2 into the root branch)
-
-# Merge the earliest open PR into the root branch, using the standard “merge” option.
-# Change the base of the next branch to point at the root branch
-# In this case, we merge:
-# feat/headless-cms-pt1 TO feat/headless-cms
-# then, we merge:
-# feat/headless-cms-pt2 TO feat/headless-cms
-
-# Update our local state
-git checkout master
-git pull origin master
-# Rebase our root branch
-git checkout feat/headless-cms
-git rebase master
-# Continue down the chain
-git checkout feat/headless-cms-pt2
-git rebase feat/headless-cms
-
-EOF
-input_2="bashlava_help.md"
-mdv-all && rm bashlava_help.md || true
+  echo && \
+  docker run -v `pwd`/Dockerfile:/Dockerfile replicated/dockerfilelint /Dockerfile
 }
 
 ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### #
@@ -735,9 +567,7 @@ function passgen {
   clear && \
   echo "${grp1}_${grp2}_${grp3}"
 }
-function pass {
-  passgen #alias
-}
+
 function passgen_long {
   grp1=$(openssl rand -base64 32 | sed 's/[^123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghjkmnpqrstuvwxyz]//g' | cut -c11-14) && \
   grp2=$(openssl rand -base64 48 | sed 's/[^123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghjkmnpqrstuvwxyz]//g' | cut -c2-50) && \
@@ -746,195 +576,28 @@ function passgen_long {
   echo "${grp1}_${grp2}_${grp3}"
 }
 
-function add_license {
-# add changelog
-
-cat << EOF > LICENSE_template
-Copyright (C) 2020
-by Pascal Andy | https://pascalandy.com/blog/now/
-
-Project:
-https://github.com/firepress-org/PLACEHOLDER
-
-Find the GNU General Public License V3 at:
-https://github.com/pascalandy/GNU-GENERAL-PUBLIC-LICENSE/blob/master/LICENSE.md
-
-Basically, you have to credit the author AND keep the code free and open source.
-EOF
-}
-
-function add_changelog {
-# add changelog
-
-cat << EOF > CHANGELOG_template.md
-### About this changelog
-
-Based on this [template](https://gist.github.com/pascalandy/af709db02d3fe132a3e6f1c11b934fe4). Release process at FirePress ([blog post](https://firepress.org/en/software-and-ghost-updates/)). Based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
-
-### Status template
-
-- ⚡️ Updates
-- 🚀 New feat.
-- 🐛 Fix bug
-- 🛑 Removed
-- 🔑 Security
-
-# Releases
-
-## 0.0.0
-### ⚡️ Updates
-- placeholder
-EOF
-}
-
-function add_dockerignore {
-# add dockerignore
-
-cat << EOF > .dockerignore_template
-.cache
-coverage
-dist
-node_modules
-npm-debug
-.git
-EOF
-}
-
-function add_dockerfile {
-# add changelog
-
-cat << EOF > Dockerfile_template
-# This is a fake Dockerfile.
-
-# Those vars are used broadly outside this very Dockerfile
-# Github Action CI and release script (./utility.sh) is consuming variables from here.
-
-ARG VERSION="notset"
-ARG APP_NAME="notset"
-ARG GIT_PROJECT_NAME="notset-in-docker"
-#
-ARG ALPINE_VERSION="3.10"
-ARG USER="notset"
-#
-ARG DOCKERHUB_USER="devmtl"
-ARG GITHUB_USER="firepress"
-ARG GITHUB_ORG="firepress-org"
-ARG GITHUB_REGISTRY="registry"
-EOF
-}
-function add_gitignore {
-# add gitignore
-
-cat <<EOF > .gitignore_template
-# Files
-############
-.bashcheck.sh
-.cache
-coverage
-dist
-node_modules
-npm-debug
-.env
-var-config.sh
-
-# Directories
-############
-/tmp
-/temp
-
-# Compiled source #
-###################
-*.com
-*.class
-*.dll
-*.exe
-*.o
-*.so
-
-# Packages #
-############
-# it's better to unpack these files and commit the raw source
-# git has its own built in compression methods
-*.7z
-*.dmg
-*.gz
-*.iso
-*.jar
-*.rar
-*.tar
-*.zip
-
-# Logs and databases #
-######################
-*.log
-*.sql
-*.sqlite
-
-# OS generated files #
-######################
-.DS_Store
-.DS_Store?
-.vscode
-.Trashes
-ehthumbs.db
-Thumbs.db
-.AppleDouble
-.LSOverride
-.metadata_never_index
-
-# Thumbnails
-############
-._*
-
-# Icon must end with two \r
-###########################
-Icon
-
-# Files that might appear in the root of a volume
-#################################################
-.DocumentRevisions-V100
-.fseventsd
-.dbfseventsd
-.Spotlight-V100
-.TemporaryItems
-.Trashes
-.trash
-.VolumeIcon.icns
-.com.apple.timemachine.donotpresent
-.com.apple.timemachine.supported
-.PKInstallSandboxManager
-.PKInstallSandboxManager-SystemSoftware
-.file
-.hotfiles.btree
-.quota.ops.user
-.quota.user
-.quota.ops.group
-.quota.group
-.vol
-.efi
-
-# Directories potentially created on remote AFP share
-#####################################################
-.AppleDB
-.AppleDesktop
-Network Trash Folder
-Temporary Items
-.apdisk
-.Mobile*
-.disk_*
-
-# Sherlock files
-################
-TheFindByContentFolder
-TheVolumeSettingsFolder
-.FBCIndex
-.FBCSemaphoreFile
-.FBCLockFolder
-EOF
-}
-
-function App_DefineVariables {
 #==============================================
+function add_on {
+
+  # think: every script that should not be under the main bashlava.sh
+  # This will make easier to maintain de project, minimise cluter, minimise break changes, easy to accept PR
+
+  source "${addon_fct_path}/help.sh"
+  source "${addon_fct_path}/alias.sh"
+  source "${addon_fct_path}/examples.sh"
+  source "${addon_fct_path}/templates.sh"
+
+  # MYCONFIG / Define your own custom add-on scripts. `custom_*.sh` is part of .gitignore
+  source "${addon_fct_path}/custom_pascal.sh"
+}
+
+#==============================================
+function App_DefineVariables {
+
+# MYCONFIG / bashlava git repo location. Required to call your add-on scripts (absolut path)
+git_repo_path="/Volumes/960G/_pascalandy/11_FirePress/Github/firepress-org/bash-script-template"
+addon_fct_path="${git_repo_path}/add-on"
+
 #	Date generators
  date_nano="$(date +%Y-%m-%d_%HH%Ms%S-%N)";
   date_sec="$(date +%Y-%m-%d_%HH%Ms%S)";
@@ -989,7 +652,7 @@ function main() {
   input_1=$1
   if [[ -z "$1" ]]; then    #if empty
     clear
-    my_message="You must provide at least one attribute." App_Pink
+    my_message="You must provide at least one attribute." App_Green
     App_Stop
   else
     input_1=$1
@@ -1014,10 +677,14 @@ function main() {
   script_init "$@"
   cron_init
   colour_init
+
+  # Source your add-on script from here
+  add_on
+
   #lock_init system
 
-  # Attribute #1
-  # It accept 2 other attributes
+  # Attribute #1. It accepts two more attributes
+  # tk FEAT add logic if 
   clear
   $1
 }
