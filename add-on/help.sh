@@ -44,11 +44,44 @@ input_2="bashlava_help.md"
 App_glow && rm bashlava_help.md || true
 }
 
+function help-workflow {
+cat <<EOF > bashlava_help.md
+# Workflows
+for https://github.com/firepress-org/ghostfire/
+
+## A) classic Git worklow
+
+We can do a lot with only two commands!
+
+- we are on branch edge and we update code, push commits. Let's push version 3.5.1 of our app.
+
+master 3.5.1 <==
+
+- will squash commits on branch the master
+- then, it will trigger cl (will update the version in our CHANGELOG with the latest commits)
+- the system will prompt to edit the CHANGELOG (update CHANGELOG if needed). Once CHANGELOG IS CLEAN ...
+
+cl-push <==
+
+- this will push a pre-formated commit: "Update APP to VERSION"
+- then, it will trigger <release> (which will push a tag and push the release on GitHub
+- then it will trigger <edge>, which is a perform representation of master
+
+## B) alternative worklow
+
+if we don't want to sqaush our commit into master, we can use:
+
+master-nosq 3.5.1 <==
+EOF
+
+input_2="bashlava_help.md"
+App_glow && rm bashlava_help.md || true
+}
+
 function help-bash {
 cat <<EOF > bashlava_help.md
 ## Operator	Description
 
-```
   ! EXPRESSION	  The EXPRESSION is false.
   -n STRING	      The length of STRING is greater than zero.
   -z STRING	      The lengh of STRING is zero (ie it is empty).
@@ -63,39 +96,11 @@ cat <<EOF > bashlava_help.md
       -s FILE	    FILE exists and its size is greater than zero (ie. it is not empty).
       -w FILE	    FILE exists and the write permission is granted.
       -x FILE	    FILE exists and the execute permission is granted.
-```
+
 EOF
 
 input_2="utility_help.md"
 App_glow && rm utility_help.md || true
-}
-
-function help-workflow {
-cat <<EOF > bashlava_help.md
-# Workflows
-for https://github.com/firepress-org/ghostfire/
-
-## A1) classic worklow
-
-1. cmd <edge> (update code on edge)
-2. cmd <master 3.5.1>  (to squash commits on branch master)
-                      (the system will prompt to edit the CHANGELOG.md)
-3. cmd <release 3.5.1> (will push tag and release on github)
-4. At this point, we are back on fresh <edge> branch 
-
-## A2) alternative worklow
-
-2. cmd <master-nosq 3.5.1>  (without squashing commits on branch master)
-
-## B) Dockerfile workflow
-
-- During step 1 above <appversion 3.5.1> to update the Dockerfile
-- Example when updating for https://github.com/firepress-org/ghostfire/
-
-EOF
-
-input_2="bashlava_help.md"
-App_glow && rm bashlava_help.md || true
 }
 
 function help-pr-process {
