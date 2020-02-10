@@ -1,44 +1,32 @@
 #!/usr/bin/env bash
 
-function r {
-  release
+function r { release
 }
-function appversion {
-  dk_version
+function appversion { dk_version
 }
-function version {
-    my_message="version was too generic. Try: appversion" App_Blue
+function version { my_message="version was too generic. Try: appversion" App_Blue
 }
-function c {
-  push # think commit
+function c { push # think commit
 }
-function bashlava {
-  help
+function bashlava { help
 }
-function -h {
-  help
+function h { help
 }
-function dk-show {
-  dk-view
+function -h { help
 }
-function cl-show {
-  cl-view
+function dk-show { dk-view
 }
-function list {
-  which
+function cl-show { cl-view
 }
-function logs {
-  log
+function list { which
 }
-function stats {
-  status
+function logs { log
 }
-function stat {
-  status
+function stats { status
 }
-function pass {
-  passgen
+function stat { status
 }
-function passfull {
-  passgen
+function pass { passgen
+}
+function passfull { passgen
 }
