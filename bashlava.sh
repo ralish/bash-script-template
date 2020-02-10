@@ -185,14 +185,7 @@ function cl {
 
   App_input2_rule
   App_Is_master
-
-  if [ -f CHANGELOG.md ]; then
-    echo "Good, lets continue" | 2>/dev/null
-  else
-    my_message="CHANGELOG.md does not exit. Let's create one." App_Blue
-    init_changelog && \
-    App_Stop && echo
-  fi
+  App_Is_changelog
 
 # build the message to insert in the CHANGELOG
   touch ~/temp/tmpfile && rm ~/temp/tmpfile || true
@@ -235,7 +228,7 @@ function cl {
 }
 
 function cl-read {
-  # think I wonder what in my CHANGELOG.md
+  # think: Show me the CHANGELOG.md
   input_2="CHANGELOG.md"
   App_input2_rule
   App_glow50
@@ -277,6 +270,16 @@ function App_Is_Dockerfile {
     echo "Good, lets continue" | 2>/dev/null
   else
     my_message="Dockerfile does not exit. Let's create one." App_Pink && init_dockerfile && App_Stop
+  fi
+}
+
+function App_Is_changelog {
+  if [ -f CHANGELOG.md ]; then
+    echo "Good, lets continue" | 2>/dev/null
+  else
+    my_message="CHANGELOG.md does not exit. Let's create one." App_Blue
+    init_changelog && \
+    App_Stop && echo
   fi
 }
 
