@@ -205,8 +205,8 @@ function release {
   edge
 
   # let's cheers up a bit!
-  clear && figlet_message="Good job!" App_figlet;
-  clear && figlet_message="v ${app_version}" App_figlet;
+  clear && figlet_message="Good job :-p" App_figlet;
+  figlet_message="${app_version} is up!" App_figlet;
 }
 
 function edge {
@@ -477,16 +477,16 @@ function App_UpdateDockerfileVersion {
   App_GetVarFromDockerile
   version_after=${app_version}
 
-  # confirm change was well executed
-  App_GetVarFromDockerile
-  if [[ "${version_before}" == "${version_after}" ]]; then
-    my_message="${version_before} <== Dockerfile version before" App_Pink
-    my_message="${version_after} <== Dockerfile version after" App_Pink
-    my_message="The versions did NOT changed. Is it ok?" App_Pink && sleep 5
-  else
-    my_message="${version_before} <== Dockerfile version before" App_Green
-    my_message="${version_after} <== Dockerfile version after" App_Green
-  fi
+  # to debug if needed | confirm change was well executed (to dubug id needed)
+  #App_GetVarFromDockerile
+  #if [[ "${version_before}" == "${version_after}" ]]; then
+  #  my_message="${version_before} <== Dockerfile version before" App_Pink
+  #  my_message="${version_after} <== Dockerfile version after" App_Pink
+  #  my_message="The versions did NOT changed. Is it ok?" App_Pink && sleep 5
+  #else
+  #  my_message="${version_before} <== Dockerfile version before" App_Green
+  #  my_message="${version_after} <== Dockerfile version after" App_Green
+  #fi
 }
 
 function App_GetVarFromDockerile {
