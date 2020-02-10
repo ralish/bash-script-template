@@ -116,10 +116,21 @@ function cl {
   App_Is_master
   App_Is_changelog
 
-  # update version within the Dockerfile. It might be already updated but sometimes it's not.
-  tag_version="${input_2}"
+  ### update version within the Dockerfile.
+  # sometimes we push 3.15.2-r4, this will clean "-r4"
+  version_before=$(cat Dockerfile | grep VERSION= | head -n 1 | grep -o '".*"' | sed 's/"//g')
   tag_version_clean=$(echo $tag_version | sed 's/-r.*//g')
   sed -i '' "s/^ARG VERSION=.*$/ARG VERSION=\"$tag_version_clean\"/" Dockerfile
+  version_after=$(cat Dockerfile | grep VERSION= | head -n 1 | grep -o '".*"' | sed 's/"//g')
+
+  if [[ "${version_before}" != "${version_after}" ]]; then
+    my_message="${version_before} <== Dockerfile version before" App_Pink
+    my_message="${version_before} <== Dockerfile version before" App_Pink
+    my_message="The version did NOT changed. Is it ok?" App_Pink && sleep 5
+  else
+    my_message="${version_before} <== Dockerfile version before" App_Blue
+    my_message="${version_after} <== Dockerfile version after" App_Blue && sleep 1
+  fi
 
 # build the message to insert in the CHANGELOG
   touch ~/temp/tmpfile && rm ~/temp/tmpfile || true
@@ -162,6 +173,13 @@ function cl {
   # then release
 }
 
+function cl-view {
+  # think: Show me the CHANGELOG.md
+  input_2="CHANGELOG.md"
+  App_input2_rule
+  App_glow50
+}
+
 function cl-push {
   # think: commit & push message: "Update APP_NAME to APP_VERSION"
   App_Is_master
@@ -171,15 +189,9 @@ function cl-push {
   git commit . -m "Update ${app_name} to v${app_version}" && \
   git push origin master
 
-  input_2=${app_version}
+  # emulate input_2 for <release>
+  input_2="${app_version}"
   release
-}
-
-function cl-view {
-  # think: Show me the CHANGELOG.md
-  input_2="CHANGELOG.md"
-  App_input2_rule
-  App_glow50
 }
 
 function release {
@@ -195,20 +207,13 @@ function release {
 
   # give time to user to CTRL-C if he changes is mind
   clear
-  my_message="We are about to create a release:" App_Blue && sleep 3
+  my_message="We are about to create a release:" App_Blue && sleep 1
 
   # Tag
   # update version within the Dockerfile. It might be already updated but sometimes it's not.
-  tag_version="${input_2}"
-  tag_version_clean=$(echo $tag_version | sed 's/-r.*//g')
-  sed -i '' "s/^ARG VERSION=.*$/ARG VERSION=\"$tag_version_clean\"/" Dockerfile
-
-  git add . && \
-  git commit -m "Updated to version: $tag_version" && \
-  git push && sleep 1 && \
-  git tag ${tag_version} && \
-  git push --tags && echo
-  # Tag is done
+  app_version=$(cat Dockerfile | grep VERSION= | head -n 1 | grep -o '".*"' | sed 's/"//g')
+  git tag ${app_version} && sleep 1 && \
+  git push --tags && sleep 1 && echo
 
   # Gather vars to include in the release
   app_name=$(cat Dockerfile | grep APP_NAME= | head -n 1 | grep -o '".*"' | sed 's/"//g')
@@ -219,17 +224,18 @@ function release {
 
   App_release_check_vars && \
  
-  echo "Let's release version: ${tag_version}" && sleep 2 && \
+   # give time to user to CTRL-C if he changes is mind
   clear && echo && \
+  my_message="Let's release version: ${app_version}:" App_Blue && sleep 1
 
   hub release create -oc \
-    -m "${tag_version}" \
+    -m "${app_version}" \
     -m "${release_message1}" \
     -m "${release_message2}" \
     -t "$(git rev-parse HEAD)" \
-    "${tag_version}" && \
+    "${app_version}" && \
 
-  echo && my_message="${git_repo_url}/releases/tag/${tag_version}" App_Blue && \
+  echo && my_message="${git_repo_url}/releases/tag/${app_version}" App_Blue && \
   edge
 }
 
@@ -271,24 +277,24 @@ function dk_view {
 }
 
 function sq {
-# usage: bashlava.sh sq 3 "Add fct xyz"
-# think: squash. The fct master does squash our commits as well
+  # usage: bashlava.sh sq 3 "Add fct xyz"
+  # think: squash. The fct master does squash our commits as well
 
-App_Is_commit_unpushed
-App_input2_rule
-App_input3_rule
+  App_Is_commit_unpushed
+  App_input2_rule
+  App_input3_rule
 
-backwards_steps="${input_2}"
-git_message="${input_3}"
-usage="sq 3 'Add fct xyz'"
+  backwards_steps="${input_2}"
+  git_message="${input_3}"
+  usage="sq 3 'Add fct xyz'"
 
-git reset --hard HEAD~"${backwards_steps}" && \
-git merge --squash HEAD@{1} && \
-git push origin HEAD --force && \
-git status && \
-git add -A && \
-git commit -m "${git_message} / squashed" && \
-git push;
+  git reset --hard HEAD~"${backwards_steps}" && \
+  git merge --squash HEAD@{1} && \
+  git push origin HEAD --force && \
+  git status && \
+  git add -A && \
+  git commit -m "${git_message} / squashed" && \
+  git push;
 }
 
 function pr {
@@ -419,12 +425,10 @@ function App_Curlurl {
   fi
 }
 function App_release_check_vars {
-  if [[ -z "${tag_version}" ]]; then
-    my_message="ERROR: tag_version is empty." App_Pink App_Stop
-  elif [[ -z "${app_name}" ]]; then
-    my_message="ERROR: APP_NAME is empty." App_Pink App_Stop
-  elif [[ -z "${github_user}" ]]; then
-    my_message="ERROR: GITHUB_USER is empty." App_Pink App_Stop
+  if [[ -z "${app_name}" ]]; then
+    my_message="ERROR: app_name is empty." App_Pink App_Stop
+  elif [[ -z "${app_version}" ]]; then
+    my_message="ERROR: git_repo_url is empty." App_Pink App_Stop
   elif [[ -z "${git_repo_url}" ]]; then
     my_message="ERROR: git_repo_url is empty." App_Pink App_Stop
   elif [[ -z "${release_message1}" ]]; then
@@ -432,13 +436,6 @@ function App_release_check_vars {
   elif [[ -z "${release_message2}" ]]; then
     my_message="ERROR: release_message2 is empty." App_Pink App_Stop
   fi
-
-  echo "${tag_version} < tag_version"
-  echo "${app_name} < app_name"
-  echo "${github_user} < github_user"
-  echo "${git_repo_url} < git_repo_url"
-  echo "${release_message1} < release_message1"
-  echo "${release_message2} < release_message2"
 
   url_to_check=${git_repo_url}
   App_Curlurl
@@ -636,21 +633,18 @@ function main() {
     input_3=$3
   fi
 
-  # safety (must be after setting the empty input)
+  # Safety run our bachscript (must be after setting the empty input)
+  # set -o xtrace # <== Trace the execution of the script (debug)
   set -eou pipefail
-    # set -o xtrace # <== Trace the execution of the script (debug)
 
   script_init "$@"
   cron_init
   colour_init
-
-  # Use add-on scripts
-  add_on
-
+  add_on  # Use add-on scripts
   #lock_init system
 
   # Attribute #1. It accepts two more attributes
-  # tk FEAT add logic if 
+  # tk FEAT add logic to confirm the function exist or not
   clear
   $1
 }
