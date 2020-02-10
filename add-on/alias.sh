@@ -4,8 +4,12 @@ function r {
   release
 }
 function appversion {
-  dk_update
+  dk_version
 }
+function version {
+    my_message="version was too generic. Try: appversion" App_Blue
+}
+
 function c {
   push # think commit
 }
