@@ -6,6 +6,10 @@ function h { help
 }
 function -h { help
 }
+function m { master
+}
+function e { edge
+}
 function r { release
 }
 function c { push # think push commit commit

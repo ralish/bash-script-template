@@ -60,7 +60,8 @@ function dk {
   git commit . -m "Update ${app_name} to version ${app_version}" && \
   git push origin edge
 
-  my_message="cmd <ci> can be useful at this point when our Dockerfile is built on Github Actions." App_Blue
+  echo && my_message="cmd <ci> can be useful at this point when our Dockerfile is built on Github Actions." App_Blue
+  # tk maybe build a github action ci watcher...
 }
 
 function dk-view {
@@ -166,16 +167,12 @@ function release {
   App_GetVarFromDockerile
   log
 
-  # push updates made on CHANGELOG.md
-  git commit . -m "Update ${app_name} to version ${app_version}" && \
-  git push origin master
+  # push updates
+  git commit . -m "Update CHANGELOG.md to version ${app_version}" && \
+  git push origin master && \
 
   App_Is_dockerfile
   App_Is_hub_installed
-
-   # give time to user to CTRL-C if he changes is mind
-  clear && echo && \
-  my_message="Let's release version: ${app_version}:" App_Blue && sleep 1
 
   # Tag our release
   git tag ${app_version} && git push --tags && echo
