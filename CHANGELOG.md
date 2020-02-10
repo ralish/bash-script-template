@@ -12,6 +12,10 @@ Based on this [template](https://gist.github.com/pascalandy/af709db02d3fe132a3e6
 
 # Releases
 
+## 0.9.5
+### ⚡️ Updates
+- 45345aa FIX if logic
+
 ## 0.9.4
 ### ⚡️ Updates
 - 12bbab0 Fix typo /squash
