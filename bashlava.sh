@@ -477,16 +477,17 @@ function App_UpdateDockerfileVersion {
   App_GetVarFromDockerile
   version_after=${app_version}
 
-  # to debug if needed | confirm change was well executed (to dubug id needed)
-  #App_GetVarFromDockerile
-  #if [[ "${version_before}" == "${version_after}" ]]; then
-  #  my_message="${version_before} <== Dockerfile version before" App_Pink
-  #  my_message="${version_after} <== Dockerfile version after" App_Pink
-  #  my_message="The versions did NOT changed. Is it ok?" App_Pink && sleep 5
-  #else
-  #  my_message="${version_before} <== Dockerfile version before" App_Green
-  #  my_message="${version_after} <== Dockerfile version after" App_Green
-  #fi
+  # To debug if needed
+      # confirm change was well executed (to dubug id needed)
+      #App_GetVarFromDockerile
+      #if [[ "${version_before}" == "${version_after}" ]]; then
+      #  my_message="${version_before} <== Dockerfile version before" App_Pink
+      #  my_message="${version_after} <== Dockerfile version after" App_Pink
+      #  my_message="The versions did NOT changed. Is it ok?" App_Pink && sleep 5
+      #else
+      #  my_message="${version_before} <== Dockerfile version before" App_Green
+      #  my_message="${version_after} <== Dockerfile version after" App_Green
+      #fi
 }
 
 function App_GetVarFromDockerile {
@@ -505,7 +506,7 @@ function App_GetVarFromDockerile {
   fi
 
   # debug if needed
-  # my_message="Available vars: ${app_name}, ${app_version}, ${github_user}" App_Blue && sleep 11
+    # my_message="Available vars: ${app_name}, ${app_version}, ${github_user}" App_Blue && sleep 11
 }
 
 function App_figlet {
@@ -695,8 +696,8 @@ function main() {
   fi
 
   # Safety run our bachscript (must be after setting the empty input)
-  # set -o xtrace # <== Trace the execution of the script (debug)
   set -eou pipefail
+  # set -o xtrace # <== to debug if needed / Trace the execution of the script
 
   script_init "$@"
   cron_init
