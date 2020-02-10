@@ -168,7 +168,7 @@ function release {
   log
 
   # push updates
-  git commit . -m "Update CHANGELOG.md to version ${app_version}" && \
+  git commit . -m "Update CHANGELOG to version ${app_version}" && \
   git push origin master && \
 
   App_Is_dockerfile
@@ -342,10 +342,12 @@ function App_Changelog_Update {
   rm ~/temp/tmpfile3 || true
   rm ~/temp/tmpfile4 || true
 
+  my_message="The system will open the CHANGELOG file, so you can edit it." App_Blue && sleep 2 && \
+
   # Manually edit CHANGELOG in terminal
   nano CHANGELOG.md
 
-  # then run: cl
+  # then run: release
 }
 
 function App_Is_master {
