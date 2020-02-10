@@ -8,8 +8,7 @@
 		  #
 		 # #
 		#   #
-function help-bashlava {
-
+function help-main {
 cat <<EOF > bashlava_help.md
 
 # help
@@ -31,6 +30,8 @@ Edit the these help file under directory /add_on.
 
 ## Requirements
 
+We expect that bashlava is installed here /usr/local/bin/bashlava.sh
+
 - [Docker](https://docs.docker.com/install/)
 - [Hub](https://github.com/github/hub#installation)
 - [Terminal Markdown Viewer](https://github.com/axiros/terminal_markdown_viewer)
@@ -40,12 +41,10 @@ Edit the these help file under directory /add_on.
 - test
 EOF
 input_2="bashlava_help.md"
-glow-all && rm bashlava_help.md || true
+App_glow && rm bashlava_help.md || true
 }
 
 function help-bash {
-rm bashlava_help.md || true
-
 cat <<EOF > bashlava_help.md
 ## Operator	Description
 
@@ -68,11 +67,10 @@ cat <<EOF > bashlava_help.md
 EOF
 
 input_2="utility_help.md"
-glow-all && rm utility_help.md || true
+App_glow && rm utility_help.md || true
 }
 
 function help-workflow {
-
 cat <<EOF > bashlava_help.md
 # Workflows
 for https://github.com/firepress-org/ghostfire/
@@ -99,11 +97,10 @@ on branch edge:
 EOF
 
 input_2="bashlava_help.md"
-glow-all && rm bashlava_help.md || true
+App_glow && rm bashlava_help.md || true
 }
 
 function help-pr-process {
-
 cat <<EOF > bashlava_help.md
 # Orginal post
 - https://www.gatsbyjs.org/blog/2020-01-08-git-workflows/
@@ -147,5 +144,15 @@ git rebase feat/headless-cms
 EOF
 
 input_2="bashlava_help.md"
-glow-all && rm bashlava_help.md || true
+App_glow && rm bashlava_help.md || true
+}
+
+function help-which {
+cat <<EOF > bashlava_help.md
+
+# Available functions
+
+EOF
+input_2="bashlava_help.md"
+App_glow && rm bashlava_help.md || true
 }
