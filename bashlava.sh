@@ -26,8 +26,13 @@ function master {
   # usage bashlava.sh master 3.5.1
   # think squash and rebase edge to master (with squash for a clean master branch)
 
-  App_Is_commit_unpushed
+  if [[ "${input_2}" == "not-set" ]]; then
+    actual_version=$(cat Dockerfile | grep VERSION= | head -n 1 | grep -o '".*"' | sed 's/"//g')
+    my_message="The actual version is: ${actual_version}" App_Blue
+  fi
+
   App_input2_rule
+  App_Is_commit_unpushed
   App_Is_changelog
   App_Is_dockerfile
   App_Is_gitignore
@@ -79,8 +84,13 @@ function master-nosq {
   # usage: bashlava.sh master-nosq 3.5.1
   # think rebase master from edge NO_SQUASH
 
-  App_Is_commit_unpushed
+  if [[ "${input_2}" == "not-set" ]]; then
+    actual_version=$(cat Dockerfile | grep VERSION= | head -n 1 | grep -o '".*"' | sed 's/"//g')
+    my_message="The actual version is: ${actual_version}" App_Blue
+  fi
+  
   App_input2_rule
+  App_Is_commit_unpushed
   App_Is_changelog
   App_Is_dockerfile
   App_Is_gitignore
