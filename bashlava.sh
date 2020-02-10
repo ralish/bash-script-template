@@ -116,7 +116,8 @@ function cl {
   App_Is_master
   App_Is_changelog
 
-  # update version within the Dockerfile. It might be already updated but sometimes it's not.
+  # update version within the Dockerfile.
+  # sometimes we push 3.15.2-r4, this will clean "-r4"
   tag_version="${input_2}"
   tag_version_clean=$(echo $tag_version | sed 's/-r.*//g')
   sed -i '' "s/^ARG VERSION=.*$/ARG VERSION=\"$tag_version_clean\"/" Dockerfile
@@ -171,7 +172,7 @@ function cl-push {
   git commit . -m "Update ${app_name} to v${app_version}" && \
   git push origin master
 
-  input_2=${app_version}
+  export input_2=${app_version}
   release
 }
 
@@ -199,20 +200,15 @@ function release {
 
   # Tag
   # update version within the Dockerfile. It might be already updated but sometimes it's not.
-  tag_version="${input_2}"
-  tag_version_clean=$(echo $tag_version | sed 's/-r.*//g')
-  sed -i '' "s/^ARG VERSION=.*$/ARG VERSION=\"$tag_version_clean\"/" Dockerfile
-
+  tag_version=${input_2}
   git add . && \
-  git commit -m "Updated to version: $tag_version" && \
+  git commit -m "Push Tag to v${tag_version}" && sleep 1 && \
   git push && sleep 1 && \
-  git tag ${tag_version} && \
-  git push --tags && echo
-  # Tag is done
+  git tag ${tag_version} && sleep 1 && \
+  git push --tags && sleep 1 && echo
 
   # Gather vars to include in the release
   app_name=$(cat Dockerfile | grep APP_NAME= | head -n 1 | grep -o '".*"' | sed 's/"//g')
-  github_user=$(cat Dockerfile | grep GITHUB_USER= | head -n 1 | grep -o '".*"' | sed 's/"//g')
   git_repo_url="https://github.com/${github_user}/${app_name}"
   release_message1="Refer to CHANGELOG.md for details about this release."
   release_message2="This release was quickly prepared, packaged, tagged and published using https://github.com/firepress-org/bashlava"
@@ -271,24 +267,24 @@ function dk_view {
 }
 
 function sq {
-# usage: bashlava.sh sq 3 "Add fct xyz"
-# think: squash. The fct master does squash our commits as well
+  # usage: bashlava.sh sq 3 "Add fct xyz"
+  # think: squash. The fct master does squash our commits as well
 
-App_Is_commit_unpushed
-App_input2_rule
-App_input3_rule
+  App_Is_commit_unpushed
+  App_input2_rule
+  App_input3_rule
 
-backwards_steps="${input_2}"
-git_message="${input_3}"
-usage="sq 3 'Add fct xyz'"
+  backwards_steps="${input_2}"
+  git_message="${input_3}"
+  usage="sq 3 'Add fct xyz'"
 
-git reset --hard HEAD~"${backwards_steps}" && \
-git merge --squash HEAD@{1} && \
-git push origin HEAD --force && \
-git status && \
-git add -A && \
-git commit -m "${git_message} / squashed" && \
-git push;
+  git reset --hard HEAD~"${backwards_steps}" && \
+  git merge --squash HEAD@{1} && \
+  git push origin HEAD --force && \
+  git status && \
+  git add -A && \
+  git commit -m "${git_message} / squashed" && \
+  git push;
 }
 
 function pr {
@@ -419,12 +415,8 @@ function App_Curlurl {
   fi
 }
 function App_release_check_vars {
-  if [[ -z "${tag_version}" ]]; then
-    my_message="ERROR: tag_version is empty." App_Pink App_Stop
-  elif [[ -z "${app_name}" ]]; then
-    my_message="ERROR: APP_NAME is empty." App_Pink App_Stop
-  elif [[ -z "${github_user}" ]]; then
-    my_message="ERROR: GITHUB_USER is empty." App_Pink App_Stop
+  if [[ -z "${app_name}" ]]; then
+    my_message="ERROR: app_name is empty." App_Pink App_Stop
   elif [[ -z "${git_repo_url}" ]]; then
     my_message="ERROR: git_repo_url is empty." App_Pink App_Stop
   elif [[ -z "${release_message1}" ]]; then
@@ -433,9 +425,7 @@ function App_release_check_vars {
     my_message="ERROR: release_message2 is empty." App_Pink App_Stop
   fi
 
-  echo "${tag_version} < tag_version"
   echo "${app_name} < app_name"
-  echo "${github_user} < github_user"
   echo "${git_repo_url} < git_repo_url"
   echo "${release_message1} < release_message1"
   echo "${release_message2} < release_message2"
@@ -636,21 +626,18 @@ function main() {
     input_3=$3
   fi
 
-  # safety (must be after setting the empty input)
+  # Safety run our bachscript (must be after setting the empty input)
+  # set -o xtrace # <== Trace the execution of the script (debug)
   set -eou pipefail
-    # set -o xtrace # <== Trace the execution of the script (debug)
 
   script_init "$@"
   cron_init
   colour_init
-
-  # Use add-on scripts
-  add_on
-
+  add_on  # Use add-on scripts
   #lock_init system
 
   # Attribute #1. It accepts two more attributes
-  # tk FEAT add logic if 
+  # tk FEAT add logic to confirm the function exist or not
   clear
   $1
 }
