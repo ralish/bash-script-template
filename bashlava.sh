@@ -166,11 +166,8 @@ function release {
   App_Is_hub_installed
 
   # give time to user to CTRL-C if he changes is mind
-  min=1 max=4 message="WARNING: is CHANGELOG.md is updated using /cl_update/"
-  for ACTION in $(seq ${min} ${max}); do
-    echo -e "${col_pink} ${message} ${col_pink}" && sleep 0.4 && clear && \
-    echo -e "${col_blue} ${message} ${col_blue}" && sleep 0.4 && clear
-  done
+  clear
+  my_message="We are about to create a release:" App_Blue && sleep 3
 
   # Tag
   # update tag within the Dockerfile. It might be already updated but sometimes it's not.
@@ -182,18 +179,19 @@ function release {
   git commit -m "Updated to version: $tag_version" && \
   git push && sleep 1 && \
   git tag ${tag_version} && \
-  git push --tags
+  git push --tags && \
+  # Tag is done
 
-  first_name_author=$(git log | awk '/Author:/' | head -n1 | awk '{print $2}')
-  tag_version="${input_2}"
+  # Gather vars to include in the release
   app_name=$(cat Dockerfile | grep APP_NAME= | head -n 1 | grep -o '".*"' | sed 's/"//g')
   github_user=$(cat Dockerfile | grep GITHUB_USER= | head -n 1 | grep -o '".*"' | sed 's/"//g')
   git_repo_url="https://github.com/${github_user}/${app_name}"
   release_message1="Refer to CHANGELOG.md for details about this release."
   release_message2="This release was quickly prepared, packaged, tagged and published using https://github.com/firepress-org/bashlava"
 
-  App_release_check_vars
-  
+  App_release_check_vars && \
+  my_message="checkpoint 333" App_Blue && sleep 5 && \
+ 
   clear && echo && \
   echo "Let's release version: ${tag_version}" && sleep 0.4 && \
 
@@ -202,13 +200,15 @@ function release {
     -m "${release_message1}" \
     -m "${release_message2}" \
     -t "$(git rev-parse HEAD)" \
-    "${tag_version}"
+    "${tag_version}" && \
 
-  # https://hub.github.com/hub-release.1.html
+  echo "${git_repo_url}/releases/tag/${tag_version}" && \
 
-  echo "${git_repo_url}/releases/tag/${tag_version}"
+  my_message="checkpoint 334" App_Blue && sleep 5 && \
 
-  edge
+  edge && \
+
+  my_message="checkpoint 335" App_Blue && sleep 5;
 }
 
 function edge {
@@ -325,7 +325,6 @@ function App_Is_master {
     my_message="Try: go-m" App_Blue && App_Stop
   fi
 }
-
 function App_Is_commit_unpushed {
   if [[ $(git status | grep -c "nothing to commit") == "1" ]]; then
     echo "Good, lets continue" | 2>/dev/null
@@ -333,7 +332,6 @@ function App_Is_commit_unpushed {
     my_message="You must push your commit(s) before doing a rebase." App_Pink && App_Stop
   fi
 }
-
 function App_Is_dockerfile {
   if [ -f Dockerfile ]; then
     echo "Good, lets continue" | 2>/dev/null
@@ -341,7 +339,6 @@ function App_Is_dockerfile {
     my_message="Dockerfile does not exit. Let's create one." App_Pink && init_dockerfile && App_Stop
   fi
 }
-
 function App_Is_changelog {
   if [ -f CHANGELOG.md ]; then
     echo "Good, lets continue" | 2>/dev/null
@@ -351,7 +348,6 @@ function App_Is_changelog {
     App_Stop && echo
   fi
 }
-
 function App_Is_gitignore {
   if [ -f .gitignore ]; then
     echo "Good, lets continue" | 2>/dev/null
@@ -361,7 +357,6 @@ function App_Is_gitignore {
     App_Stop && echo
   fi
 }
-
 function App_Is_hub_installed {
   if [[ $(hub version | grep -c "hub version") == "1" ]]; then
     echo && my_message="Hub is installed." App_Blue
@@ -369,7 +364,6 @@ function App_Is_hub_installed {
     echo && my_message="Hub is missing. https://github.com/firepress-org/bash-script-template#requirements" App_Pink
   fi
 }
-
 function App_Is_docker_installed {
   if [[ $(docker version | grep -c "Client: Docker Engine") == "1" ]]; then
     my_message="Docker is installed." App_Blue
@@ -377,7 +371,6 @@ function App_Is_docker_installed {
     my_message="Docker is missing. https://github.com/firepress-org/bash-script-template#requirements" App_Pink
   fi
 }
-
 function App_input2_rule {
 # ensure the second attribute is not empty to continue
   if [[ "${input_2}" == "not-set" ]]; then
@@ -385,7 +378,6 @@ function App_input2_rule {
     App_Stop
   fi
 }
-
 function App_input3_rule {
 # ensure the third attribute is not empty to continue
   if [[ "${input_3}" == "not-set" ]]; then
@@ -393,11 +385,19 @@ function App_input3_rule {
     App_Stop
   fi
 }
-
+function App_Curlurl {
+  # must receive var: url_to_check
+  UPTIME_TEST=$(curl -Is ${url_to_check} | grep -io OK | head -1);
+  MATCH_UPTIME_TEST1="OK";
+  MATCH_UPTIME_TEST2="ok";
+  if [ "$UPTIME_TEST" = "$MATCH_UPTIME_TEST1" ] || [ "$UPTIME_TEST" = "$MATCH_UPTIME_TEST2" ]; then
+    my_message="${url_to_check} <== is online" App_Green
+  elif [ "$UPTIME_TEST" != "$MATCH_UPTIME_TEST1" ] || [ "$UPTIME_TEST" = "$MATCH_UPTIME_TEST2" ]; then
+    my_message="${url_to_check} <== is offline" App_Pink
+  fi
+}
 function App_release_check_vars {
-  if [[ -z "${first_name_author}" ]]; then
-    my_message="ERROR: first_name_author is empty." App_Pink App_Stop
-  elif [[ -z "${tag_version}" ]]; then
+  if [[ -z "${tag_version}" ]]; then
     my_message="ERROR: tag_version is empty." App_Pink App_Stop
   elif [[ -z "${app_name}" ]]; then
     my_message="ERROR: APP_NAME is empty." App_Pink App_Stop
@@ -411,23 +411,15 @@ function App_release_check_vars {
     my_message="ERROR: release_message2 is empty." App_Pink App_Stop
   fi
 
+  echo "${tag_version} < tag_version"
+  echo "${app_name} < app_name"
+  echo "${github_user} < github_user"
+  echo "${git_repo_url} < git_repo_url"
+  echo "${release_message1} < release_message1"
+  echo "${release_message2} < release_message2"
+
   url_to_check=${git_repo_url}
   App_Curlurl
-}
-
-function App_Curlurl {
-  # must receive var: url_to_check
-
-  UPTIME_TEST=$(curl -Is ${url_to_check} | grep -io OK | head -1);
-  MATCH_UPTIME_TEST1="OK";
-  MATCH_UPTIME_TEST2="ok";
-  #
-  if [ "$UPTIME_TEST" = "$MATCH_UPTIME_TEST1" ] || [ "$UPTIME_TEST" = "$MATCH_UPTIME_TEST2" ]; then
-    my_message="${url_to_check} <== is online" App_Green
-    
-  elif [ "$UPTIME_TEST" != "$MATCH_UPTIME_TEST1" ] || [ "$UPTIME_TEST" = "$MATCH_UPTIME_TEST2" ]; then
-    my_message="${url_to_check} <== is offline" App_Pink
-  fi
 }
 
 ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### #
