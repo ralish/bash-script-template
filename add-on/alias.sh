@@ -14,9 +14,11 @@ function commit { push # think push commit
 }
 function dk-show { dk-view
 }
+function dk-version { dk
+}
 function version { my_message="version is too generic. Are you looking for: dk-version" App_Blue
 }
-function udpate { my_message="update is too generic. Are you looking for: dk-version" App_Blue
+function udpate { my_message="update is too generic. Are you looking for: dk" App_Blue
 }
 function cl-show { cl-view
 }

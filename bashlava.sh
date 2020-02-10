@@ -41,7 +41,7 @@ function push {
   git commit -m "${input_2}" && clear && git push;
 }
 
-function dk-version {
+function dk {
   # think: dockerfile update version in our Dockerfile
   # usage: bashlava.sh version 1.50.1
   App_input2_rule
