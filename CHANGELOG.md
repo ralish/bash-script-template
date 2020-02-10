@@ -12,6 +12,34 @@ Based on this [template](https://gist.github.com/pascalandy/af709db02d3fe132a3e6
 
 # Releases
 
+## 0.9.0
+
+This is a important release as it's introducting add-ons. This will be important to scale to project and leave the core elements at there place.
+
+### 🚀 New feat.
+- 610dbf0 init add-on/utilities.sh
+
+### ⚡️ Updates
+- 16f98cc init fct App_Is_commit_unpushed, merge App_Tag into fct release, Add missing rules, rename dk_update to dk_version
+- 20954d5 🚀 update copy for workflow
+- e8c86a0 init alias version
+- 5d99150 add alias r
+- c37344e Init App_is_env_local_path, Init App_Is_hub_installed, move functions by groups
+- d01c4e4 removed merge App_release into release
+- 937dc03 add checkpoints in fct master
+- bc8c187 add alias appversion
+- 1bb36a2 rename edge-init to edge
+- 5e1f5f8 init App_Is_changelog
+- ed6ecae init App_Is_master, App_Is_Dockerfile
+- c82fe1c 🚀 refactor fct release
+- f7a0551 Optimize Dockerfile template
+- 8841eac update README, refactor fct cl, alias c /squash
+- 8a0994c various code optimizations
+- 610dbf0 init add-on/utilities.sh
+- 43b7a90 update add-on/help
+- 4b80939 move few fct under add-on/docker
+- 2f7d67d update App_Stop
+
 ## 0.8.14
 ### ⚡️ Updates
 - 0243fb7 remove dummy files
