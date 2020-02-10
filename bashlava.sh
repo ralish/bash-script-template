@@ -48,7 +48,7 @@ function dk {
   if [[ "${input_2}" == "not-set" ]]; then
     dk-view
   fi
-  
+
   App_input2_rule
   App_Is_edge
 
@@ -117,7 +117,8 @@ function master {
   git branch -D mrg_edge_2_master || true true && echo;
 
   # update CHANGELOG
-  export tag_version="${input_2}" cl
+  export tag_version="${input_2}"
+  cl
 }
 
 function master-nosq {
@@ -146,7 +147,8 @@ function master-nosq {
   git push origin master && echo;
 
   # update CHANGELOG
-  export tag_version="${input_2}" cl
+  export tag_version="${input_2}"
+  cl
 }
 
 function cl {
@@ -356,7 +358,7 @@ function App_Is_master {
   if [[ "${currentBranch}" == "master" ]]; then
     echo "Good, lets continue" | 2>/dev/null
   else
-    my_message="You must be on the master branch to perform this action." App_Pink
+    my_message="You must be on the <master> branch to perform this action." App_Pink
     my_message="Try: go-m" App_Blue && App_Stop
   fi
 }
@@ -365,7 +367,7 @@ function App_Is_edge {
   if [[ "${currentBranch}" == "edge" ]]; then
     echo "Good, lets continue" | 2>/dev/null
   else
-    my_message="You must be on the master branch to perform this action." App_Pink
+    my_message="You must be on the <edge> branch to perform this action." App_Pink
     my_message="Try: go-e" App_Blue && App_Stop
   fi
 }
