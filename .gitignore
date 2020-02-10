@@ -1,13 +1,13 @@
 # .gitignore
 ############
 custom_*.sh
-test
+env_local_path.sh
+.env
 .cache
 coverage
 dist
 node_modules
 npm-debug
-.env
 
 # Directories
 ############
