@@ -1,5 +1,8 @@
 #!/usr/bin/env bash
 
+function appversion {
+  dk_update
+}
 function c {
   push # think commit
 }
