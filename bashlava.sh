@@ -12,7 +12,7 @@
 		#   #
 function push {
 # push commit all & push all changes
-# usage: CMD ./utility.sh push "Add fct xyz"
+# usage: bashlava.sh push "Add fct xyz"
   App_input2_rule
 
   git status && \
@@ -23,7 +23,7 @@ function push {
 }
 
 function master {
-# usage utility.sh master
+# usage bashlava.sh master
 # think squash and rebase edge to master (with squash for a clean master branch)
 # idea from: https://www.gatsbyjs.org/blog/2020-01-08-git-workflows/
 
@@ -84,7 +84,7 @@ my_message="Back to work!" App_Blue;
 }
 
 function master-nosq {
-# usage: utility.sh master-nosq
+# usage: bashlava.sh master-nosq
 # think rebase master from edge no squash
 # NoAttributes needed, no prompt
 
@@ -113,7 +113,7 @@ my_message="Back to work!" App_Blue;
 }
 
 function edge-init {
-# usage: utility.sh master
+# usage: bashlava.sh master
 # think scrap branch edge and recreate it just like I would start a new feat branch
 # it assumes there will be no conflict with anybody else as I'm the only person using 'edge'
 
@@ -134,7 +134,7 @@ my_message="<edge> was reCREATED from <master>" App_Blue
 
 function dk_update {
 # think: dockerfile update version in our Dockerfile
-# usage: utility.sh version 1.50.1
+# usage: bashlava.sh version 1.50.1
 
   App_input2_rule
   tag_version="${input_2}"
@@ -154,8 +154,8 @@ function dk_view {
 }
 
 function sq {
-# squash
-# usage: /utility.sh sq 3 "Add fct xyz"
+# usage: bashlava.sh sq 3 "Add fct xyz"
+# think: squash. The fct master does squash our commits as well
 
 if [[ $(git status | grep -c "nothing to commit") == "1" ]]; then
   echo "Good, lets continue" | 2>/dev/null
@@ -180,54 +180,48 @@ git push;
 }
 
 function cl {
-  # think changelog
-
-  # is expecting a version
+  # think update the CHANGELOG.md by define on which version we are
+  # usage: bashlava.sh cl 3.5.1
   App_input2_rule
-
   App_Draft
 }
 
 function cl-read {
-  # think changelog
-
+  # think I wonder what in my CHANGELOG.md
   input_2="CHANGELOG.md"
-  # is expecting a version
   App_input2_rule
-
-  glow-all
+  App_glow50
 }
 
 function release {
-# push changelog
-# powerfull as it combines: tag + release + edge
-# usage: CMD ./utility.sh release 1.50.1
+# think push release + tags to github
+# at this point we commited our changelog and rebase to master
+# usage: bashlava.sh release 1.50.1
 
-  # is expecting a version
   App_input2_rule
 
-  # Prompt a warning
+  # give time to user to CTRL-C if he changes is mind
   min=1 max=4 message="WARNING: is CHANGELOG.md is updated using /cl_update/"
   for ACTION in $(seq ${min} ${max}); do
     echo -e "${col_pink} ${message} ${col_pink}" && sleep 0.4 && clear && \
     echo -e "${col_blue} ${message} ${col_blue}" && sleep 0.4 && clear
   done
 
-  currentBranch=$(git rev-parse --abbrev-ref HEAD)
   if [[ "${currentBranch}" == "master" ]]; then
-    tag_version="${input_2}"
-
-    tag
-    App_release
-    edge
+    echo "Good, lets continue" | 2>/dev/null
   else
-    my_message="You must be in the master branch." App_Pink
+    my_message="You must be on the master branch to perform this action." App_Pink && App_Stop
   fi
+
+  tag_version="${input_2}"
+  tag
+  App_release
+  edge
 }
 
 function tag {
+# usage: bashlava.sh tag 1.50.1
 # usually used as a sub fct of release
-# usage: CMD ./utility.sh tag 1.50.1
 
   App_input2_rule
 
@@ -279,15 +273,12 @@ function release_find_the_latest {
 }
 
 function which {
-  # list (show) which CMD (functions) are available
-  # we expect that utility is installed here /usr/local/bin/utility.sh
-  clear && echo && \
-  cat /usr/local/bin/utility.sh | awk '/function /' | awk '{print $2}' | sort -k2 -n | sed '/App_/d' | sed '/main/d' | sed '/utility/d'
-
-  # MYCONFIG If you want, you could list your add-on function here as well.
+  # If needed, you can list your add-on function here as well. We don't list them by default to minimize cluter.
+  help-which
+  cat /usr/local/bin/bashlava.sh | awk '/function /' | awk '{print $2}' \
+    | sort -k2 -n | sed '/App_/d' | sed '/main/d' | sed '/MYCONFIG/d' \
+    | sed '/\/usr\/local\/bin\//d' | sed '/utility/d'
 }
-
-
 
 function log {
   git --no-pager log --decorate=short --pretty=oneline -n25
@@ -315,7 +306,7 @@ function prt {
 
 # pre-requirments
   #git checkout ghostv3-dev && git pull ghostv3-dev # I'm here
-  #utility.sh push "my change dummy file"
+  #bashlava.sh push "my change dummy file"
 
 git checkout ghostv3-staging && git pull ghostv3-staging
 # hub sync
@@ -471,8 +462,6 @@ function test {
   my_message="Date is: ${date_sec}" App_Blue
 }
 
-
-
 function App_input2_rule {
 # ensure the second attribute is not empty to continue
   if [[ "${input_2}" == "not-set" ]]; then
@@ -490,7 +479,7 @@ function App_input3_rule {
 }
 
 function App_Stop {
-  my_message="Exit 1. Bye bye." App_Pink && echo && exit 1
+  my_message="(exit 1)" App_Pink && echo && exit 1
 }
 
 		  #
@@ -499,55 +488,30 @@ function App_Stop {
 function help {
   figlet_message="bashLaVa"
   App_figlet && \
-  help-bashlava
+  help-main && \
+  which
 }
 
-### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### #
-#
-# Apps in Docker
-#
-### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### #
 function App_figlet {
   docker_image="devmtl/figlet:1.0"
   docker run --rm ${docker_image} ${figlet_message}
 }
 
-function glow {
-# We can do better then cat
-# markdown viewer for your terminal
-
-# show the first 60 lines
+function App_glow50 {
+# markdown viewer for your terminal. Better than cat!
 
 docker run --rm -it \
   -v $(pwd):/sandbox \
   -w /sandbox \
-  devmtl/glow:0.2.0 glow ${input_2} | sed -n 12,50p
+  devmtl/glow:0.2.0 glow ${input_2} | sed -n 12,50p # show the first 60 lines
 }
 
-function glow-all {
+function App_glow {
 
 docker run --rm -it \
   -v $(pwd):/sandbox \
   -w /sandbox \
   devmtl/glow:0.2.0 glow ${input_2}
-}
-
-function lint {
-  docker run -it --rm \
-    -v $(pwd)/Dockerfile:/Dockerfile:ro \
-    redcoolbeans/dockerlint
-}
-
-function lint_hado {
-# tk wip
-  docker run --rm hadolint/hadolint:v1.16.3-4-gc7f877d hadolint --version && echo;
-
-  docker run --rm -i hadolint/hadolint:v1.16.3-4-gc7f877d hadolint \
-    --ignore DL3000 \
-    - < Dockerfile && \
-
-  echo && \
-  docker run -v `pwd`/Dockerfile:/Dockerfile replicated/dockerfilelint /Dockerfile
 }
 
 ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### #
@@ -559,20 +523,9 @@ function lint_hado {
 		 # #
 		#   #
 function passgen {
-  # password generator # no i,I,L,l,o,O,0
-  grp1=$(openssl rand -base64 32 | sed 's/[^123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghjkmnpqrstuvwxyz]//g' | cut -c11-14) && \
-  grp2=$(openssl rand -base64 32 | sed 's/[^123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghjkmnpqrstuvwxyz]//g' | cut -c2-25) && \
-  grp3=$(openssl rand -base64 32 | sed 's/[^123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghjkmnpqrstuvwxyz]//g' | cut -c21-24) && \
-  clear && \
-  echo "${grp1}_${grp2}_${grp3}"
-}
+  # password generator. See also "passgen_long" These char are not part of the password to minimize human error: i,I,L,l,o,O,0
 
-function passgen_long {
-  grp1=$(openssl rand -base64 32 | sed 's/[^123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghjkmnpqrstuvwxyz]//g' | cut -c11-14) && \
-  grp2=$(openssl rand -base64 48 | sed 's/[^123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghjkmnpqrstuvwxyz]//g' | cut -c2-50) && \
-  grp3=$(openssl rand -base64 32 | sed 's/[^123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghjkmnpqrstuvwxyz]//g' | cut -c21-24) && \
-  clear && \
-  echo "${grp1}_${grp2}_${grp3}"
+  docker run ctr.run/github.com/firepress-org/alpine:master sh -c "/usr/local/bin/random3.sh";
 }
 
 #==============================================
@@ -651,7 +604,8 @@ function main() {
   input_1=$1
   if [[ -z "$1" ]]; then    #if empty
     clear
-    my_message="You must provide at least one attribute." App_Green
+    my_message="You must provide at least one attribute!" App_Green
+    my_message="Try: 'bashlava.sh help'" App_Green
     App_Stop
   else
     input_1=$1
