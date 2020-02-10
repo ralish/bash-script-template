@@ -4,7 +4,7 @@
 
 ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### #
 #
-# Core fct
+# Core git workflow
 #
 ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### #
 		  #
@@ -23,118 +23,86 @@ function push {
 }
 
 function master {
-# usage bashlava.sh master
-# think squash and rebase edge to master (with squash for a clean master branch)
-# idea from: https://www.gatsbyjs.org/blog/2020-01-08-git-workflows/
+  # usage bashlava.sh master 3.5.1
+  # think squash and rebase edge to master (with squash for a clean master branch)
 
-# NoAttributes needed
+  App_Is_commit_unpushed
+  App_input2_rule
+  App_Is_changelog
+  App_Is_dockerfile
+  App_Is_gitignore
 
-if [[ $(git status | grep -c "nothing to commit") == "1" ]]; then
-  echo "Good, lets continue" | 2>/dev/null
-else
-  my_message="You must push your commit(s) before doing a rebase." App_Pink && App_Stop
-fi
+  # see logs
+  clear && logs
 
-# it case we forget
-App_Is_changelog
-App_Is_dockerfile
-App_Is_gitignore
+  # prompt
+  my_message="What are we about to merge here?" App_Blue
+  read -p "==> " squash_message
 
-# see logs
-clear && logs
+  # Update our local state
+  git checkout master && \
+  git pull origin master && \
 
-# prompt
-my_message="What are we about to merge here?" App_Blue
-read -p "==> " squash_message
+  # by using mrg_edge_2_master we can make a clean squash
+  # remove and create mrg_edge_2_master
+  git branch -D mrg_edge_2_master || true && \
+  git checkout -b mrg_edge_2_master && \
+  # no need to push it to origin (local branch only)
 
-# Update our local state
-git checkout master && \
-git pull origin master && \
+  # merge & squash edge to mrg_edge_2_master
+  git merge --squash edge && \
+  git commit . -m "${squash_message} /squash" && \
 
-# by using mrg_edge_2_master we can make a clean squash
-# remove and create mrg_edge_2_master
-git branch -D mrg_edge_2_master || true && \
-git checkout -b mrg_edge_2_master && \
-# no need to push it to origin (local branch only)
+  # back to master
+  git checkout master && \
 
-# merge & squash edge to mrg_edge_2_master
-git merge --squash edge && \
-git commit . -m "${squash_message} /squash" && \
+  # rebase (commits are already squashed at this point)
+  git rebase mrg_edge_2_master && \
+  #git merge mrg_edge_2_master && \
 
-# back to master
-git checkout master && \
-
-# rebase (commits are already squashed at this point)
-git rebase mrg_edge_2_master && \
-#git merge mrg_edge_2_master && \
-
-# fix conflicts if any
-  # stage all the changes we just made
-  # wrap up the rebase
+  # fix conflicts manually if any, then
   # git add . && \
   # git rebase --continue || true
 
-# push updates
-git push origin master && \
+  # push updates
+  git push origin master && \
 
-# clean up
-git branch -D mrg_edge_2_master || true && \
+  # clean up
+  git branch -D mrg_edge_2_master || true && \
 
-# back to branch edge
-edge
-
-### confirmation
-echo && my_message="<edge> was MERGED into <master>" App_Blue && \
-my_message="Back to work!" App_Blue;
+  # edit changelog
+  tag_version="${input_2}"
+  cl ${tag_version}
 }
 
 function master-nosq {
-# usage: bashlava.sh master-nosq
-# think rebase master from edge no squash
-# NoAttributes needed, no prompt
+  # usage: bashlava.sh master-nosq 3.5.1
+  # think rebase master from edge NO_SQUASH
 
-if [[ $(git status | grep -c "nothing to commit") == "1" ]]; then
-  echo "Good, lets continue" | 2>/dev/null
-else
-  my_message="You must push your commit(s) before doing a rebase." App_Pink && App_Stop
-fi
+  App_Is_commit_unpushed
+  App_input2_rule
+  App_Is_changelog
+  App_Is_dockerfile
+  App_Is_gitignore
 
-# Update our local state
-git checkout master && \
-git pull origin master && \
+  # Update our local state
+  git checkout master && \
+  git pull origin master && \
 
-# rebase
-git rebase edge && \
+  # rebase
+  git rebase edge && \
+  git push origin master && \
 
-# push updates
-git push origin master && \
-
-# back to branch edge
-git checkout edge
-
-### confirmation
-echo && my_message="Branch <edge> was merged to <master>" App_Blue && \
-my_message="Back to work!" App_Blue;
+  # edit changelog
+  tag_version="${input_2}"
+  cl ${tag_version}
 }
 
-function edge {
-# usage: bashlava.sh master
-# think scrap branch edge and recreate it just like I would start a new feat branch
-# it assumes there will be no conflict with anybody else as I'm the only person using 'edge'
-
-if [[ $(git status | grep -c "nothing to commit") == "1" ]]; then
-  echo "Good, lets continue" | 2>/dev/null
-else
-  my_message="You must push your commit(s) before doing a rebase." App_Pink && App_Stop
-fi
-
-git branch -D edge || true && \
-git checkout -b edge && \
-git push --set-upstream origin edge -f
-
-### confirmation
-echo && \
-my_message="<edge> was reCREATED from <master>" App_Blue
+function cl-read {
+  # think: Show me the CHANGELOG.md
+  input_2="CHANGELOG.md"
+  App_input2_rule
+  App_glow50
 }
 
 function cl {
@@ -182,14 +150,8 @@ function cl {
   # Manually edit CHANGELOG in terminal
   nano CHANGELOG.md
 
-  # then we still need to commit the updates
-}
-
-function cl-read {
-  # think: Show me the CHANGELOG.md
-  input_2="CHANGELOG.md"
-  App_input2_rule
-  App_glow50
+  # then commit the updates
+  # then release
 }
 
 function release {
@@ -198,6 +160,7 @@ function release {
 # usage: bashlava.sh release 1.50.1
 
   App_input2_rule
+  App_Is_commit_unpushed
   App_Is_master
   App_Is_dockerfile
   App_Is_hub_installed
@@ -209,15 +172,25 @@ function release {
     echo -e "${col_blue} ${message} ${col_blue}" && sleep 0.4 && clear
   done
 
-  App_Tag
+  # Tag
+  # update tag within the Dockerfile. It might be already updated but sometimes it's not.
+  tag_version="${input_2}"
+  ver_in_dockerfile=$(echo $tag_version | sed 's/-r.*//g')
+  sed -i '' "s/^ARG VERSION=.*$/ARG VERSION=\"$ver_in_dockerfile\"/" Dockerfile
+
+  git add . && \
+  git commit -m "Updated to version: $tag_version" && \
+  git push && sleep 1 && \
+  git tag ${tag_version} && \
+  git push --tags
 
   first_name_author=$(git log | awk '/Author:/' | head -n1 | awk '{print $2}')
   tag_version="${input_2}"
   app_name=$(cat Dockerfile | grep APP_NAME= | head -n 1 | grep -o '".*"' | sed 's/"//g')
   github_user=$(cat Dockerfile | grep GITHUB_USER= | head -n 1 | grep -o '".*"' | sed 's/"//g')
   git_repo_url="https://github.com/${github_user}/${app_name}"
-  release_message1="- Refer to CHANGELOG.md for details about this release."
-  release_message2="- This release was packaged and published using https://github.com/firepress-org/bashlava"
+  release_message1="Refer to CHANGELOG.md for details about this release."
+  release_message2="This release was quickly prepared, packaged, tagged and published using https://github.com/firepress-org/bashlava"
 
   App_release_check_vars
   
@@ -238,34 +211,23 @@ function release {
   edge
 }
 
-function App_Tag {
-# usage: bashlava.sh tag 1.50.1
-# usually used as a sub fct of release
+function edge {
+  # usage: bashlava.sh master
+  # think scrap branch edge and recreate it just like I would start a new feat branch
+  # it assumes there will be no conflict with anybody else as I'm the only person using 'edge'
 
-  App_input2_rule
-  App_Is_master
+  App_Is_commit_unpushed
 
-  # update tag within the Dockerfile. It might be already updated but sometimes it's not.
-  tag_version="${input_2}"
-  ver_in_dockerfile=$(echo $tag_version | sed 's/-r.*//g')
-  sed -i '' "s/^ARG VERSION=.*$/ARG VERSION=\"$ver_in_dockerfile\"/" Dockerfile
+  git branch -D edge || true && \
+  git checkout -b edge && \
+  git push --set-upstream origin edge -f
 
-  git add . && \
-  git commit -m "Updated to version: $tag_version" && \
-  git push && \
-  sleep 1 && \
-  # push tag
-  git tag ${tag_version} && \
-  git push --tags
-
-# what it does:
-  # update tag in Dockerfile
-  # save the commit
-  # tag on the latest commit
-  # push tag to remote
+  ### confirmation
+  echo && \
+  my_message="<edge> was reCREATED from <master>" App_Blue
 }
 
-function dk_update {
+function dk_version {
 # think: dockerfile update version in our Dockerfile
 # usage: bashlava.sh version 1.50.1
 
@@ -282,7 +244,7 @@ function dk_update {
 }
 
 function dk_view {
-# think: view version in the dockerfile
+# think: view app version from the Dockerfile
   cat Dockerfile | grep -i version
 }
 
@@ -290,12 +252,7 @@ function sq {
 # usage: bashlava.sh sq 3 "Add fct xyz"
 # think: squash. The fct master does squash our commits as well
 
-if [[ $(git status | grep -c "nothing to commit") == "1" ]]; then
-  echo "Good, lets continue" | 2>/dev/null
-else
-  my_message="You must push your commit(s) before doing a rebase." App_Pink && App_Stop
-fi
-
+App_Is_commit_unpushed
 App_input2_rule
 App_input3_rule
 
@@ -313,7 +270,7 @@ git push;
 }
 
 function pr {
-  # work in progress
+  # tk work in progress
   # hub pull-request
 
   # pre-requirments
@@ -328,7 +285,7 @@ function pr {
 }
 
 function release_find_the_latest {
-# buggy tk
+# tk work in progress, buggy
 # find the latest release that was pushed on github
 
   app_name=$(cat Dockerfile | grep APP_NAME= | head -n 1 | grep -o '".*"' | sed 's/"//g')
@@ -365,7 +322,15 @@ function App_Is_master {
     echo "Good, lets continue" | 2>/dev/null
   else
     my_message="You must be on the master branch to perform this action." App_Pink
-    my_message="Try: go-m" App_Pink && App_Stop
+    my_message="Try: go-m" App_Blue && App_Stop
+  fi
+}
+
+function App_Is_commit_unpushed {
+  if [[ $(git status | grep -c "nothing to commit") == "1" ]]; then
+    echo "Good, lets continue" | 2>/dev/null
+  else
+    my_message="You must push your commit(s) before doing a rebase." App_Pink && App_Stop
   fi
 }
 
@@ -497,7 +462,7 @@ function which {
 }
 
 function App_Stop {
-  my_message="(exit 1)" App_Pink && echo && exit 1
+  echo "——> exit 1" echo && exit 1
 }
 
 function help {
