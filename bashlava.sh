@@ -53,7 +53,8 @@ function dk {
   # usage: bashlava.sh version 1.50.1
 
   if [[ "${input_2}" == "not-set" ]]; then
-    dk-view && echo 
+    dk-view && \
+    tag && echo 
   fi
 
   App_Is_Input2
@@ -74,7 +75,7 @@ function dk {
 function dk-view {
   # think: view app version from the Dockerfile
   App_GetVarFromDockerile
-  my_message="${app_version} < version found in Dockerfile" App_Blue
+  my_message="${app_version} < version in Dockerfile" App_Blue
 }
 
 function master {
@@ -605,6 +606,11 @@ function hash { git rev-parse HEAD && git rev-parse --short HEAD
 }
 function status { git status
 }
+function tag { 
+  latest_tag="$(git describe --tags --abbrev=0)"
+  my_message="${latest_tag} < latest tag that was pushed" App_Blue
+}
+
 function diff { git diff
 }
 function ci {
