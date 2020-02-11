@@ -12,6 +12,10 @@ Based on this [template](https://gist.github.com/pascalandy/af709db02d3fe132a3e6
 
 # Releases
 
+## 0.9.9
+### ⚡️ Updates
+- [ac350c3](https://github.com/firepress-org/bashlava/commit/ac350c3) Improve release message / better explanation of what bashlava does /squashed
+
 ## 0.9.8
 ### ⚡️ Updates
 - [3edfb00](https://github.com/firepress-org/bashlava/commit/3edfb00) Improve Changelog and fix typo / Add <log> into <master> /squashed
