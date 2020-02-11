@@ -84,9 +84,6 @@ function master {
   App_Is_dockerfile
   App_Is_gitignore
 
-  # see logs
-  clear && logs
-
   # prompt
   my_message="What are we about to merge here?" App_Blue
   read -p "==> " squash_message
@@ -139,9 +136,6 @@ function master-nosq {
   App_Is_changelog
   App_Is_dockerfile
   App_Is_gitignore
-
-  # see logs
-  clear && logs
 
   # Update our local state
   git checkout master && \
@@ -206,7 +200,7 @@ function cl-view {
 
 function edge {
   # usage: bashlava.sh master
-  # think scrap branch edge and recreate it just like I would start a new feat branch
+  # think scrap branch edge and recreate it as a new feat branch
   # it assumes there will be no conflict with anybody else as I'm the only person using 'edge'
   App_Is_commit_unpushed
 
@@ -313,7 +307,6 @@ function App_Changelog_Update {
   touch ~/temp/tmpfile2 && rm ~/temp/tmpfile2 || true
   touch ~/temp/tmpfile3 && rm ~/temp/tmpfile3 || true
   touch ~/temp/tmpfile4 && rm ~/temp/tmpfile4 || true
-  touch ~/temp/tmpfile4 && rm ~/temp/tmpfile5 || true
 
   git_logs="$(git --no-pager log --abbrev-commit --decorate=short --pretty=oneline -n25 | \
     awk '/HEAD ->/{flag=1} /tag:/{flag=0} flag' | \
@@ -323,22 +316,36 @@ function App_Changelog_Update {
   # copy logs
   echo -e "${git_logs}" > ~/temp/tmpfile2
 
+  echo "tmpfile2"
+  cat ~/temp/tmpfile2
+  sleep 2
+
   # create URLs from git commits
   # --- find the number of line in this file
   number_of_lines=$(cat ~/temp/tmpfile2 | wc -l | awk '{print $1}')
-  App_GetVarFromDockerile
+  #App_GetVarFromDockerile
+  github_user=pascalandy
+  app_name=dummy
   for lineID in $(seq 1 ${number_of_lines}); do
     hash_to_replace=$(cat ~/temp/tmpfile2 | sed -n "${lineID},${lineID}p;" | awk '{print $1}')
     # Unlike Ubuntu, OS X requires the extension to be explicitly specified.
     # The workaround is to set an empty string. Here we use ''
-    sed -i '' "s/${hash_to_replace}/[${hash_to_replace}](https:\/\/github.com\/${github_user}\/${app_name}\/commit\/${hash_to_replace})/" ~/temp/tmpfile2 > ~/temp/tmpfile3
+    sed -i '' "s/${hash_to_replace}/[${hash_to_replace}](https:\/\/github.com\/${github_user}\/${app_name}\/commit\/${hash_to_replace})/" ~/temp/tmpfile2
   done
 
   # add space at the begining of a line
-  sed 's/^/ /' ~/temp/tmpfile4 > ~/temp/tmpfile4
+  sed 's/^/ /' ~/temp/tmpfile2 > ~/temp/tmpfile3
+
+  echo "tmpfile3"
+  cat ~/temp/tmpfile3
+  sleep 2
 
   # add sign "-" at the begining of a line
-  sed 's/^/-/' ~/temp/tmpfile5 > ~/temp/tmpfile5
+  sed 's/^/-/' ~/temp/tmpfile3 > ~/temp/tmpfile4
+
+  echo "tmpfile4"
+  cat ~/temp/tmpfile4
+  sleep 2
 
   # create main file
   echo -e "" >> ~/temp/tmpfile
@@ -347,7 +354,7 @@ function App_Changelog_Update {
   # insert title Updates
   echo -e "### ⚡️ Updates" >> ~/temp/tmpfile
   # insert our montage to the main file
-  cat ~/temp/tmpfile5 >> ~/temp/tmpfile
+  cat ~/temp/tmpfile4 >> ~/temp/tmpfile
 
   # Insert our release notes after pattern "# Release"
   bottle="$(cat ~/temp/tmpfile)"
@@ -359,7 +366,6 @@ function App_Changelog_Update {
   rm ~/temp/tmpfile2 || true
   rm ~/temp/tmpfile3 || true
   rm ~/temp/tmpfile4 || true
-  rm ~/temp/tmpfile5 || true
 
   # The system will open the CHANGELOG file, in case you have to edit it.
   # Manually edit CHANGELOG in terminal
@@ -374,7 +380,7 @@ function App_Is_master {
     echo "Good, lets continue" | 2>/dev/null
   else
     my_message="You must be on <master> branch to perform this action." App_Pink
-    my_message="Try: go-m" App_Blue && App_Stop
+    my_message="Try: out-m" App_Blue && App_Stop
   fi
 }
 function App_Is_edge {
@@ -383,7 +389,7 @@ function App_Is_edge {
     echo "Good, lets continue" | 2>/dev/null
   else
     my_message="You must be on <edge> branch to perform this action." App_Pink
-    my_message="Try: go-e" App_Blue && App_Stop
+    my_message="Try: out-e" App_Blue && App_Stop
   fi
 }
 function App_Is_commit_unpushed {
@@ -596,9 +602,9 @@ function which {
 # password generator. See also "passgen_long" These char are not part of the password to minimize human error: i,I,L,l,o,O,0
 function passgen { docker run ctr.run/github.com/firepress-org/alpine:master sh -c "/usr/local/bin/random3.sh";
 }
-function go-m { git checkout master # basic checkout to master
+function out-m { git checkout master # basic checkout to master
 }
-function go-e { git checkout edge   # basic checkout to edge
+function out-e { git checkout edge   # basic checkout to edge
 }
 function log { git log --all --decorate --oneline --graph --pretty=oneline -n40
 }
