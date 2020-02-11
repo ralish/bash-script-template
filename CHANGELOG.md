@@ -12,6 +12,13 @@ Based on this [template](https://gist.github.com/pascalandy/af709db02d3fe132a3e6
 
 # Releases
 
+## 0.9.11
+### ⚡️ Updates
+- [7b3bb76](https://github.com/firepress-org/bashlava/commit/7b3bb76) Add fct /tag. This helps when we pushing app version.
+- [f3cbf55](https://github.com/firepress-org/bashlava/commit/f3cbf55) Improve: README
+- [47c84c0](https://github.com/firepress-org/bashlava/commit/47c84c0) Improve: commit messages
+- [a872462](https://github.com/firepress-org/bashlava/commit/a872462) Improve App_Changelog_Update tmp file deletion & comments
+
 ## 0.9.10
 ### ⚡️ Updates
 - [c00720c](https://github.com/firepress-org/bashlava/commit/c00720c) Improve commit message for /dk, /master, /release, /squash
