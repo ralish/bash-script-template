@@ -36,7 +36,7 @@ function push {
     diff
   fi
 
-  App_input2_rule
+  App_Is_Input2
   git status && git add -A && \
   git commit -m "${input_2}" && clear && git push;
 }
@@ -46,10 +46,10 @@ function dk {
   # usage: bashlava.sh version 1.50.1
 
   if [[ "${input_2}" == "not-set" ]]; then
-    dk-view
+    dk-view && echo 
   fi
 
-  App_input2_rule
+  App_Is_Input2
   App_Is_edge
 
   tag_version="${input_2}"
@@ -78,7 +78,7 @@ function master {
     dk-view
   fi
 
-  App_input2_rule
+  App_Is_Input2
   App_Is_commit_unpushed
   App_Is_changelog
   App_Is_dockerfile
@@ -134,7 +134,7 @@ function master-nosq {
     dk-view
   fi
   
-  App_input2_rule
+  App_Is_Input2
   App_Is_commit_unpushed
   App_Is_changelog
   App_Is_dockerfile
@@ -162,7 +162,7 @@ function release {
   # think push release + tags to github
   # at this point we commited our changelog and rebase to master
   # usage: bashlava.sh release 1.50.1
-  App_input2_rule
+  App_Is_Input2
   App_Is_master
   App_GetVarFromDockerile
   log
@@ -200,7 +200,7 @@ function release {
 function cl-view {
   # think: Show me the CHANGELOG.md
   input_2="CHANGELOG.md"
-  App_input2_rule
+  App_Is_Input2
   App_glow50
 }
 
@@ -221,8 +221,8 @@ function sq {
   # usage: bashlava.sh sq 3 "Add fct xyz"
   # think: squash. The fct master does squash our commits as well
   App_Is_commit_unpushed
-  App_input2_rule
-  App_input3_rule
+  App_Is_Input2
+  App_Is_Input3
 
   backwards_steps="${input_2}"
   git_message="${input_3}"
@@ -298,7 +298,7 @@ function wip-release_latest {
 function App_Changelog_Update {
   # think update the CHANGELOG.md by define on which version we are
   # usage: bashlava.sh cl 3.5.1
-  App_input2_rule
+  App_Is_Input2
   App_Is_master
   App_Is_changelog
 
@@ -414,14 +414,14 @@ function App_Is_docker_installed {
     my_message="Docker is missing. https://github.com/firepress-org/bash-script-template#requirements" App_Pink
   fi
 }
-function App_input2_rule {
+function App_Is_Input2 {
 # ensure the second attribute is not empty to continue
   if [[ "${input_2}" == "not-set" ]]; then
     my_message="You must provide a valid attribute!" App_Pink
     App_Stop
   fi
 }
-function App_input3_rule {
+function App_Is_Input3 {
 # ensure the third attribute is not empty to continue
   if [[ "${input_3}" == "not-set" ]]; then
     my_message="You must provide a valid attribute!" App_Pink
@@ -464,6 +464,8 @@ function App_UpdateDockerfileVersion {
   # version before
   App_GetVarFromDockerile
   version_before=${app_version}
+  # write version on disk (needed to generate compare URL in our CHANGELOG)
+  mkdir -pv ~/tmp && echo ${app_version} > ~/tmp/${github_user}_${app_name}_version_before
 
   # apply update
   tag_version_clean=$(echo $tag_version | sed 's/-r.*//g')
@@ -473,6 +475,8 @@ function App_UpdateDockerfileVersion {
   # version after
   App_GetVarFromDockerile
   version_after=${app_version}
+  # write version on disk (needed to generate compare URL in our CHANGELOG)
+  mkdir -pv ~/tmp && echo ${app_version} > ~/tmp/${github_user}_${app_name}_version_after
 
   # To debug if needed
       # confirm change was well executed (to dubug id needed)
