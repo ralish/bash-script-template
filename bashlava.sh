@@ -64,7 +64,7 @@ function dk {
 
   App_GetVarFromDockerile
   git add . && \
-  git commit . -m "Update ${app_name} to version ${app_version}" && \
+  git commit . -m "Update to version ${app_version} in Dockerfile" && \
   git push origin edge
 
   echo && my_message="cmd <ci> can be useful at this point when our Dockerfile is built on Github Actions." App_Blue
@@ -108,7 +108,7 @@ function master {
 
   # merge & squash edge into mrg_edge_2_master
   git merge --squash edge && \
-  git commit . -m "${squash_message} /squashed" && \
+  git commit . -m "${squash_message} /squash" && \
 
   # back to master
   git checkout master && \
@@ -169,7 +169,7 @@ function release {
   App_GetVarFromDockerile
 
   # push updates
-  git commit . -m "Update CHANGELOG to version ${app_version}" && \
+  git commit . -m "Update to version ${app_version} in CHANGELOG" && \
   git push origin master && \
 
   App_Is_dockerfile
