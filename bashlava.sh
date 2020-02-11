@@ -582,7 +582,7 @@ function go-m { git checkout master # basic checkout to master
 }
 function go-e { git checkout edge   # basic checkout to edge
 }
-function log { git --no-pager log --decorate=short --pretty=oneline -n25
+function log { git log --all --decorate --oneline --graph --pretty=oneline -n40
 }
 function hash { git rev-parse HEAD && git rev-parse --short HEAD 
 }
