@@ -352,16 +352,16 @@ function App_Changelog_Update {
 }
 
 function App_RemoveTmpFiles {
-  rm ~/temp/tmpfile || true | 2>/dev/null
-  rm ~/temp/tmpfile2 || true | 2>/dev/null
-  rm ~/temp/tmpfile3 || true | 2>/dev/null
-  rm ~/temp/tmpfile4 || true | 2>/dev/null
+  rm ~/temp/tmpfile || true > /dev/null 2>&1
+  rm ~/temp/tmpfile2 || true > /dev/null 2>&1
+  rm ~/temp/tmpfile3 || true > /dev/null 2>&1
+  rm ~/temp/tmpfile4 || true > /dev/null 2>&1
 }
 
 function App_Is_master {
   currentBranch=$(git rev-parse --abbrev-ref HEAD)
   if [[ "${currentBranch}" == "master" ]]; then
-    echo "Good, lets continue" | 2>/dev/null
+    echo "Good, lets continue" > /dev/null 2>&1
   else
     my_message="You must be on <master> branch to perform this action (ERR5681)" App_Pink
     my_message="Try: out-m" App_Blue && App_Stop
@@ -370,7 +370,7 @@ function App_Is_master {
 function App_Is_edge {
   currentBranch=$(git rev-parse --abbrev-ref HEAD)
   if [[ "${currentBranch}" == "edge" ]]; then
-    echo "Good, lets continue" | 2>/dev/null
+    echo "Good, lets continue" > /dev/null 2>&1
   else
     my_message="You must be on <edge> branch to perform this action (ERR5682)" App_Pink
     my_message="Try: out-e" App_Blue && App_Stop
@@ -378,30 +378,30 @@ function App_Is_edge {
 }
 function App_Is_commit_unpushed {
   if [[ $(git status | grep -c "nothing to commit") == "1" ]]; then
-    echo "Good, lets continue" | 2>/dev/null
+    echo "Good, lets continue" > /dev/null 2>&1
   else
     my_message="You must push your commit(s) before doing a rebase (ERR5683)" App_Pink && App_Stop
   fi
 }
 function App_Is_dockerfile {
   if [ -f Dockerfile ]; then
-    echo "Good, lets continue" | 2>/dev/null
+    echo "Good, lets continue" > /dev/null 2>&1
   else
     my_message="Dockerfile does not exit. Let's create one (ERR5684)" App_Pink && init_dockerfile && App_Stop
   fi
 }
 function App_Is_changelog {
   if [ -f CHANGELOG.md ]; then
-    echo "Good, lets continue" | 2>/dev/null
+    echo "Good, lets continue" > /dev/null 2>&1
   else
-    my_message="CHANGELOG.md does not exit. Let's create one (ERR5685)" App_Blue
+    my_message="CHANGELOG.md does not exit. Let's create one (ERR5685)" App_Pink
     init_changelog && \
     App_Stop && echo
   fi
 }
 function App_Is_gitignore {
   if [ -f .gitignore ]; then
-    echo "Good, lets continue" | 2>/dev/null
+    echo "Good, lets continue" > /dev/null 2>&1
   else
     my_message=".gitignore does not exit. Let's create one (ERR5686)" App_Blue
     init_gitignore && \
@@ -410,9 +410,10 @@ function App_Is_gitignore {
 }
 function App_Is_hub_installed {
   if [[ $(hub version | grep -c "hub version") == "1" ]]; then
-    echo && my_message="Hub is installed." App_Blue
+    echo && my_message="Hub is installed." > /dev/null 2>&1
   else
-    echo && my_message="Hub is missing. https://github.com/firepress-org/bash-script-template#requirements" App_Pink
+    echo && my_message="Hub is missing. See requirements https://github.com/firepress-org/bashlava" App_Pink && \
+    open https://github.com/firepress-org/bashlava
   fi
 }
 function App_Is_docker_installed {
@@ -539,7 +540,7 @@ function App_Check_Custom_path {
   if [ ! -f ${local_bashlava_path}/bashlava.sh ]; then
       my_message="Local path is not valid (ERR5672)" App_Pink && App_Stop
   else
-      echo "Path is okay" | 2>/dev/null
+      echo "Path is okay" > /dev/null 2>&1
       addon_fct_path="${local_bashlava_path}/add-on"
   fi
 }
@@ -698,9 +699,7 @@ function main() {
   input_1=$1
   if [[ -z "$1" ]]; then    #if empty
     clear
-    my_message="You must provide at least one attribute (ERR5671)" App_Green
-    my_message="Try: 'bashlava.sh help'" App_Green
-    App_Stop
+    my_message="You must provide at least one attribute (ERR5671)" App_Pink && help && App_Stop
   else
     input_1=$1
   fi
