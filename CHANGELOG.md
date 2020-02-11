@@ -12,13 +12,17 @@ Based on this [template](https://gist.github.com/pascalandy/af709db02d3fe132a3e6
 
 # Releases
 
+## 0.9.10
+### ⚡️ Updates
+- [c00720c](https://github.com/firepress-org/bashlava/commit/c00720c) Improve commit message for /dk, /master, /release, /squash
+
 ## 0.9.9
 ### ⚡️ Updates
 - [ac350c3](https://github.com/firepress-org/bashlava/commit/ac350c3) Improve release message / better explanation of what bashlava does /squashed
 
 ## 0.9.8
 ### ⚡️ Updates
-- [3edfb00](https://github.com/firepress-org/bashlava/commit/3edfb00) Improve Changelog and fix typo / Add <log> into <master> /squashed
+- [3edfb00](https://github.com/firepress-org/bashlava/commit/3edfb00) Improve Changelog and fix typo / Add /log into /master /squashed
 
 ## 0.9.7
 ### ⚡️ Updates
@@ -42,8 +46,8 @@ As you can see here, our commit hash link back to the actual commit :)
 - [a14ccf7](https://github.com/firepress-org/bashlava/commit/a14ccf7) init alias
 - [909c531](https://github.com/firepress-org/bashlava/commit/909c531) improve prompt messages
 - [4862c97](https://github.com/firepress-org/bashlava/commit/4862c97) add alias, improve prompt messages
-- [1b03630](https://github.com/firepress-org/bashlava/commit/1b03630) FIX logic on <release>, improve comments
-- [bd1e1c7](https://github.com/firepress-org/bashlava/commit/bd1e1c7) The abstraction is real. <cl> is now under <release>
+- [1b03630](https://github.com/firepress-org/bashlava/commit/1b03630) FIX logic on /release, improve comments
+- [bd1e1c7](https://github.com/firepress-org/bashlava/commit/bd1e1c7) The abstraction is real. /cl is now under /release
 - [6769998](https://github.com/firepress-org/bashlava/commit/6769998) dk: add comment
 - [5896031](https://github.com/firepress-org/bashlava/commit/5896031) cl-push is now cl thanks to App_Changelog_Update
 - [09f32af](https://github.com/firepress-org/bashlava/commit/09f32af) fct dk: add logic to show version when no attributs are passed
