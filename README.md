@@ -1,7 +1,3 @@
-# BashLava
-
-BashLava makes your bash scripts a bunch of piece of cakes.
-
 &nbsp;
 
 <p align="center">
@@ -12,9 +8,25 @@ BashLava makes your bash scripts a bunch of piece of cakes.
 
 &nbsp;
 
-## What is this?
+# BashLava
 
-An idempotent `bash script` template using best practices for bash. It includes several useful functions to manage your code on GitHub.
+BashLava makes your bash scripts a bunch of piece of cakes. With it, you can quickly:
+
+- push commits
+- rebase or merge code to master (squash when needed)
+- Generate CHANGELOG from commits and append the updates from the existing CHANGELOG
+- Tag branch
+- push the release
+- reset your dev branch
+
+It make following Git best practices a breeze without having to leave your terminal or use the GitHub GUI. You should try it, it's addictive.
+
+I also allows you:
+
+- quickly set your custom scripts
+- quickly write help function
+- hack around it as it's all built with bash
+- and more.
 
 ### Motivation
 
