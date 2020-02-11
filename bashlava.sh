@@ -1,5 +1,12 @@
 #!/usr/bin/env bash
 
+# THIS VARIABLE MUST CONFIGURED LOCALY
+function App_Custom_path {
+  # Define bashlava's path on your local machine:
+  local_bashlava_path="/Volumes/960G/_pascalandy/11_FirePress/Github/firepress-org/bashlava"
+  App_Check_Custom_path
+}
+
 #
   #
     #
@@ -254,11 +261,11 @@ function wip-release_latest {
 
   if [[ -z "${app_name}" ]] ; then    #if empty
     clear
-    my_message="Can't find APP_NAME in the Dockerfile." App_Pink
+    my_message="Can't find APP_NAME in the Dockerfile (ERR5679)" App_Pink
     App_Stop
   elif [[ -z "${github_user}" ]] ; then    #if empty
     clear
-    my_message="Can't find GITHUB_USER in the Dockerfile." App_Pink
+    my_message="Can't find GITHUB_USER in the Dockerfile (ERR5680)" App_Pink
     App_Stop
   else
     my_message=$(curl -s https://api.github.com/repos/${github_user}/${app_name}/releases/latest | \
@@ -353,7 +360,7 @@ function App_Is_master {
   if [[ "${currentBranch}" == "master" ]]; then
     echo "Good, lets continue" | 2>/dev/null
   else
-    my_message="You must be on <master> branch to perform this action." App_Pink
+    my_message="You must be on <master> branch to perform this action (ERR5681)" App_Pink
     my_message="Try: out-m" App_Blue && App_Stop
   fi
 }
@@ -362,7 +369,7 @@ function App_Is_edge {
   if [[ "${currentBranch}" == "edge" ]]; then
     echo "Good, lets continue" | 2>/dev/null
   else
-    my_message="You must be on <edge> branch to perform this action." App_Pink
+    my_message="You must be on <edge> branch to perform this action (ERR5682)" App_Pink
     my_message="Try: out-e" App_Blue && App_Stop
   fi
 }
@@ -370,21 +377,21 @@ function App_Is_commit_unpushed {
   if [[ $(git status | grep -c "nothing to commit") == "1" ]]; then
     echo "Good, lets continue" | 2>/dev/null
   else
-    my_message="You must push your commit(s) before doing a rebase." App_Pink && App_Stop
+    my_message="You must push your commit(s) before doing a rebase (ERR5683)" App_Pink && App_Stop
   fi
 }
 function App_Is_dockerfile {
   if [ -f Dockerfile ]; then
     echo "Good, lets continue" | 2>/dev/null
   else
-    my_message="Dockerfile does not exit. Let's create one." App_Pink && init_dockerfile && App_Stop
+    my_message="Dockerfile does not exit. Let's create one (ERR5684)" App_Pink && init_dockerfile && App_Stop
   fi
 }
 function App_Is_changelog {
   if [ -f CHANGELOG.md ]; then
     echo "Good, lets continue" | 2>/dev/null
   else
-    my_message="CHANGELOG.md does not exit. Let's create one." App_Blue
+    my_message="CHANGELOG.md does not exit. Let's create one (ERR5685)" App_Blue
     init_changelog && \
     App_Stop && echo
   fi
@@ -393,7 +400,7 @@ function App_Is_gitignore {
   if [ -f .gitignore ]; then
     echo "Good, lets continue" | 2>/dev/null
   else
-    my_message=".gitignore does not exit. Let's create one." App_Blue
+    my_message=".gitignore does not exit. Let's create one (ERR5686)" App_Blue
     init_gitignore && \
     App_Stop && echo
   fi
@@ -415,14 +422,14 @@ function App_Is_docker_installed {
 function App_Is_Input2 {
 # ensure the second attribute is not empty to continue
   if [[ "${input_2}" == "not-set" ]]; then
-    my_message="You must provide a valid attribute!" App_Pink
+    my_message="You must provide a valid attribute (ERR5687)" App_Pink
     App_Stop
   fi
 }
 function App_Is_Input3 {
 # ensure the third attribute is not empty to continue
   if [[ "${input_3}" == "not-set" ]]; then
-    my_message="You must provide a valid attribute!" App_Pink
+    my_message="You must provide a valid attribute (ERR5688)" App_Pink
     App_Stop
   fi
 }
@@ -440,15 +447,15 @@ function App_Curlurl {
 }
 function App_release_check_vars {
   if [[ -z "${app_name}" ]]; then
-    my_message="ERROR: app_name is empty." App_Pink App_Stop
+    my_message="ERROR: app_name is empty (ERR5691)" App_Pink App_Stop
   elif [[ -z "${app_version}" ]]; then
-    my_message="ERROR: app_version is empty." App_Pink App_Stop
+    my_message="ERROR: app_version is empty (ERR5692)" App_Pink App_Stop
   elif [[ -z "${git_repo_url}" ]]; then
-    my_message="ERROR: git_repo_url is empty." App_Pink App_Stop
+    my_message="ERROR: git_repo_url is empty (ERR5693)" App_Pink App_Stop
   elif [[ -z "${release_message1}" ]]; then
-    my_message="ERROR: release_message1 is empty." App_Pink App_Stop
+    my_message="ERROR: release_message1 is empty (ERR5694)" App_Pink App_Stop
   elif [[ -z "${release_message2}" ]]; then
-    my_message="ERROR: release_message2 is empty." App_Pink App_Stop
+    my_message="ERROR: release_message2 is empty (ERR5695)" App_Pink App_Stop
   fi
 
   url_to_check=${git_repo_url}
@@ -524,13 +531,23 @@ function App_glow {
     devmtl/glow:0.2.0 glow ${input_2}
 }
 
+function App_Check_Custom_path {
+  # Check if project's path is well defined. Is set via <App_Custom_path>
+  if [ ! -f ${local_bashlava_path}/bashlava.sh ]; then
+      my_message="Local path is not valid (ERR5672)" App_Pink && App_Stop
+  else
+      echo "Path is okay" | 2>/dev/null
+      addon_fct_path="${local_bashlava_path}/add-on"
+  fi
+}
+
 function App_Pink { echo -e "${col_pink} ERROR: ${my_message}"
 }
 function App_Blue { echo -e "${col_blue} ${my_message}"
 }
 function App_Green { echo -e "${col_green} ${my_message}"
 }
-function App_Stop { echo "——> exit 1" echo && exit 1
+function App_Stop { echo "——> exit 1" && echo && exit 1
 }
 
 #
@@ -616,7 +633,7 @@ function ci {
   #
 #
 
-function add_on {
+function App_add_on {
   # think: every script that should not be under the main bashlava.sh shell script, should threated as an add-on.
   # This will make easier to maintain de project, minimise cluter, minimise break changes, easy to accept PR
   source "${addon_fct_path}/help.sh"
@@ -626,43 +643,35 @@ function add_on {
   source "${addon_fct_path}/docker.sh"
   source "${addon_fct_path}/utilities.sh"
 
-  # MYCONFIG
-  # Define your own custom add-on scripts. 
-  # `custom_*.sh` file are in part .gitignore so they will not be commited.
-  source "${addon_fct_path}/custom_pascal.sh"
-  source "${addon_fct_path}/custom_urls.sh"
+  # Define your own custom add-on scripts. `custom_*.sh` files are in part .gitignore so they will not be commited.
+  source "${addon_fct_path}/custom_scripts.sh"
 }
 
 function App_DefineVariables {
+  #	Define color for echo prompts:
+  export col_std="\e[39m——>\e[39m"
+  export col_grey="\e[39m——>\e[39m"
+  export col_blue="\e[34m——>\e[39m"
+  export col_pink="\e[35m——>\e[39m"
+  export col_green="\e[36m——>\e[39m"
+  export col_white="\e[97m——>\e[39m"
+  export col_def="\e[39m"
 
-# MYCONFIG
-local_bashlava_path="/Volumes/960G/_pascalandy/11_FirePress/Github/firepress-org/bashlava"
-addon_fct_path="${local_bashlava_path}/add-on"
-
-#	Date generators
- date_nano="$(date +%Y-%m-%d_%HH%Ms%S-%N)";
-  date_sec="$(date +%Y-%m-%d_%HH%Ms%S)";
-  date_min="$(date +%Y-%m-%d_%HH%M)";
- date_hour="$(date +%Y-%m-%d_%HH)XX";
-  date_day="$(date +%Y-%m-%d)";
-date_month="$(date +%Y-%m)-XX";
- date_year="$(date +%Y)-XX-XX";
-          # 2017-02-22_10H24_14-500892448
-          # 2017-02-22_10H24_14
-          # 2017-02-22_10H24
-          # 2017-02-22_10HXX
-          # 2017-02-22
-          # 2017-02-XX
-          # 2017-XX-XX
-
-#	Define color for echo prompts:
-export col_std="\e[39m——>\e[39m"
-export col_grey="\e[39m——>\e[39m"
-export col_blue="\e[34m——>\e[39m"
-export col_pink="\e[35m——>\e[39m"
-export col_green="\e[36m——>\e[39m"
-export col_white="\e[97m——>\e[39m"
-export col_def="\e[39m"
+  #	Date generators
+  date_nano="$(date +%Y-%m-%d_%HH%Ms%S-%N)";
+    date_sec="$(date +%Y-%m-%d_%HH%Ms%S)";
+    date_min="$(date +%Y-%m-%d_%HH%M)";
+  date_hour="$(date +%Y-%m-%d_%HH)XX";
+    date_day="$(date +%Y-%m-%d)";
+  date_month="$(date +%Y-%m)-XX";
+  date_year="$(date +%Y)-XX-XX";
+            # 2017-02-22_10H24_14-500892448
+            # 2017-02-22_10H24_14
+            # 2017-02-22_10H24
+            # 2017-02-22_10HXX
+            # 2017-02-22
+            # 2017-02-XX
+            # 2017-XX-XX
 }
 
 function main() {
@@ -671,13 +680,17 @@ function main() {
   trap script_trap_err ERR
   trap script_trap_exit EXIT
   source "$(dirname "${BASH_SOURCE[0]}")/.bashcheck.sh"  # shellcheck 
+
+  # Load variables
+  App_Custom_path
   App_DefineVariables
+  App_add_on
 
   # set empty input. The user must provide 1 to 3 attributes
   input_1=$1
   if [[ -z "$1" ]]; then    #if empty
     clear
-    my_message="You must provide at least one attribute!" App_Green
+    my_message="You must provide at least one attribute (ERR5671)" App_Green
     my_message="Try: 'bashlava.sh help'" App_Green
     App_Stop
   else
@@ -703,7 +716,6 @@ function main() {
   script_init "$@"
   cron_init
   colour_init
-  add_on  # Use add-on scripts
   #lock_init system
 
   # Attribute #1. It accepts two more attributes
