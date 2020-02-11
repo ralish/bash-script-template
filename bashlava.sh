@@ -159,7 +159,6 @@ function release {
   App_Is_Input2
   App_Is_master
   App_GetVarFromDockerile
-  log
 
   # push updates
   git commit . -m "Update CHANGELOG to version ${app_version}" && \
@@ -302,11 +301,8 @@ function App_Changelog_Update {
 
   App_UpdateDockerfileVersion
 
-# build the message to insert in the CHANGELOG
-  touch ~/temp/tmpfile && rm ~/temp/tmpfile || true
-  touch ~/temp/tmpfile2 && rm ~/temp/tmpfile2 || true
-  touch ~/temp/tmpfile3 && rm ~/temp/tmpfile3 || true
-  touch ~/temp/tmpfile4 && rm ~/temp/tmpfile4 || true
+  # reset files
+  rm ~/temp/tmpfil* || true
 
   git_logs="$(git --no-pager log --abbrev-commit --decorate=short --pretty=oneline -n25 | \
     awk '/HEAD ->/{flag=1} /tag:/{flag=0} flag' | \
@@ -316,37 +312,20 @@ function App_Changelog_Update {
   # copy logs
   echo -e "${git_logs}" > ~/temp/tmpfile2
 
-  echo "tmpfile2"
-  cat ~/temp/tmpfile2
-  sleep 2
-
   # create URLs from git commits
   # --- find the number of line in this file
   number_of_lines=$(cat ~/temp/tmpfile2 | wc -l | awk '{print $1}')
-  #App_GetVarFromDockerile
-  github_user=pascalandy
-  app_name=dummy
+  App_GetVarFromDockerile
   for lineID in $(seq 1 ${number_of_lines}); do
     hash_to_replace=$(cat ~/temp/tmpfile2 | sed -n "${lineID},${lineID}p;" | awk '{print $1}')
     # Unlike Ubuntu, OS X requires the extension to be explicitly specified.
     # The workaround is to set an empty string. Here we use ''
     sed -i '' "s/${hash_to_replace}/[${hash_to_replace}](https:\/\/github.com\/${github_user}\/${app_name}\/commit\/${hash_to_replace})/" ~/temp/tmpfile2
   done
-
   # add space at the begining of a line
   sed 's/^/ /' ~/temp/tmpfile2 > ~/temp/tmpfile3
-
-  echo "tmpfile3"
-  cat ~/temp/tmpfile3
-  sleep 2
-
   # add sign "-" at the begining of a line
   sed 's/^/-/' ~/temp/tmpfile3 > ~/temp/tmpfile4
-
-  echo "tmpfile4"
-  cat ~/temp/tmpfile4
-  sleep 2
-
   # create main file
   echo -e "" >> ~/temp/tmpfile
   # insert title version
@@ -355,17 +334,12 @@ function App_Changelog_Update {
   echo -e "### ⚡️ Updates" >> ~/temp/tmpfile
   # insert our montage to the main file
   cat ~/temp/tmpfile4 >> ~/temp/tmpfile
-
   # Insert our release notes after pattern "# Release"
   bottle="$(cat ~/temp/tmpfile)"
   awk -vbottle="$bottle" '/# Releases/{print;print bottle;next}1' CHANGELOG.md > ~/temp/tmpfile
   cat ~/temp/tmpfile | awk 'NF > 0 {blank=0} NF == 0 {blank++} blank < 2' > CHANGELOG.md
-
   # clean
-  rm ~/temp/tmpfile || true
-  rm ~/temp/tmpfile2 || true
-  rm ~/temp/tmpfile3 || true
-  rm ~/temp/tmpfile4 || true
+  rm ~/temp/tmpfil* || true
 
   # The system will open the CHANGELOG file, in case you have to edit it.
   # Manually edit CHANGELOG in terminal
