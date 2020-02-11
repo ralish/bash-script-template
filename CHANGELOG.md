@@ -12,8 +12,6 @@ Based on this [template](https://gist.github.com/pascalandy/af709db02d3fe132a3e6
 
 # Releases
 
-## 0.9.7
-### ⚡️ Updates
 - [742365f](https://github.com/firepress-org/bashlava/commit/742365f) Update bashlava to version 0.9.7
 - [beaa2e0](https://github.com/firepress-org/bashlava/commit/beaa2e0) Improve fct CI / FIX custom_urls.sh
 - [36685ea](https://github.com/firepress-org/bashlava/commit/36685ea) Improve template
