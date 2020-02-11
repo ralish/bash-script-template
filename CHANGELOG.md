@@ -12,6 +12,26 @@ Based on this [template](https://gist.github.com/pascalandy/af709db02d3fe132a3e6
 
 # Releases
 
+## 0.9.6
+### ⚡️ Updates
+- [0d2bec1](https://github.com/firepress-org/bashlava/commit/0d2bec1) App_changelog_update, Improve create URLs from git commits & remove vars during QA
+- [2d79b65](https://github.com/firepress-org/bashlava/commit/2d79b65) App_changelog_update, Improve create URLs from git commits, RENAME out-m & out-e
+- [6ee27a2](https://github.com/firepress-org/bashlava/commit/6ee27a2) new alias
+- [22ead68](https://github.com/firepress-org/bashlava/commit/22ead68) Changelog_Update / create URLs from git commits
+- [b27be25](https://github.com/firepress-org/bashlava/commit/b27be25) improved fct log
+- [a14ccf7](https://github.com/firepress-org/bashlava/commit/a14ccf7) init alias
+- [909c531](https://github.com/firepress-org/bashlava/commit/909c531) improve prompt messages
+- [4862c97](https://github.com/firepress-org/bashlava/commit/4862c97) add alias, improve prompt messages
+- [1b03630](https://github.com/firepress-org/bashlava/commit/1b03630) FIX logic on <release>, improve comments
+- [bd1e1c7](https://github.com/firepress-org/bashlava/commit/bd1e1c7) The abstraction is real. <cl> is now under <release>
+- [6769998](https://github.com/firepress-org/bashlava/commit/6769998) dk: add comment
+- [5896031](https://github.com/firepress-org/bashlava/commit/5896031) cl-push is now cl thanks to App_Changelog_Update
+- [09f32af](https://github.com/firepress-org/bashlava/commit/09f32af) fct dk: add logic to show version when no attributs are passed
+- [e8e6861](https://github.com/firepress-org/bashlava/commit/e8e6861) rename dk-version to dk
+- [1dfe01a](https://github.com/firepress-org/bashlava/commit/1dfe01a) update Dockerfile template
+- [299082d](https://github.com/firepress-org/bashlava/commit/299082d) improve alias
+- [fcb4075](https://github.com/firepress-org/bashlava/commit/fcb4075) fct cl FIX var, minor optimzations
+
 ## 0.9.5
 ### ⚡️ Updates
 - 45345aa FIX if logic
