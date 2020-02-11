@@ -8,7 +8,11 @@ function -h { help
 }
 function m { master
 }
+function master-ns { master-nosq # think no squash
+}
 function m-no { master-nosq
+}
+function m-ns { master-nosq
 }
 function e { edge
 }
