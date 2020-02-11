@@ -1,9 +1,8 @@
-&nbsp;
+# BashLava
 
-<p align="center">
-<h1>BashLava</h1><br>
-Make your bash scripts as piece of cakes.
-</p>
+BashLava makes your bash scripts a bunch of piece of cakes.
+
+&nbsp;
 
 <p align="center">
   <a href="https://github.com/firepress-org/bashlava">
@@ -15,7 +14,7 @@ Make your bash scripts as piece of cakes.
 
 ## What is this?
 
-An idempotent `bash script` template using best practices for bash. It includes several useful functions (sub-scripts) to manage your code on GitHub.
+An idempotent `bash script` template using best practices for bash. It includes several useful functions to manage your code on GitHub.
 
 ### Motivation
 
@@ -28,7 +27,7 @@ This core `bashcheck.sh` was forked from: https://github.com/ralish/bash-script-
 <details><summary>Click to expand this section.</summary>
 <p>
 
-You should use an alias like: `alias uu=./utility.sh ` (with a space at the end) to really benefit from this app.
+You should use an alias like: `alias uu=bashlava.sh ` (with a space at the end) to really benefit from this app.
 
 **Example**: help
 
@@ -37,7 +36,7 @@ You should use an alias like: `alias uu=./utility.sh ` (with a space at the end)
 **Example**: test
 
 ```
-./utility.sh test"
+bashlava.sh test"
 
 $1 is now test
 $2 is now not-set
@@ -51,7 +50,7 @@ $3 is now not-set
 **Example**: test using attributes
 
 ```
-./utility.sh test two "The red fox is running."
+bashlava.sh test two "The red fox is running."
 
 $1 is now test
 $2 is now two
@@ -65,7 +64,7 @@ $3 is now The red fox is running.
 **Example**: git push
 
 ```
-./utility.sh push
+bashlava.sh push
 
 ——> ERROR: You must provide a Git message.
 ```
@@ -73,7 +72,7 @@ $3 is now The red fox is running.
 Now with a second attribute:
 
 ```
-./utility.sh push "README / Add requirement section"
+bashlava.sh push "README / Add requirement section"
 
 Enumerating objects: 5, done.
 Counting objects: 100% (5/5), done.
@@ -89,50 +88,26 @@ To github.com:firepress-org/bash-script-template.git
 **Example**: list available functions
 
 ```
-./utility.sh which
+bashlava.sh which
 
--h
-add_changelog
-add_dockerfile
-add_dockerignore
-add_gitignore
-add_license
 ci
-cl
-cl-read
 cl-view
 diff
-dk_update
-dk_view
-edge-init
-example_array
-example_figlet
+dk
+dk-view
+edge
 hash
 help
-help-bash
-help-pr-process
-help-workflow
-lint
-lint_hado
-list
 log
-logs
 master
 master-nosq
-mdv
-mdv-all
-pass
+out-e
+out-m
 passgen
-passgen_long
-prt
 push
 release
-release_find_the_latest
 sq
-stat
-stats
 status
-tag
 test
 which
 ```
