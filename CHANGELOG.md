@@ -14,10 +14,12 @@ Based on this [template](https://gist.github.com/pascalandy/af709db02d3fe132a3e6
 
 ## 0.9.7
 ### ⚡️ Updates
-- [878e2f2](https://github.com/firepress-org/bashlava/commit/878e2f2) Make the local variable more obvious / cleaner way to manage custom_scripts / better error handling
-- [e91a2b4](https://github.com/firepress-org/bashlava/commit/e91a2b4) Adding example for custom scripts
+- [878e2f2](https://github.com/firepress-org/bashlava/commit/878e2f2) Make the local variable more obvious
+- [878e2f2](https://github.com/firepress-org/bashlava/commit/878e2f2) Cleaner way to manage custom_scripts
+- [878e2f2](https://github.com/firepress-org/bashlava/commit/878e2f2) Better error handling
+- [e91a2b4](https://github.com/firepress-org/bashlava/commit/e91a2b4) Adding 3 examples for custom scripts
 - [beaa2e0](https://github.com/firepress-org/bashlava/commit/beaa2e0) Improve fct CI / FIX custom_urls.sh
-- [36685ea](https://github.com/firepress-org/bashlava/commit/36685ea) Improve template
+- [36685ea](https://github.com/firepress-org/bashlava/commit/36685ea) Improve template for Dockferfile
 - [71602ed](https://github.com/firepress-org/bashlava/commit/71602ed) Improve README
 
 ## 0.9.6

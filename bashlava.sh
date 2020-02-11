@@ -90,7 +90,8 @@ function master {
   App_Is_changelog
   App_Is_dockerfile
   App_Is_gitignore
-
+  log
+  
   # prompt
   my_message="What are we about to merge here?" App_Blue
   read -p "==> " squash_message
@@ -597,7 +598,7 @@ function out-m { git checkout master # basic checkout to master
 }
 function out-e { git checkout edge   # basic checkout to edge
 }
-function log { git log --all --decorate --oneline --graph --pretty=oneline -n40
+function log { git log --all --decorate --oneline --graph --pretty=oneline -n25
 }
 function hash { git rev-parse HEAD && git rev-parse --short HEAD 
 }
