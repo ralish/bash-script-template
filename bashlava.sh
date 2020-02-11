@@ -38,7 +38,7 @@ function push {
 # usage: bashlava.sh push "Feat: add the hability to see CICD status".
 # The signs <"> are required!
 
-  # if no attribute were past, well... let's see what changed then:
+  # if no attribute were past, well... let's see what changed:
   if [[ "${input_2}" == "not-set" ]]; then
     diff
   fi
@@ -64,7 +64,7 @@ function dk {
 
   App_GetVarFromDockerile
   git add . && \
-  git commit . -m "Update to version ${app_version} in Dockerfile" && \
+  git commit . -m "Update ${app_name} to version ${app_version} (Dockerfile)" && \
   git push origin edge
 
   echo && my_message="cmd <ci> can be useful at this point when our Dockerfile is built on Github Actions." App_Blue
@@ -108,7 +108,7 @@ function master {
 
   # merge & squash edge into mrg_edge_2_master
   git merge --squash edge && \
-  git commit . -m "${squash_message} /squash" && \
+  git commit . -m "${squash_message} (squash)" && \
 
   # back to master
   git checkout master && \
@@ -169,7 +169,7 @@ function release {
   App_GetVarFromDockerile
 
   # push updates
-  git commit . -m "Update to version ${app_version} in CHANGELOG" && \
+  git commit . -m "Update ${app_name} to version ${app_version} (CHANGELOG)" && \
   git push origin master && \
 
   App_Is_dockerfile
@@ -234,7 +234,7 @@ function sq {
   git push origin HEAD --force && \
   git status && \
   git add -A && \
-  git commit -m "${git_message} /squashed" && \
+  git commit -m "${git_message} (squash)" && \
   git push;
 }
 
@@ -321,7 +321,7 @@ function App_Changelog_Update {
   App_GetVarFromDockerile
   for lineID in $(seq 1 ${number_of_lines}); do
     hash_to_replace=$(cat ~/temp/tmpfile2 | sed -n "${lineID},${lineID}p;" | awk '{print $1}')
-    # create URLs from git commits
+    # create URLs from commits
       # Unlike Ubuntu, OS X requires the extension to be explicitly specified.
       # The workaround is to set an empty string. Here we use ''
     sed -i '' "s/${hash_to_replace}/[${hash_to_replace}](https:\/\/github.com\/${github_user}\/${app_name}\/commit\/${hash_to_replace})/" ~/temp/tmpfile2
