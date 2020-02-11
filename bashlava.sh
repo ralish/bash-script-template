@@ -302,32 +302,28 @@ function App_Changelog_Update {
   App_Is_Input2
   App_Is_master
   App_Is_changelog
-
-   # give time to user to CTRL-C if he changes is mind
-  clear && echo && \
-  my_message="Update CHANGELOG.md to v${tag_version}:" App_Blue && sleep 1
-
   App_UpdateDockerfileVersion
+  App_RemoveTmpFiles
 
-  # reset files
-  rm ~/temp/tmpfil* || true
-
+  # generate the logs (raw format)
   git_logs="$(git --no-pager log --abbrev-commit --decorate=short --pretty=oneline -n25 | \
     awk '/HEAD ->/{flag=1} /tag:/{flag=0} flag' | \
     sed -e 's/([^()]*)//g' | \
     awk '$1=$1')"
 
-  # copy logs
+  # copy logs in a file
   echo -e "${git_logs}" > ~/temp/tmpfile2
 
-  # create URLs from git commits
-  # --- find the number of line in this file
+  # --- Time to reformat the logs
+
+  # find the number of line in this file
   number_of_lines=$(cat ~/temp/tmpfile2 | wc -l | awk '{print $1}')
   App_GetVarFromDockerile
   for lineID in $(seq 1 ${number_of_lines}); do
     hash_to_replace=$(cat ~/temp/tmpfile2 | sed -n "${lineID},${lineID}p;" | awk '{print $1}')
-    # Unlike Ubuntu, OS X requires the extension to be explicitly specified.
-    # The workaround is to set an empty string. Here we use ''
+    # create URLs from git commits
+      # Unlike Ubuntu, OS X requires the extension to be explicitly specified.
+      # The workaround is to set an empty string. Here we use ''
     sed -i '' "s/${hash_to_replace}/[${hash_to_replace}](https:\/\/github.com\/${github_user}\/${app_name}\/commit\/${hash_to_replace})/" ~/temp/tmpfile2
   done
   # add space at the begining of a line
@@ -346,14 +342,19 @@ function App_Changelog_Update {
   bottle="$(cat ~/temp/tmpfile)"
   awk -vbottle="$bottle" '/# Releases/{print;print bottle;next}1' CHANGELOG.md > ~/temp/tmpfile
   cat ~/temp/tmpfile | awk 'NF > 0 {blank=0} NF == 0 {blank++} blank < 2' > CHANGELOG.md
-  # clean
-  rm ~/temp/tmpfil* || true
+  App_RemoveTmpFiles
 
-  # The system will open the CHANGELOG file, in case you have to edit it.
-  # Manually edit CHANGELOG in terminal
+  # The system will open the CHANGELOG, in case you have to edit it.
   nano CHANGELOG.md
 
   # then run: release
+}
+
+function App_RemoveTmpFiles {
+  rm ~/temp/tmpfile || true | 2>/dev/null
+  rm ~/temp/tmpfile2 || true | 2>/dev/null
+  rm ~/temp/tmpfile3 || true | 2>/dev/null
+  rm ~/temp/tmpfile4 || true | 2>/dev/null
 }
 
 function App_Is_master {
