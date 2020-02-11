@@ -588,8 +588,13 @@ function status { git status
 }
 function diff { git diff
 }
-# Valid for Github Actions CI. Usually the CI build our Dockerfiles
-function ci { hub ci-status -v $(git rev-parse HEAD)
+function ci {
+  # Valid for Github Actions CI. Usually the CI build our Dockerfiles
+  # while loop for 8 min
+  MIN="1" MAX="96"
+  for action in $(seq ${MIN} ${MAX}); do
+    hub ci-status -v $(git rev-parse HEAD) && echo && sleep 5;
+  done
 }
 
 #
@@ -625,6 +630,7 @@ function add_on {
   # Define your own custom add-on scripts. 
   # `custom_*.sh` file are in part .gitignore so they will not be commited.
   source "${addon_fct_path}/custom_pascal.sh"
+  source "${addon_fct_path}/custom_urls.sh"
 }
 
 function App_DefineVariables {
