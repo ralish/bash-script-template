@@ -464,8 +464,6 @@ function App_UpdateDockerfileVersion {
   # version before
   App_GetVarFromDockerile
   version_before=${app_version}
-  # write version on disk (needed to generate compare URL in our CHANGELOG)
-  mkdir -pv ~/tmp && echo ${app_version} > ~/tmp/${github_user}_${app_name}_version_before
 
   # apply update
   tag_version_clean=$(echo $tag_version | sed 's/-r.*//g')
@@ -475,8 +473,6 @@ function App_UpdateDockerfileVersion {
   # version after
   App_GetVarFromDockerile
   version_after=${app_version}
-  # write version on disk (needed to generate compare URL in our CHANGELOG)
-  mkdir -pv ~/tmp && echo ${app_version} > ~/tmp/${github_user}_${app_name}_version_after
 
   # To debug if needed
       # confirm change was well executed (to dubug id needed)
@@ -498,7 +494,7 @@ function App_GetVarFromDockerile {
   github_user=$(cat Dockerfile | grep GITHUB_USER= | head -n 1 | grep -o '".*"' | sed 's/"//g')
 
   # set empty input (if any)
-  if [[ -z "$app_name" ]]; then    #if empty
+  if [[ -z "$app_name" ]]; then         #if empty
     app_name="not-set"
   elif [[ -z "$app_version" ]]; then    #if empty
     app_version="not-set"
