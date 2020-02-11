@@ -53,7 +53,8 @@ help-template
 function init_dockerfile {
 cat << EOF > Dockerfile_template
 ###################################
-# REQUIRED BY bashLaVa https://github.com/firepress-org/bashlava 
+# REQUIRED for bashLaVa https://github.com/firepress-org/bashlava
+# REQUIRED for Github Action CI template https://github.com/firepress-org/ghostfire/tree/master/.github/workflows
 ###################################
 
 ARG VERSION="notset"

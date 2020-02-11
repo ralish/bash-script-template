@@ -1,5 +1,6 @@
 ###################################
-# REQUIRED BY OUR GITHUB ACTION CI
+# REQUIRED for bashLaVa https://github.com/firepress-org/bashlava
+# REQUIRED for Github Action CI template https://github.com/firepress-org/ghostfire/tree/master/.github/workflows
 ###################################
 
 ARG VERSION="0.9.6"
@@ -7,5 +8,5 @@ ARG APP_NAME="bashlava"
 ARG GITHUB_USER="firepress-org"
 
 ###################################
-# REQUIRED BY THIS SPECIFIC BUILD (start you Dockerile from here if any)
+# Start you Dockerfile from here (if any)
 ###################################
