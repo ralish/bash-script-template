@@ -12,13 +12,15 @@ Based on this [template](https://gist.github.com/pascalandy/af709db02d3fe132a3e6
 
 # Releases
 
-- [742365f](https://github.com/firepress-org/bashlava/commit/742365f) Update bashlava to version 0.9.7
+## 0.9.7
+### ⚡️ Updates
+- [878e2f2](https://github.com/firepress-org/bashlava/commit/878e2f2) Make the local variable more obvious / cleaner way to manage custom_scripts / better error handling
+- [e91a2b4](https://github.com/firepress-org/bashlava/commit/e91a2b4) Adding example for custom scripts
 - [beaa2e0](https://github.com/firepress-org/bashlava/commit/beaa2e0) Improve fct CI / FIX custom_urls.sh
 - [36685ea](https://github.com/firepress-org/bashlava/commit/36685ea) Improve template
 - [71602ed](https://github.com/firepress-org/bashlava/commit/71602ed) Improve README
 
 ## 0.9.6
-
 As you can see here, our commit hash link back to the actual commit :)
 
 ### ⚡️ Updates
