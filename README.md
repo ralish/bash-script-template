@@ -14,10 +14,10 @@ BashLava makes your bash scripts a bunch of piece of cakes. With it, you can qui
 
 - push commits
 - rebase or merge code to master (squash when needed)
-- Generate CHANGELOG from commits and append the updates from the existing CHANGELOG
+- Generate CHANGELOG from commits and append the updates into the existing CHANGELOG
 - Tag branch
-- push the release
-- reset your dev branch
+- push the release on Github
+- reset your dev branch (to avoid any conflicts)
 
 It make following Git best practices a breeze without having to leave your terminal or use the GitHub GUI. You should try it, it's addictive.
 
