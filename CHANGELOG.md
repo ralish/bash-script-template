@@ -12,6 +12,10 @@ Based on this [template](https://gist.github.com/pascalandy/af709db02d3fe132a3e6
 
 # Releases
 
+## 0.9.8
+### ⚡️ Updates
+- [3edfb00](https://github.com/firepress-org/bashlava/commit/3edfb00) Improve Changelog and fix typo / Add <log> into <master> /squashed
+
 ## 0.9.7
 ### ⚡️ Updates
 - [878e2f2](https://github.com/firepress-org/bashlava/commit/878e2f2) Make the local variable more obvious
