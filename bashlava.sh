@@ -313,26 +313,44 @@ function App_Changelog_Update {
   touch ~/temp/tmpfile2 && rm ~/temp/tmpfile2 || true
   touch ~/temp/tmpfile3 && rm ~/temp/tmpfile3 || true
   touch ~/temp/tmpfile4 && rm ~/temp/tmpfile4 || true
+  touch ~/temp/tmpfile4 && rm ~/temp/tmpfile5 || true
 
   git_logs="$(git --no-pager log --abbrev-commit --decorate=short --pretty=oneline -n25 | \
     awk '/HEAD ->/{flag=1} /tag:/{flag=0} flag' | \
     sed -e 's/([^()]*)//g' | \
     awk '$1=$1')"
 
-  echo -e "${git_logs}" >> ~/temp/tmpfile2
-  # add space at the begining of a line
-  sed 's/^/ /' ~/temp/tmpfile2 > ~/temp/tmpfile3
-  # add sign "-" at the begining of a line
-  sed 's/^/-/' ~/temp/tmpfile3 > ~/temp/tmpfile4
+  # copy logs
+  echo -e "${git_logs}" > ~/temp/tmpfile2
 
+  # create URLs from git commits
+  # --- find the number of line in this file
+  number_of_lines=$(cat ~/temp/tmpfile2 | wc -l | awk '{print $1}')
+  App_GetVarFromDockerile
+  for lineID in $(seq 1 ${number_of_lines}); do
+    hash_to_replace=$(cat ~/temp/tmpfile2 | sed -n "${lineID},${lineID}p;" | awk '{print $1}')
+    # Unlike Ubuntu, OS X requires the extension to be explicitly specified.
+    # The workaround is to set an empty string. Here we use ''
+    sed -i '' "s/${hash_to_replace}/[${hash_to_replace}](https:\/\/github.com\/${github_user}\/${app_name}\/commit\/${hash_to_replace})/" ~/temp/tmpfile2 > ~/temp/tmpfile3
+  done
+
+  # add space at the begining of a line
+  sed 's/^/ /' ~/temp/tmpfile4 > ~/temp/tmpfile4
+
+  # add sign "-" at the begining of a line
+  sed 's/^/-/' ~/temp/tmpfile5 > ~/temp/tmpfile5
+
+  # create main file
   echo -e "" >> ~/temp/tmpfile
-  # insert version
+  # insert title version
   echo -e "## ${input_2}" >> ~/temp/tmpfile
+  # insert title Updates
   echo -e "### ⚡️ Updates" >> ~/temp/tmpfile
-  cat ~/temp/tmpfile4 >> ~/temp/tmpfile
-  bottle="$(cat ~/temp/tmpfile)"
+  # insert our montage to the main file
+  cat ~/temp/tmpfile5 >> ~/temp/tmpfile
 
   # Insert our release notes after pattern "# Release"
+  bottle="$(cat ~/temp/tmpfile)"
   awk -vbottle="$bottle" '/# Releases/{print;print bottle;next}1' CHANGELOG.md > ~/temp/tmpfile
   cat ~/temp/tmpfile | awk 'NF > 0 {blank=0} NF == 0 {blank++} blank < 2' > CHANGELOG.md
 
@@ -341,9 +359,9 @@ function App_Changelog_Update {
   rm ~/temp/tmpfile2 || true
   rm ~/temp/tmpfile3 || true
   rm ~/temp/tmpfile4 || true
+  rm ~/temp/tmpfile5 || true
 
-  my_message="The system will open the CHANGELOG file, so you can edit it." App_Blue && sleep 2 && \
-
+  # The system will open the CHANGELOG file, in case you have to edit it.
   # Manually edit CHANGELOG in terminal
   nano CHANGELOG.md
 
