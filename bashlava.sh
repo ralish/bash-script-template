@@ -53,11 +53,13 @@ function dk {
   # usage: bashlava.sh version 1.50.1
 
   if [[ "${input_2}" == "not-set" ]]; then
+    App_Is_dockerfile
     dk-view && \
     tag && echo 
   fi
 
   App_Is_Input2
+  App_Is_dockerfile
   App_Is_edge
 
   tag_version="${input_2}"
