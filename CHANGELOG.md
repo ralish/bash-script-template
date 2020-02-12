@@ -12,6 +12,14 @@ Based on this [template](https://gist.github.com/pascalandy/af709db02d3fe132a3e6
 
 # Releases
 
+## 0.9.13
+### ⚡️ Updates
+- [628ea06](https://github.com/firepress-org/bashlava/commit/628ea06) Update bashlava to version 0.9.13
+- [0e4dc42](https://github.com/firepress-org/bashlava/commit/0e4dc42) ADD --help to alias
+- [661808d](https://github.com/firepress-org/bashlava/commit/661808d) better copy for /help
+- [a21fd90](https://github.com/firepress-org/bashlava/commit/a21fd90) add rule /App_Is_dockerfile in /dk
+- [2aeb034](https://github.com/firepress-org/bashlava/commit/2aeb034) init BACKLOG
+
 ## 0.9.12
 ### ⚡️ Updates
 - [554dce4](https://github.com/firepress-org/bashlava/commit/554dce4) Update bashlava to version 0.9.12
