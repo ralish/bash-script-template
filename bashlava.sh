@@ -237,6 +237,8 @@ function sq {
   git add -A && \
   git commit -m "${git_message} (squash)" && \
   git push;
+
+  log
 }
 
 function wip-pr {
