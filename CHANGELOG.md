@@ -12,6 +12,12 @@ Based on this [template](https://gist.github.com/pascalandy/af709db02d3fe132a3e6
 
 # Releases
 
+## 0.9.12
+### ⚡️ Updates
+- [554dce4](https://github.com/firepress-org/bashlava/commit/554dce4) Update bashlava to version 0.9.12
+- [066c4be](https://github.com/firepress-org/bashlava/commit/066c4be) Add /log to /sq
+- [d1afd4c](https://github.com/firepress-org/bashlava/commit/d1afd4c) FIX: re-write many > /dev/null 2>&1
+
 ## 0.9.11
 ### ⚡️ Updates
 - [7b3bb76](https://github.com/firepress-org/bashlava/commit/7b3bb76) Add fct /tag. This helps when we pushing app version.
