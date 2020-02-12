@@ -6,6 +6,8 @@ function h { help
 }
 function -h { help
 }
+function --help { help
+}
 function m { master
 }
 function master-ns { master-nosq # think no squash
