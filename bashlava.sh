@@ -28,12 +28,7 @@ function App_Custom_path {
   #
 #
 
-function help {
-  figlet_message="bashLaVa" App_figlet && help-main && which
-}
-
 function commit {
-
   # if no attribute were past, well... let's see what changed:
   if [[ "${input_2}" == "not-set" ]]; then
     diff
@@ -45,16 +40,20 @@ function commit {
 }
 
 function version {
-  # The version is track in the Dockerfile (even if you don't use docker)
+  # The version is tracked in the Dockerfile (even if you don't use docker)
 
+  App_Is_dockerfile
+
+  # when no attrbutes are passed
   if [[ "${input_2}" == "not-set" ]]; then
-    App_Is_dockerfile
-    version-read && \
-    tag && echo 
+    my_message="Three version checkpoints:" && App_Blue &&\
+    version-read &&\
+    tag-read &&\
+    release-read && echo &&\
+    my_message="To update the project's version, please use this format: v 3.5.1" && App_Warning && App_Stop
   fi
 
   App_Is_Input2
-  App_Is_dockerfile
   App_Is_edge
 
   tag_version="${input_2}"
@@ -69,17 +68,10 @@ function version {
   # tk maybe build a github action ci watcher...
 }
 
-function version-read {
-  App_GetVarFromDockerile
-  my_message="${app_version} < version in Dockerfile" App_Blue
-}
-
 function master {
-
   if [[ "${input_2}" == "not-set" ]]; then
     version-read
   fi
-
   App_Is_Input2
   App_Is_commit_unpushed
   App_Is_changelog
@@ -127,11 +119,9 @@ function master {
 }
 
 function master-nosq {
-
   if [[ "${input_2}" == "not-set" ]]; then
     version-read
   fi
-  
   App_Is_Input2
   App_Is_commit_unpushed
   App_Is_changelog
@@ -141,15 +131,12 @@ function master-nosq {
   # Update our local state
   git checkout master && \
   git pull origin master && \
-
   # rebase
   git rebase edge && \
   git push origin master && echo;
-
   # update CHANGELOG
   export tag_version="${input_2}"
   App_Changelog_Update
-
   # next setp is: release
 }
 
@@ -202,12 +189,10 @@ function edge {
   git branch -D edge || true && \
   git checkout -b edge && \
   git push --set-upstream origin edge -f && \
-
   echo && my_message="<edge> was create from scratch (from <master>)" App_Blue
 }
 
 function squash {
-
   App_Is_commit_unpushed
   App_Is_Input2
   App_Is_Input3
@@ -264,59 +249,68 @@ function e { #core> ...... "edge" recrete a fresh edge branch from master (no at
   edge
 }
 
-
-function vr { #==> ..... "version read" Show app's version? (no attribute)
+function vr { #util> ..... "version read" Show app's version (no attribute)
   version-read
 }
-function ci { #==> ..... "continous integration" CI status from Github Actions (no attribute)
+function rr { #util> ..... "release read" Show release from Github (attribute are optionnal)
+  release-read
+}
+function tr { #util> ..... "tag read" the actual tag (no attribute)
+  tag-read
+}
+function mdv { #util> ..... "markdown viewer" | usage: mdv README.md
+  clear
+  App_Is_Input2
+  App_glow
+}
+function ci { #util> ..... "continous integration" CI status from Github Actions (no attribute)
   continuous-integration-status
 }
-function m-o { #==> .... "master out" Basic git checkout (no attribute)
+function om { #util> ..... "out master" Basic git checkout (no attribute)
   git checkout master
 }
-function e-o { #==> .... "edge out" Basic git checkout (no attribute)
+function oe { #util> ..... "out edge" Basic git checkout (no attribute)
   git checkout edge
 }
-function l { #==> ...... "log" Show me the latest commits (no attribute)
+function l { #util> ...... "log" show me the latest commits (no attribute)
   log
 }
-function sq { #==> ..... "squash" commits | usage: sq 3 "Add fct xyz"
+function sq { #util> ..... "squash" commits | usage: sq 3 "Add fct xyz"
   squash
 }
-function d { #==> ...... "diff" Show me diff in my code (no attribute)
+function d { #util> ...... "diff" show me diff in my code (no attribute)
   diff
 }
-function s { #==> ...... "status" Show me if there is something to commit (no attribute)
+function s { #util> ...... "status" show me if there is something to commit (no attribute)
   status
 }
-function cr { #==> ..... "changelog-read" Show me the changelog.md (no attribute)
+function cr { #util> ..... "changelog read" (no attribute)
   changelog-read
 }
-function h { #==> ...... "help" Other available shortcuts: -h, --help, help (no attribute)
+function h { #util> ...... "help" alias are also set to: -h, --help, help (no attribute)
   help
 }
 
-function log { #==> .... "log" Show me the lastest commits
+function log { #util> .... "log" Show me the lastest commits (no attribute)
     git log --all --decorate --oneline --graph --pretty=oneline -n25
 }
-function hash { #==> ... "hash" Show me the latest hash commit
+function hash { #util> ... "hash" Show me the latest hash commit (no attribute)
   git rev-parse HEAD && git rev-parse --short HEAD 
 }
-
-function tag { #==> .... "tag" view to actual tag . . . . . . . .
+function tag-read {
   latest_tag="$(git describe --tags --abbrev=0)"
-  my_message="${latest_tag} < latest tag that was pushed" App_Blue
+  my_message="${latest_tag} < latest commited tag" App_Blue
+}
+function status { git status
+}
+function diff { git diff
 }
 
-function list { #==> ... "list" all core functions (no attribute)
-  title-core-fct
-  cat /usr/local/bin/bashlava.sh | awk '/#core> /' | awk '{$1="";$3="";$4="";print $0}' | sed '/\/usr\/local\/bin\//d' && echo
-  cat /usr/local/bin/bashlava.sh | awk '/#==> /' | awk '{$1="";$3="";$4="";print $0}' | sort -k2 -n | sed '/\/usr\/local\/bin\//d'
-  #cat /usr/local/bin/bashlava.sh | awk '/function /' | awk '{print $2}' | sort -k2 -n | sed '/App_/d' | sed '/main/d' | sed '/\/usr\/local\/bin\//d' | sed '/wip-/d'
-  #If needed, you can list your add-on fct here as well. We don't list them by default to minimize cluter.
+function help {
+  figlet_message="bashLaVa" App_figlet && help-main && which
 }
 
-function test { #==> ... "test" bashscript setup on my machine (no attribute)
+function test { #util> ... "test" bashscript setup on my machine (no attribute)
 # test our script & fct. Idempotent bash script
 
   echo "\$1 value is: ${input_1}"
@@ -330,11 +324,6 @@ function test { #==> ... "test" bashscript setup on my machine (no attribute)
   my_message="Date is: ${date_sec}" App_Blue
 }
 
-function status { git status
-}
-function diff { git diff
-}
-
 function continuous-integration-status {
   # Valid for Github Actions CI. Usually the CI build our Dockerfiles
   # while loop for 8 min
@@ -344,7 +333,15 @@ function continuous-integration-status {
   done
 }
 
+function list { #util> ... "list" all core functions (no attribute)
+  title-core-fct &&\
+  cat /usr/local/bin/bashlava.sh | awk '/#core> /' | awk '{$1="";$3="";$4="";print $0}' | sed '/\/usr\/local\/bin\//d' && echo &&\
+  title-utilities-fct &&\
+  cat /usr/local/bin/bashlava.sh | awk '/#util> /' | awk '{$1="";$3="";$4="";print $0}' | sort -k2 -n | sed '/\/usr\/local\/bin\//d' && echo
 
+  #cat /usr/local/bin/bashlava.sh | awk '/function /' | awk '{print $2}' | sort -k2 -n | sed '/App_/d' | sed '/main/d' | sed '/\/usr\/local\/bin\//d' | sed '/wip-/d'
+  #If needed, you can list your add-on fct here as well. We don't list them by default to minimize cluter.
+}
 
 
 function wip-pr {
@@ -362,28 +359,27 @@ function wip-pr {
   git push -u origin mrg-dev-to-staging
 }
 
-function wip-release_latest {
-  # tk work in progress
-  # not working
+function version-read {
+  App_GetVarFromDockerile
+  my_message="${app_version} < version in Dockerfile" App_Blue
+}
+
+function release-read {
   # find the latest release that was pushed on github
 
-  App_GetVarFromDockerile
-
-  if [[ -z "${app_name}" ]] ; then    #if empty
-    clear
-    my_message="Can't find APP_NAME in the Dockerfile (ERR5679)" App_Pink
-    App_Stop
-  elif [[ -z "${github_user}" ]] ; then    #if empty
-    clear
-    my_message="Can't find GITHUB_USER in the Dockerfile (ERR5680)" App_Pink
-    App_Stop
+  # for this project
+  if [[ "${input_2}" == "not-set" ]] && [[ "${input_3}" == "not-set" ]] ; then
+    App_GetVarFromDockerile
+  # for any project on GitHub (ie. pascalandy docker-stack-this)
   else
-    my_message=$(curl -s https://api.github.com/repos/${github_user}/${app_name}/releases/latest | \
-      grep tag_name | \
-      awk -F ': "' '{ print $2 }' | \
-      awk -F '",' '{ print $1 }')
-    App_Blue
+    github_user=${input_2}
+    app_name=${input_3}
   fi
+
+  release_latest=$(curl -s https://api.github.com/repos/${github_user}/${app_name}/releases/latest | \
+    grep tag_name | awk -F ': "' '{ print $2 }' | awk -F '",' '{ print $1 }')
+
+  my_message="${release_latest} < released on https://github.com/${github_user}/${app_name}" && App_Blue
 }
 
 #
@@ -608,17 +604,25 @@ function App_GetVarFromDockerile {
   app_version=$(cat Dockerfile | grep VERSION= | head -n 1 | grep -o '".*"' | sed 's/"//g')
   github_user=$(cat Dockerfile | grep GITHUB_USER= | head -n 1 | grep -o '".*"' | sed 's/"//g')
 
-  # set empty input (if any)
-  if [[ -z "$app_name" ]]; then         #if empty
-    app_name="not-set"
-  elif [[ -z "$app_version" ]]; then    #if empty
-    app_version="not-set"
-  elif [[ -z "$github_user" ]]; then    #if empty
-    github_user="not-set"
+  if [[ -z "${app_name}" ]] ; then    #if empty
+    clear
+    my_message="Can't find APP_NAME in the Dockerfile (ERR5679)" App_Pink && App_Stop
+  elif [[ -z "${app_version}" ]] ; then    #if empty
+    clear
+    my_message="Can't find APP_VERSION in the Dockerfile (ERR5680)" App_Pink && App_Stop
+  elif [[ -z "${github_user}" ]] ; then    #if empty
+    clear
+    my_message="Can't find GITHUB_USER in the Dockerfile (ERR5680)" App_Pink && App_Stop
   fi
 
-  # debug if needed
-    # my_message="Available vars: ${app_name}, ${app_version}, ${github_user}" App_Blue && sleep 11
+  # we set these input to make sure the rules App_Is_Input2 & App_Is_Input3 are meet.
+  #if [[ -z "$app_name" ]]; then         #if empty
+  #  app_name="not-set"
+  #elif [[ -z "$app_version" ]]; then    #if empty
+  #  app_version="not-set"
+  #elif [[ -z "$github_user" ]]; then    #if empty
+  #  github_user="not-set"
+  #fi
 }
 
 function App_figlet {
@@ -650,7 +654,11 @@ function App_Check_Custom_path {
   fi
 }
 
-function App_Pink { echo -e "${col_pink} ERROR: ${my_message}"
+function App_Pink {
+  echo -e "${col_pink} ERROR: ${my_message}"
+}
+function App_Warning {
+  echo -e "${col_pink} Warning: ${my_message}"
 }
 function App_Blue { echo -e "${col_blue} ${my_message}"
 }
@@ -681,11 +689,11 @@ function App_Stop { echo "——> exit 1" && echo && exit 1
 function App_add_on {
   # every script that should not be under the main bashlava.sh shell script, should threated as an add-on.
   # This will make easier to maintain de project, minimise cluter, minimise break changes, easy to accept PR
+  # tk readlink -f `which command`
   source "${addon_fct_path}/help.sh"
   source "${addon_fct_path}/alias.sh"
   source "${addon_fct_path}/examples.sh"
   source "${addon_fct_path}/templates.sh"
-  source "${addon_fct_path}/docker.sh"
   source "${addon_fct_path}/utilities.sh"
 
   # Define your own custom add-on scripts. `custom_*.sh` files are in part .gitignore so they will not be commited.
@@ -707,13 +715,13 @@ function App_DefineVariables {
   export col_def="\e[39m"
 
 #	Date generators
-  date_nano="$(date +%Y-%m-%d_%HH%Ms%S-%N)";
-    date_sec="$(date +%Y-%m-%d_%HH%Ms%S)";
-    date_min="$(date +%Y-%m-%d_%HH%M)";
-  date_hour="$(date +%Y-%m-%d_%HH)XX";
-    date_day="$(date +%Y-%m-%d)";
-  date_month="$(date +%Y-%m)-XX";
-  date_year="$(date +%Y)-XX-XX";
+  date_nano="$(date +%Y-%m-%d_%HH%Ms%S-%N)"
+    date_sec="$(date +%Y-%m-%d_%HH%Ms%S)"
+    date_min="$(date +%Y-%m-%d_%HH%M)"
+  date_hour="$(date +%Y-%m-%d_%HH)XX"
+    date_day="$(date +%Y-%m-%d)"
+  date_month="$(date +%Y-%m)-XX"
+  date_year="$(date +%Y)-XX-XX"
             # 2017-02-22_10H24_14-500892448
             # 2017-02-22_10H24_14
             # 2017-02-22_10H24
@@ -723,8 +731,9 @@ function App_DefineVariables {
             # 2017-XX-XX
 }
 
+# ENTRYPOINT
 function main() {
-  # ENTRYPOINT
+  
 
   trap script_trap_err ERR
   trap script_trap_exit EXIT
