@@ -1,47 +1,80 @@
 #!/usr/bin/env bash
 
-function bashlava { help
+
+### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### #
+#
+# OFFICIAL SHORTCUTS
+#
+### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### #
+
+function v { version
+}
+function vr { version-read
+}
+function c { push # think push commit commit
+}
+function m { master
+}
+function m-ns { master-nosq
+}
+function r { release
+}
+function e { edge
+}
+function l { log
+}
+function s { status
+}
+function cr { changelog-read
 }
 function h { help
 }
+
+
+### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### #
+#
+# DUPLICATE SHORTCUTS
+#
+### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### #
+
 function -h { help
 }
 function --help { help
 }
-function m { master
+function bashlava { help
+}
+
+function m-no { master-nosq
 }
 function master-ns { master-nosq # think no squash
 }
-function m-no { master-nosq
+function master-no { master-nosq # think no squash
 }
-function m-ns { master-nosq
-}
-function e { edge
-}
-function r { release
-}
-function c { push # think push commit commit
-}
+
 function commit { push # think push commit
 }
-function dk-show { dk-view
+
+function udpate { version
 }
-function dk-version { dk
+function dk { version
 }
-function version { my_message="version is too generic. Are you looking for: dk-version" App_Blue
+
+function v-dk { version-df
 }
-function udpate { my_message="update is too generic. Are you looking for: dk" App_Blue
+function dk-view { version-df
 }
-function cl-show { cl-view
-}
+
 function list { which
 }
+
 function logs { log
 }
+
 function stats { status
 }
 function stat { status
 }
+
 function pass { passgen
 }
 function passfull { passgen
