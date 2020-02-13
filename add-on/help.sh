@@ -13,21 +13,9 @@ cat <<EOF > bashlava_help.md
 
 # help
 
-## More help:
-
-- help-workflow
-
-## See all available commands
-
-- list
-
-## To test bashlava
-
-- test
-
-## Project sources & README
-
-- https://github.com/firepress-org/bashlava
+- To see all available commands, run: list
+- To understand the git workflow: https://github.com/firepress-org/bashlava#workflow
+- README: https://github.com/firepress-org/bashlava
 
 EOF
 input_2="bashlava_help.md"
