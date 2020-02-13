@@ -257,7 +257,7 @@ function m { #core> ...... "master" squash + rebase + merge edge to master + upd
 function m-ns { #core> ... "master" rebase (no squash) + merge edge to master + update the CHANGELOG | usage: m-ns 3.5.1
   master-nosq
 }
-function r { #core> ...... "release" commit CHANGELOG ¬ push release on Github + push tag on master branch | usage: r 3.5.1
+function r { #core> ...... "release" commit CHANGELOG + push release on Github + push tag on master branch | usage: r 3.5.1
   release
 }
 function e { #core> ...... "edge" recrete a fresh edge branch from master (no attribute)
@@ -277,11 +277,11 @@ function m-o { #==> .... "master out" Basic git checkout (no attribute)
 function e-o { #==> .... "edge out" Basic git checkout (no attribute)
   git checkout edge
 }
-function sq { #==> ..... "squash" commits | usage: sq 3 "Add fct xyz"
-  squash
-}
 function l { #==> ...... "log" Show me the latest commits (no attribute)
   log
+}
+function sq { #==> ..... "squash" commits | usage: sq 3 "Add fct xyz"
+  squash
 }
 function d { #==> ...... "diff" Show me diff in my code (no attribute)
   diff
