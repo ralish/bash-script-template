@@ -18,6 +18,8 @@ hub is not installed
 $local_bashlava_path is not set
 more??
 	
+### add markdown viwer cmd
+	
 ### rename /dk to /version
 alias /v to /version
 alias /dk to /version
