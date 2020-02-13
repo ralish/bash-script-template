@@ -379,7 +379,7 @@ function release-read {
   release_latest=$(curl -s https://api.github.com/repos/${github_user}/${app_name}/releases/latest | \
     grep tag_name | awk -F ': "' '{ print $2 }' | awk -F '",' '{ print $1 }')
 
-  my_message="${release_latest} < released on https://github.com/${github_user}/${app_name}" && App_Blue
+  my_message="${release_latest} < released on https://github.com/${github_user}/${app_name}/releases/tag/${release_latest}" && App_Blue
 }
 
 #
@@ -445,10 +445,10 @@ function App_Changelog_Update {
   bottle="$(cat ~/temp/tmpfile)"
   awk -vbottle="$bottle" '/# Releases/{print;print bottle;next}1' CHANGELOG.md > ~/temp/tmpfile
   cat ~/temp/tmpfile | awk 'NF > 0 {blank=0} NF == 0 {blank++} blank < 2' > CHANGELOG.md
-  App_RemoveTmpFiles
+  App_RemoveTmpFiles && echo &&\
 
   # The system will open the CHANGELOG, in case you have to edit it.
-  nano CHANGELOG.md
+  nano CHANGELOG.md && echo;
 
   # then run: release
 }
