@@ -21,7 +21,7 @@ function master-ns { master-nosq # think no squash
 function master-no { master-nosq # think no squash
 }
 
-function commit { push # think push commit
+function c { commit # think push commit
 }
 
 function udpate { version
