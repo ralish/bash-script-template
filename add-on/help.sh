@@ -139,16 +139,6 @@ input_2="bashlava_help.md"
 App_glow && rm bashlava_help.md || true
 }
 
-function help-which {
-cat <<EOF > bashlava_help.md
-
-# Available functions
-
-EOF
-input_2="bashlava_help.md"
-App_glow && rm bashlava_help.md || true
-}
-
 function help-template {
 cat <<EOF > bashlava_help.md
 # Warning

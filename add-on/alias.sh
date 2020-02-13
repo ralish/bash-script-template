@@ -3,36 +3,6 @@
 
 ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### #
 #
-# OFFICIAL SHORTCUTS
-#
-### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### #
-
-function v { version
-}
-function vr { version-read
-}
-function c { push # think push commit commit
-}
-function m { master
-}
-function m-ns { master-nosq
-}
-function r { release
-}
-function e { edge
-}
-function l { log
-}
-function s { status
-}
-function cr { changelog-read
-}
-function h { help
-}
-
-
-### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### #
-#
 # DUPLICATE SHORTCUTS
 #
 ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### #
@@ -64,10 +34,13 @@ function v-dk { version-df
 function dk-view { version-df
 }
 
-function list { which
+function which { list
 }
 
 function logs { log
+}
+
+function dif { diff
 }
 
 function stats { status

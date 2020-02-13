@@ -29,14 +29,10 @@ function App_Custom_path {
 #
 
 function help {
-  # see alias: help-main -h h --help bashlava
   figlet_message="bashLaVa" App_figlet && help-main && which
 }
 
-function push {
-# think: commit all changes & push on git repo
-# usage: bashlava.sh push "Feat: add the hability to see CICD status".
-# The signs <"> are required!
+function commit {
 
   # if no attribute were past, well... let's see what changed:
   if [[ "${input_2}" == "not-set" ]]; then
@@ -49,9 +45,7 @@ function push {
 }
 
 function version {
-  # think: version of my app is now x.y.z.
   # The version is track in the Dockerfile (even if you don't use docker)
-  # usage: bashlava.sh v 1.50.1
 
   if [[ "${input_2}" == "not-set" ]]; then
     App_Is_dockerfile
@@ -76,14 +70,11 @@ function version {
 }
 
 function version-read {
-  #USAGE view version from Dockerfile
   App_GetVarFromDockerile
   my_message="${app_version} < version in Dockerfile" App_Blue
 }
 
 function master {
-  # usage bashlava.sh master 3.5.1
-  # think squash and rebase edge to master (with squash for a clean master branch)
 
   if [[ "${input_2}" == "not-set" ]]; then
     version-read
@@ -98,7 +89,7 @@ function master {
   
   # prompt
   my_message="What are we about to merge here?" App_Blue
-  read -p "==> " squash_message
+  read -p ": " squash_message
 
   # Update our local state
   git checkout master && \
@@ -132,12 +123,10 @@ function master {
   export tag_version="${input_2}"
   App_Changelog_Update
 
-  # next step ==> release
+  # next step is: release
 }
 
 function master-nosq {
-  # usage: bashlava.sh master-nosq 3.5.1
-  # think rebase master from edge NO_SQUASH
 
   if [[ "${input_2}" == "not-set" ]]; then
     version-read
@@ -161,13 +150,11 @@ function master-nosq {
   export tag_version="${input_2}"
   App_Changelog_Update
 
-  # next setp ==> release
+  # next setp is: release
 }
 
 function release {
-  # think push release + tags to github
-  # at this point we commited our changelog and rebase to master
-  # usage: bashlava.sh release 1.50.1
+  # at this point or changelog is clean.
   App_Is_Input2
   App_Is_master
   App_GetVarFromDockerile
@@ -203,15 +190,12 @@ function release {
 }
 
 function changelog-read {
-  # think: Show me the CHANGELOG.md
   input_2="CHANGELOG.md"
   App_Is_Input2
   App_glow50
 }
 
-function edge {
-  # usage: bashlava.sh master
-  # think scrap branch edge and recreate it as a new feat branch
+function edge { 
   # it assumes there will be no conflict with anybody else as I'm the only person using 'edge'
   App_Is_commit_unpushed
 
@@ -222,9 +206,8 @@ function edge {
   echo && my_message="<edge> was create from scratch (from <master>)" App_Blue
 }
 
-function sq {
-  # usage: bashlava.sh sq 3 "Add fct xyz"
-  # think: squash. The fct master does squash our commits as well
+function squash {
+
   App_Is_commit_unpushed
   App_Is_Input2
   App_Is_Input3
@@ -243,6 +226,126 @@ function sq {
 
   log
 }
+
+#
+  #
+    #
+      #
+        #
+          #
+### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### #
+#
+# OFFICIAL SHORTCUTS
+# core> | we use it in order to 'grep' it in our fct list
+#
+### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### #
+          #
+        #
+      #
+    #
+  #
+#
+function c { #core> ...... "commit" commit all + git push | usage: c "FEAT: new rule to avoid this glitch"
+  commit
+}
+function v { #core> ...... "version" update your app | usage: v 1.50.1 (if no attribute, show actual version)
+  version
+}
+function m { #core> ...... "master" squash + rebase + merge edge to master + update the CHANGELOG | usage: m 3.5.1
+  master
+}
+function m-ns { #core> ... "master" rebase (no squash) + merge edge to master + update the CHANGELOG | usage: m-ns 3.5.1
+  master-nosq
+}
+function r { #core> ...... "release" commit CHANGELOG ¬ push release on Github + push tag on master branch | usage: r 3.5.1
+  release
+}
+function e { #core> ...... "edge" recrete a fresh edge branch from master (no attribute)
+  edge
+}
+
+
+function vr { #==> ..... "version read" Show app's version? (no attribute)
+  version-read
+}
+function ci { #==> ..... "continous integration" CI status from Github Actions (no attribute)
+  continuous-integration-status
+}
+function m-o { #==> .... "master out" Basic git checkout (no attribute)
+  git checkout master
+}
+function e-o { #==> .... "edge out" Basic git checkout (no attribute)
+  git checkout edge
+}
+function sq { #==> ..... "squash" commits | usage: sq 3 "Add fct xyz"
+  squash
+}
+function l { #==> ...... "log" Show me the latest commits (no attribute)
+  log
+}
+function d { #==> ...... "diff" Show me diff in my code (no attribute)
+  diff
+}
+function s { #==> ...... "status" Show me if there is something to commit (no attribute)
+  status
+}
+function cr { #==> ..... "changelog-read" Show me the changelog.md (no attribute)
+  changelog-read
+}
+function h { #==> ...... "help" Other available shortcuts: -h, --help, help (no attribute)
+  help
+}
+
+function log { #==> .... "log" Show me the lastest commits
+    git log --all --decorate --oneline --graph --pretty=oneline -n25
+}
+function hash { #==> ... "hash" Show me the latest hash commit
+  git rev-parse HEAD && git rev-parse --short HEAD 
+}
+
+function tag { #==> .... "tag" view to actual tag . . . . . . . .
+  latest_tag="$(git describe --tags --abbrev=0)"
+  my_message="${latest_tag} < latest tag that was pushed" App_Blue
+}
+
+function list { #==> ... "list" all core functions (no attribute)
+  title-core-fct
+  cat /usr/local/bin/bashlava.sh | awk '/#core> /' | awk '{$1="";$3="";$4="";print $0}' | sed '/\/usr\/local\/bin\//d' && echo
+  cat /usr/local/bin/bashlava.sh | awk '/#==> /' | awk '{$1="";$3="";$4="";print $0}' | sort -k2 -n | sed '/\/usr\/local\/bin\//d'
+  #cat /usr/local/bin/bashlava.sh | awk '/function /' | awk '{print $2}' | sort -k2 -n | sed '/App_/d' | sed '/main/d' | sed '/\/usr\/local\/bin\//d' | sed '/wip-/d'
+  #If needed, you can list your add-on fct here as well. We don't list them by default to minimize cluter.
+}
+
+function test { #==> ... "test" bashscript setup on my machine (no attribute)
+# test our script & fct. Idempotent bash script
+
+  echo "\$1 value is: ${input_1}"
+  echo "\$2 value is: ${input_2}"
+  echo "\$3 value is: ${input_3}"
+  # Useful when trying to find bad variables along 'set -o nounset'
+
+  App_Is_hub_installed 
+  App_Is_docker_installed 
+
+  my_message="Date is: ${date_sec}" App_Blue
+}
+
+function status { git status
+}
+function diff { git diff
+}
+
+function continuous-integration-status {
+  # Valid for Github Actions CI. Usually the CI build our Dockerfiles
+  # while loop for 8 min
+  MIN="1" MAX="96"
+  for action in $(seq ${MIN} ${MAX}); do
+    hub ci-status -v $(git rev-parse HEAD) && echo && sleep 5;
+  done
+}
+
+
+
 
 function wip-pr {
   # tk work in progress
@@ -303,8 +406,6 @@ function wip-release_latest {
 #
 
 function App_Changelog_Update {
-  # think update the CHANGELOG.md by define on which version we are
-  # usage: bashlava.sh cl 3.5.1
   App_Is_Input2
   App_Is_master
   App_Is_changelog
@@ -566,75 +667,6 @@ function App_Stop { echo "——> exit 1" && echo && exit 1
           #
 ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### #
 #
-# UTILITIES
-#
-### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### #
-          #
-        #
-      #
-    #
-  #
-#
-
-function test {
-# test our script & fct. Idempotent bash script
-
-  echo "\$1 value is: ${input_1}"
-  echo "\$2 value is: ${input_2}"
-  echo "\$3 value is: ${input_3}"
-  # Useful when trying to find bad variables along 'set -o nounset'
-
-  App_Is_hub_installed 
-  App_Is_docker_installed 
-
-  my_message="Date is: ${date_sec}" App_Blue
-}
-
-function which {
-  # If needed, you can list your add-on function here as well. We don't list them by default to minimize cluter.
-  help-which
-  cat /usr/local/bin/bashlava.sh | awk '/function /' | awk '{print $2}' \
-    | sort -k2 -n | sed '/App_/d' | sed '/main/d' | sed '/MYCONFIG/d' \
-    | sed '/\/usr\/local\/bin\//d' | sed '/utility/d' | sed '/If/d' | sed '/tk/d' | sed '/add_on/d'
-}
-
-# password generator. See also "passgen_long" These char are not part of the password to minimize human error: i,I,L,l,o,O,0
-function passgen { docker run ctr.run/github.com/firepress-org/alpine:master sh -c "/usr/local/bin/random3.sh";
-}
-function out-m { git checkout master # basic checkout to master
-}
-function out-e { git checkout edge   # basic checkout to edge
-}
-function log { git log --all --decorate --oneline --graph --pretty=oneline -n25
-}
-function hash { git rev-parse HEAD && git rev-parse --short HEAD 
-}
-function status { git status
-}
-function tag { 
-  latest_tag="$(git describe --tags --abbrev=0)"
-  my_message="${latest_tag} < latest tag that was pushed" App_Blue
-}
-
-function diff { git diff
-}
-function ci {
-  # Valid for Github Actions CI. Usually the CI build our Dockerfiles
-  # while loop for 8 min
-  MIN="1" MAX="96"
-  for action in $(seq ${MIN} ${MAX}); do
-    hub ci-status -v $(git rev-parse HEAD) && echo && sleep 5;
-  done
-}
-
-#
-  #
-    #
-      #
-        #
-          #
-### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### #
-#
 # BASHLAVA engine (lol)
 #   low-level logic
 #
@@ -647,7 +679,7 @@ function ci {
 #
 
 function App_add_on {
-  # think: every script that should not be under the main bashlava.sh shell script, should threated as an add-on.
+  # every script that should not be under the main bashlava.sh shell script, should threated as an add-on.
   # This will make easier to maintain de project, minimise cluter, minimise break changes, easy to accept PR
   source "${addon_fct_path}/help.sh"
   source "${addon_fct_path}/alias.sh"
@@ -657,7 +689,7 @@ function App_add_on {
   source "${addon_fct_path}/utilities.sh"
 
   # Define your own custom add-on scripts. `custom_*.sh` files are in part .gitignore so they will not be commited.
-  source "${addon_fct_path}/custom_scripts.sh"
+  source "${addon_fct_path}/custom_scripts_entrypoint.sh"
 }
 
 function App_DefineVariables {
@@ -696,7 +728,7 @@ function main() {
 
   trap script_trap_err ERR
   trap script_trap_exit EXIT
-  source "$(dirname "${BASH_SOURCE[0]}")/.bashcheck.sh"  # shellcheck 
+  source "$(dirname "${BASH_SOURCE[0]}")/.bashcheck.sh"
 
   # Load variables
   App_Custom_path
@@ -723,18 +755,18 @@ function main() {
   else
     input_3=$3
   fi
-
-  # Safety run our bachscript (must be after setting the empty input)
-  set -eou pipefail
-  # set -o xtrace # <== to debug if needed / Trace the execution of the script
+  # it would be easy to have bashlava accept more than 3 attributes.
 
   script_init "$@"
   cron_init
   colour_init
   #lock_init system
 
-  # Attribute #1. It accepts two more attributes
-  # tk FEAT add logic to confirm the function exist or not
+  # Safety run our bachscript (must be after setting the empty input)
+  set -eou pipefail
+  # set -o xtrace # <== to debug if needed / Trace the execution of the script
+  
+  # tk input_1: FEAT add logic to confirm the fct exist or not
   clear
   $1
 }
