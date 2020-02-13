@@ -9,7 +9,7 @@ App_glow && rm bashlava_help.md || true
 }
 
 function title-utilities-fct
- {
+{
 cat <<EOF > bashlava_help.md
 # Utilities functions are:
 EOF
