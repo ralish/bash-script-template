@@ -29,7 +29,7 @@ function App_Custom_path {
 #
 
 function help {
-  # available alias: -h h bashlava
+  # see alias: help-main -h h --help bashlava
   figlet_message="bashLaVa" App_figlet && help-main && which
 }
 
@@ -48,13 +48,14 @@ function push {
   git commit -m "${input_2}" && clear && git push;
 }
 
-function dk {
-  # think: dockerfile update version in our Dockerfile
-  # usage: bashlava.sh version 1.50.1
+function version {
+  # think: version of my app is now x.y.z.
+  # The version is track in the Dockerfile (even if you don't use docker)
+  # usage: bashlava.sh v 1.50.1
 
   if [[ "${input_2}" == "not-set" ]]; then
     App_Is_dockerfile
-    dk-view && \
+    version-read && \
     tag && echo 
   fi
 
@@ -74,8 +75,8 @@ function dk {
   # tk maybe build a github action ci watcher...
 }
 
-function dk-view {
-  # think: view app version from the Dockerfile
+function version-read {
+  #USAGE view version from Dockerfile
   App_GetVarFromDockerile
   my_message="${app_version} < version in Dockerfile" App_Blue
 }
@@ -85,7 +86,7 @@ function master {
   # think squash and rebase edge to master (with squash for a clean master branch)
 
   if [[ "${input_2}" == "not-set" ]]; then
-    dk-view
+    version-read
   fi
 
   App_Is_Input2
@@ -139,7 +140,7 @@ function master-nosq {
   # think rebase master from edge NO_SQUASH
 
   if [[ "${input_2}" == "not-set" ]]; then
-    dk-view
+    version-read
   fi
   
   App_Is_Input2
@@ -201,7 +202,7 @@ function release {
   figlet_message="${app_version} is up." App_figlet;
 }
 
-function cl-view {
+function changelog-read {
   # think: Show me the CHANGELOG.md
   input_2="CHANGELOG.md"
   App_Is_Input2
@@ -290,8 +291,8 @@ function wip-release_latest {
           #
 ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### #
 #
-# CHILD APPS
-#   (the user never directly call these)
+# CHILD FUNCTIONS
+#   (the user don't directly call these fct)
 #
 ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### #
           #
@@ -520,8 +521,7 @@ function App_GetVarFromDockerile {
 }
 
 function App_figlet {
-  docker_image="devmtl/figlet:1.0"
-  docker run --rm ${docker_image} ${figlet_message}
+  docker run --rm ${docker_img_figlet} ${figlet_message}
 }
 
 function App_glow50 {
@@ -661,7 +661,11 @@ function App_add_on {
 }
 
 function App_DefineVariables {
-  #	Define color for echo prompts:
+
+#	docker images 
+  docker_img_figlet="devmtl/figlet:1.0"
+
+#	Define color for echo prompts:
   export col_std="\e[39m——>\e[39m"
   export col_grey="\e[39m——>\e[39m"
   export col_blue="\e[34m——>\e[39m"
@@ -670,7 +674,7 @@ function App_DefineVariables {
   export col_white="\e[97m——>\e[39m"
   export col_def="\e[39m"
 
-  #	Date generators
+#	Date generators
   date_nano="$(date +%Y-%m-%d_%HH%Ms%S-%N)";
     date_sec="$(date +%Y-%m-%d_%HH%Ms%S)";
     date_min="$(date +%Y-%m-%d_%HH%M)";
