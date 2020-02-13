@@ -9,13 +9,14 @@
 		 # #
 		#   #
 function help-main {
+
 cat <<EOF > bashlava_help.md
 
 # help
 
 - To see all available commands, run: list
-- To understand the git workflow: https://github.com/firepress-org/bashlava#workflow
-- README: https://github.com/firepress-org/bashlava
+- To understand the git workflow watch our video:
+- ___ https://github.com/firepress-org/bashlava
 
 EOF
 input_2="bashlava_help.md"
