@@ -64,8 +64,7 @@ function version {
   git commit . -m "Update ${app_name} to version ${app_version} (Dockerfile)" && \
   git push origin edge
 
-  echo && my_message="cmd <ci> can be useful at this point when our Dockerfile is built on Github Actions." App_Blue
-  # tk maybe build a github action ci watcher...
+  echo && my_message="run ci to check status of your built on Github Actions (if any)" App_Blue
 }
 
 function master {
@@ -80,8 +79,8 @@ function master {
   log
   
   # prompt
-  my_message="What are we about to merge here?" App_Blue
-  read -p ": " squash_message
+  my_message="Squash message of what we want to merge:" App_Blue
+  read -p ">>> " squash_message
 
   # Update our local state
   git checkout master && \
@@ -346,11 +345,8 @@ function list { #util> ... "list" all core functions (no attribute)
 
 function wip-pr {
   # tk work in progress
+  # we can reuse much of the work from m
   # hub pull-request
-
-  # pre-requirments
-    #git checkout ghostv3-dev && git pull ghostv3-dev # I'm here
-    #bashlava.sh push "my change dummy file"
 
   git checkout ghostv3-staging && git pull ghostv3-staging
   # hub sync
@@ -770,10 +766,7 @@ function main() {
   cron_init
   colour_init
   #lock_init system
-
-  # Safety run our bachscript (must be after setting the empty input)
-  set -eou pipefail
-  # set -o xtrace # <== to debug if needed / Trace the execution of the script
+  #set -o xtrace # <==  / Trace the execution of the script to debug (if needed)
   
   # tk input_1: FEAT add logic to confirm the fct exist or not
   clear
