@@ -16,7 +16,7 @@ rm: /Users/p_andy/temp/tmpfile4: No such file or directory
 
 ### fatal error management
 
-maybe run a indepedant script? bashlava_qa.sh
+maybe run a independent script? bashlava_qa.sh
 
 docker is not installed
 not executing bashlava on a mac
