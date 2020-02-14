@@ -12,6 +12,30 @@ Based on this [template](https://gist.github.com/pascalandy/af709db02d3fe132a3e6
 
 # Releases
 
+## 0.9.14
+### ⚡️ Updates
+- [38b70ba](https://github.com/firepress-org/bashlava/commit/38b70ba) Update bashlava to version 0.9.14
+- [5e5fe8d](https://github.com/firepress-org/bashlava/commit/5e5fe8d) ADD: App_Configure_Custom_Path , UPDATE: fct test, RENAME some VARS
+- [7481bd3](https://github.com/firepress-org/bashlava/commit/7481bd3) UDPATE: templates
+- [cd89510](https://github.com/firepress-org/bashlava/commit/cd89510) Update LICENSE copy
+- [6943fa5](https://github.com/firepress-org/bashlava/commit/6943fa5) UPDATE: Improve comments and copy
+- [eaf4e42](https://github.com/firepress-org/bashlava/commit/eaf4e42) UPDATE: backlog
+- [eeb557d](https://github.com/firepress-org/bashlava/commit/eeb557d) FIX alias
+- [c35bb79](https://github.com/firepress-org/bashlava/commit/c35bb79) UPDATE: list display, FIX: release-read , ADD: mdv for any .md files
+- [b83101a](https://github.com/firepress-org/bashlava/commit/b83101a) Fix typo
+- [c3e0d1f](https://github.com/firepress-org/bashlava/commit/c3e0d1f) UPDATE: help have a cleaner copy
+- [f124c73](https://github.com/firepress-org/bashlava/commit/f124c73) MOVE: cmd into utilities
+- [2423f76](https://github.com/firepress-org/bashlava/commit/2423f76) UPDATE: help have a cleaner copy
+- [8ed85fb](https://github.com/firepress-org/bashlava/commit/8ed85fb) MOVE: cmd into utilities
+- [5eda5dd](https://github.com/firepress-org/bashlava/commit/5eda5dd) update: help copy
+- [3698a2a](https://github.com/firepress-org/bashlava/commit/3698a2a) UPDATE: major fct renaming + improve /help
+- [8b7fe7a](https://github.com/firepress-org/bashlava/commit/8b7fe7a) backlog updates
+- [5f4605a](https://github.com/firepress-org/bashlava/commit/5f4605a) ADDED: /title-core-fct | Needed by /list
+- [0090a02](https://github.com/firepress-org/bashlava/commit/0090a02) rename dk dk-view cl-view / move docker_img_figlet into the global variables
+- [fd9afb2](https://github.com/firepress-org/bashlava/commit/fd9afb2) update BACKLOG
+- [313e23b](https://github.com/firepress-org/bashlava/commit/313e23b) /help rename which to list
+- [b5f5947](https://github.com/firepress-org/bashlava/commit/b5f5947) major alias revamp
+
 ## 0.9.13
 ### ⚡️ Updates
 - [628ea06](https://github.com/firepress-org/bashlava/commit/628ea06) Update bashlava to version 0.9.13
