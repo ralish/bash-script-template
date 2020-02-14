@@ -1,11 +1,25 @@
 #!/usr/bin/env bash
 
-# THIS VARIABLE MUST CONFIGURED LOCALY
-function App_Custom_path {
-  # Define bashlava's path on your local machine:
-  local_bashlava_path="/Volumes/960G/_pascalandy/11_FirePress/Github/firepress-org/bashlava"
-  App_Check_Custom_path
+
+function App_Configure_Custom_Path {
+  # Check if project's path is well configured.
+  if [ ! -f ${local_bashlava_path}/bashlava.sh ]; then
+      my_message="Local path is not valid (ERR5672)" App_Pink &&\
+      App_Reset_Custom_path
+      my_message="Path was autoreset reset. Try running 'help' again." App_Warning &&\
+      App_Stop
+  else
+      echo "Path is valid. Lets continue." > /dev/null 2>&1
+  fi
 }
+
+function App_Reset_Custom_path {
+  # this find and configure the absolute path for bashlava project
+  readlink $(which bashlava.sh) > /usr/local/bin/bashlava_path_tmp
+  cat /usr/local/bin/bashlava_path_tmp | sed 's/\/bashlava.sh//g' > /usr/local/bin/bashlava_path
+  rm /usr/local/bin/bashlava_path_tmp
+}
+
 
 #
   #
@@ -309,18 +323,19 @@ function help {
   figlet_message="bashLaVa" App_figlet && help-main && which
 }
 
-function test { #util> ... "test" bashscript setup on my machine (no attribute)
+function test { #util> ... "test" test if requirements for bashlava are meet (no attribute)
 # test our script & fct. Idempotent bash script
 
-  echo "\$1 value is: ${input_1}"
-  echo "\$2 value is: ${input_2}"
-  echo "\$3 value is: ${input_3}"
-  # Useful when trying to find bad variables along 'set -o nounset'
+  echo "\$1 value is: ${input_1}" &&\
+  echo "\$2 value is: ${input_2}" &&\
+  echo "\$3 value is: ${input_3}" && 
+  my_message="Date is: ${date_sec}" App_Blue echo &&\
 
-  App_Is_hub_installed 
-  App_Is_docker_installed 
-
-  my_message="Date is: ${date_sec}" App_Blue
+  App_Is_dockerfile &&\
+  App_Is_changelog &&\
+  App_Is_gitignore &&\
+  App_Is_hub_installed &&\
+  App_Is_docker_installed
 }
 
 function continuous-integration-status {
@@ -404,7 +419,7 @@ function App_Changelog_Update {
   App_UpdateDockerfileVersion
   App_RemoveTmpFiles
 
-  # generate the logs (raw format)
+  # logs (raw format)
   git_logs="$(git --no-pager log --abbrev-commit --decorate=short --pretty=oneline -n25 | \
     awk '/HEAD ->/{flag=1} /tag:/{flag=0} flag' | \
     sed -e 's/([^()]*)//g' | \
@@ -485,14 +500,16 @@ function App_Is_dockerfile {
   if [ -f Dockerfile ]; then
     echo "Good, lets continue" > /dev/null 2>&1
   else
-    my_message="Dockerfile does not exit. Let's create one (ERR5684)" App_Pink && init_dockerfile && App_Stop
+    my_message="Dockerfile does not exit. Let's generate one (WAR5684)" App_Warning &&\
+    init_dockerfile &&\
+    App_Stop && echo
   fi
 }
 function App_Is_changelog {
   if [ -f CHANGELOG.md ]; then
     echo "Good, lets continue" > /dev/null 2>&1
   else
-    my_message="CHANGELOG.md does not exit. Let's create one (ERR5685)" App_Pink
+    my_message="CHANGELOG.md does not exit. Let's generate one (WAR5685)" App_Warning &&\
     init_changelog && \
     App_Stop && echo
   fi
@@ -501,14 +518,14 @@ function App_Is_gitignore {
   if [ -f .gitignore ]; then
     echo "Good, lets continue" > /dev/null 2>&1
   else
-    my_message=".gitignore does not exit. Let's create one (ERR5686)" App_Blue
+    my_message=".gitignore does not exit. Let's generate one (WAR5686)" App_Warning &&\
     init_gitignore && \
     App_Stop && echo
   fi
 }
 function App_Is_hub_installed {
   if [[ $(hub version | grep -c "hub version") == "1" ]]; then
-    echo && my_message="Hub is installed." > /dev/null 2>&1
+    my_message="Hub is installed." App_Blue
   else
     echo && my_message="Hub is missing. See requirements https://github.com/firepress-org/bashlava" App_Pink && \
     open https://github.com/firepress-org/bashlava
@@ -516,7 +533,7 @@ function App_Is_hub_installed {
 }
 function App_Is_docker_installed {
   if [[ $(docker version | grep -c "Client: Docker Engine") == "1" ]]; then
-    my_message="Docker is installed." App_Blue
+    my_message="$(docker --version) is installed." App_Blue
   else
     my_message="Docker is missing. https://github.com/firepress-org/bash-script-template#requirements" App_Pink
   fi
@@ -610,15 +627,6 @@ function App_GetVarFromDockerile {
     clear
     my_message="Can't find GITHUB_USER in the Dockerfile (ERR5680)" App_Pink && App_Stop
   fi
-
-  # we set these input to make sure the rules App_Is_Input2 & App_Is_Input3 are meet.
-  #if [[ -z "$app_name" ]]; then         #if empty
-  #  app_name="not-set"
-  #elif [[ -z "$app_version" ]]; then    #if empty
-  #  app_version="not-set"
-  #elif [[ -z "$github_user" ]]; then    #if empty
-  #  github_user="not-set"
-  #fi
 }
 
 function App_figlet {
@@ -630,24 +638,14 @@ function App_glow50 {
   docker run --rm -it \
     -v $(pwd):/sandbox \
     -w /sandbox \
-    devmtl/glow:0.2.0 glow ${input_2} | sed -n 12,50p # show the first 60 lines
+    ${docker_img_glow} glow ${input_2} | sed -n 12,50p # show the first 60 lines
 }
 
 function App_glow {
   docker run --rm -it \
     -v $(pwd):/sandbox \
     -w /sandbox \
-    devmtl/glow:0.2.0 glow ${input_2}
-}
-
-function App_Check_Custom_path {
-  # Check if project's path is well defined. Is set via <App_Custom_path>
-  if [ ! -f ${local_bashlava_path}/bashlava.sh ]; then
-      my_message="Local path is not valid (ERR5672)" App_Pink && App_Stop
-  else
-      echo "Path is okay" > /dev/null 2>&1
-      addon_fct_path="${local_bashlava_path}/add-on"
-  fi
+    ${docker_img_glow} glow ${input_2}
 }
 
 function App_Pink {
@@ -682,24 +680,28 @@ function App_Stop { echo "——> exit 1" && echo && exit 1
   #
 #
 
-function App_add_on {
+function App_Load_Add_on {
   # every script that should not be under the main bashlava.sh shell script, should threated as an add-on.
   # This will make easier to maintain de project, minimise cluter, minimise break changes, easy to accept PR
   # tk readlink -f `which command`
-  source "${addon_fct_path}/help.sh"
-  source "${addon_fct_path}/alias.sh"
-  source "${addon_fct_path}/examples.sh"
-  source "${addon_fct_path}/templates.sh"
-  source "${addon_fct_path}/utilities.sh"
+  source "${local_bashlava_addon_path}/help.sh"
+  source "${local_bashlava_addon_path}/alias.sh"
+  source "${local_bashlava_addon_path}/examples.sh"
+  source "${local_bashlava_addon_path}/templates.sh"
+  source "${local_bashlava_addon_path}/utilities.sh"
 
   # Define your own custom add-on scripts. `custom_*.sh` files are in part .gitignore so they will not be commited.
-  source "${addon_fct_path}/custom_scripts_entrypoint.sh"
+  source "${local_bashlava_addon_path}/custom_scripts_entrypoint.sh"
 }
 
 function App_DefineVariables {
 
+  local_bashlava_path="$(cat /usr/local/bin/bashlava_path)"
+  local_bashlava_addon_path="$(cat /usr/local/bin/bashlava_path)/add-on"
+
 #	docker images 
   docker_img_figlet="devmtl/figlet:1.0"
+  docker_img_glow="devmtl/glow:0.2.0"
 
 #	Define color for echo prompts:
   export col_std="\e[39m——>\e[39m"
@@ -736,9 +738,9 @@ function main() {
   source "$(dirname "${BASH_SOURCE[0]}")/.bashcheck.sh"
 
   # Load variables
-  App_Custom_path
   App_DefineVariables
-  App_add_on
+  App_Configure_Custom_Path
+  App_Load_Add_on
 
   # set empty input. The user must provide 1 to 3 attributes
   input_1=$1
