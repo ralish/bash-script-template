@@ -1,48 +1,16 @@
 # BACKLOG (Features)
 
-Instead of creating issues for the 'ToCode' list, I'll maintain a backlog here. It's much quicker for my sanity to draft these in here for the moment.
+As the project is young, instead of creating issues for FEATURE, BUG, etc., I'll maintain a backlog here. It's much quicker to draft these here (for the time seeing).
 
-# GLITCHES
+# 1) GLITCHES
 
-### glow show read from ~/tmp/bashlava_help.md
+- glow show read from ~/tmp/bashlava_help.md
 
-# NEXT FEATURES
-
-### fatal error management
-
-maybe run a independent script? bashlava_qa.sh
-
-docker is not installed
-not executing bashlava on a mac
-hub is not installed
-$local_bashlava_path is not set
-more??
+# 2) NEXT FEATURES
 	
-### add markdown viwer cmd
-	
-### rename /dk to /version
-alias /v to /version
-alias /dk to /version
-	
-### rename /which by /list
-alias /which to /list
+- list functions from add-on
+- show custom script to update a package.json version
 
-### add description for each fct
-when /list 
-also, consider showing shortcuts
- 
-### add fct /tag
-description warning
-	
-### list functions from add-on… like:
-help+
-help-shortcut
-	
-### put all docker images under
-function App_DefineVariables
+# 3) NEED HELP
 
-### show custom script to update a package.json version
-
-# NEED HELP
-
-No doubt, one day, I will!
+- No doubt, one day, I will!
