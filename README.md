@@ -8,31 +8,64 @@
 
 &nbsp;
 
+![Screen Shot 2020-02-14 at 10 48 33 AM](https://user-images.githubusercontent.com/6694151/74545859-9623eb80-4f17-11ea-81a5-518ab0a1778f.jpg)
+
 # BashLava
 
-BashLava makes your bash scripts a bunch of piece of cakes. With it, you can quickly:
+BashLava makes your bash scripts a bunch of pieces of cakes. 
+
+It's for developers that use git commands regularly. BashLava makes following git workflow a breeze without having to leave your terminal or use the GitHub GUI.
+
+Technically speaking, it's a CLI utility *(or a CLI aggregator)*. It's not a CLI per se as it does not directly call APIs. The idea is to abstract a workflow to minimize the time to do some repetitive actions.
+
+**Per example by typing these four commands**:
+
+```
+c "UPDATE: that thing that does X"
+v 3.5.1
+m 3.5.1
+r 3.5.1
+```
+
+you will perform all these actions:
 
 - push commits
 - rebase or merge code to master (squash when needed)
 - Generate CHANGELOG from commits and append the updates into the existing CHANGELOG
-- Tag branch
-- push the release on Github
+- Tag & push master branch
+- push the release on Github with a template message
 - reset your dev branch (to avoid any conflicts)
 
-It make following Git best practices a breeze without having to leave your terminal or use the GitHub GUI. You should try it, it's addictive.
-
-I also allows you:
+**It also allows you**:
 
 - quickly set your custom scripts
 - quickly write help function
 - hack around it as it's all built with bash
 - and more.
 
-### Motivation
+## See it in action
 
 WIP (VIDEO)
 
-This core `bashcheck.sh` was forked from: https://github.com/ralish/bash-script-template
+## Installation
+
+You must create a symlink to your PATH for both files. Something like this:
+
+```
+ln -s /Volumes/myuser/Github/firepress-org/bashlava/bashlava.sh /usr/local/bin/bashlava.sh
+
+ln -s /Volumes/myuser/Github/firepress-org/bashlava/.bashcheck.sh /usr/local/bin/.bashcheck.sh
+```
+
+Assuming your $path is `/usr/local/bin`
+
+To confirm everything is running normally, run: `bashlava.sh test`
+
+## Requirements
+
+- [Docker](https://docs.docker.com/install/): (markdown viewer, password generator, lint checker, etc.)
+- [Hub](https://github.com/github/hub#installation): needed to push release to Github.
+- nano (brew install nano): needed to edit your changelog when the system prompt.
 
 ## How To, Examples & Quick wins
 
@@ -41,92 +74,66 @@ This core `bashcheck.sh` was forked from: https://github.com/ralish/bash-script-
 
 You should use an alias like: `alias uu=bashlava.sh ` (with a space at the end) to really benefit from this app.
 
-**Example**: help
-
-![Screen Shot 2020-02-08 at 10 18 35 PM](https://user-images.githubusercontent.com/6694151/74095577-03232580-4ac1-11ea-936d-eace83e91fe0.jpg)
-
 **Example**: test
 
 ```
-bashlava.sh test"
+$1 value is: test
+$2 value is: not-set
+$3 value is: not-set
 
-$1 is now test
-$2 is now not-set
-$3 is now not-set
-
-——> Hub is installed.
-——> Docker is installed.
-——> Date is: 2019-09-06_23H10s56
-```
-
-**Example**: test using attributes
-
-```
-bashlava.sh test two "The red fox is running."
-
-$1 is now test
-$2 is now two
-$3 is now The red fox is running.
+——> Date is: 2020-02-14_10H49s21
+——> Run on Darwin (Mac).
 
 ——> Hub is installed.
-——> Docker is installed.
-——> Date is: 2019-09-06_23H39s16
+——> Docker version 19.03.5, build 633a0ea is installed.
 ```
 
-**Example**: git push
+**Example**: push commit
 
 ```
-bashlava.sh push
+bashlava.sh c "README / Add requirement section"
 
 ——> ERROR: You must provide a Git message.
-```
-
-Now with a second attribute:
-
-```
-bashlava.sh push "README / Add requirement section"
-
-Enumerating objects: 5, done.
-Counting objects: 100% (5/5), done.
-Delta compression using up to 8 threads
-Compressing objects: 100% (3/3), done.
-Writing objects: 100% (3/3), 506 bytes | 506.00 KiB/s, done.
-Total 3 (delta 2), reused 0 (delta 0)
-remote: Resolving deltas: 100% (2/2), completed with 2 local objects.
-To github.com:firepress-org/bash-script-template.git
-   9737dc7..7255277  master -> master
 ```
 
 **Example**: list available functions
 
 ```
-bashlava.sh which
+bashlava.sh list
 
-ci
-cl-view
-diff
-dk
-dk-view
-edge
-hash
-help
-log
-master
-master-nosq
-out-e
-out-m
-passgen
-push
-release
-sq
-status
-test
-which
+   Core functions
+
+ c   ...... "commit" commit all + git push | usage: c "FEAT: new rule to avoid this glitch"
+ v   ...... "version" update your app | usage: v 1.50.1 (if no attribute, show actual version)
+ m   ...... "master" squash + rebase + merge edge to master + update the CHANGELOG | usage: m 3.5.1
+ m-ns   ... "master" rebase (no squash) + merge edge to master + update the CHANGELOG | usage: m-ns 3.5.1
+ r   ...... "release" commit CHANGELOG + push release on Github + push tag on master branch | usage: r 3.5.1
+ e   ...... "edge" recrete a fresh edge branch from master (no attribute)
+
+
+   Utilities functions
+
+ ci   ..... "continous integration" CI status from Github Actions (no attribute)
+ cr   ..... "changelog read" (no attribute)
+ d   ...... "diff" show me diff in my code (no attribute)
+ h   ...... "help" alias are also set to: -h, --help, help (no attribute)
+ hash   ... "hash" Show me the latest hash commit (no attribute)
+ l   ...... "log" show me the latest commits (no attribute)
+ list   ... "list" all core functions (no attribute)
+ log   .... "log" Show me the lastest commits (no attribute)
+ mdv   ..... "markdown viewer" | usage: mdv README.md
+ oe   ..... "out edge" Basic git checkout (no attribute)
+ om   ..... "out master" Basic git checkout (no attribute)
+ rr   ..... "release read" Show release from Github (attribute are optionnal)
+ s   ...... "status" show me if there is something to commit (no attribute)
+ sq   ..... "squash" commits | usage: sq 3 "Add fct xyz"
+ test   ... "test" test if requirements for bashLaVa are meet (no attribute)
+ tr   ..... "tag read" the actual tag (no attribute)
+ vr   ..... "version read" Show app's version (no attribute)
 ```
 
 </p>
 </details>
-
 
 ## Website hosting
 
@@ -134,37 +141,6 @@ If you are looking for an alternative to WordPress, [Ghost](https://firepress.or
 
 ![ghost-v2-review](https://user-images.githubusercontent.com/6694151/64218253-f144b300-ce8e-11e9-8d75-312a2b6a3160.gif)
 
-
-## Motivation, Files, Opinionated scripts, errexit, nounset
-
-<details><summary>Click to expand this section.</summary>
-<p>
-
-### Installation
-
-You shoud syslink these to the git repo to make future update easy.
-
-example:
-```
-ln -s $HOME/Github/firepress-org/bashlava/bashlava.sh /usr/local/bin/bashlava.sh
-ln -s $HOME/Github/firepress-org/bashlava/.bashcheck.sh /usr/local/bin/.bashcheck.sh
-```
-
-Assuming your $path is:
-
-```
-/usr/local/bin/utility.sh
-/usr/local/bin/bashcheck.sh
-```
-
-## Requirements
-
-- [Docker](https://docs.docker.com/install/): use launch few ephemere container like a markdown viewer or a password generator.
-- [Hub](https://github.com/github/hub#installation): needed to push release.
-- nano (brew install nano): needed to edit your changelog (system prompt).
-
-</p>
-</details>
 
 ## Why, Contributing, License
 
