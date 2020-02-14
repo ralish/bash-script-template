@@ -18,6 +18,10 @@ It's for developers that use git commands regularly. BashLava makes following gi
 
 Technically speaking, it's a CLI utility *(or a CLI aggregator)*. It's not a CLI per se as it does not directly call APIs. The idea is to abstract a workflow to minimize the time to do some repetitive actions.
 
+## See it in action
+
+<iframe width="560" height="315" src="https://www.youtube.com/embed/6difYNilhXo" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+
 **Per example by typing these four commands**:
 
 ```
@@ -42,10 +46,6 @@ you will perform all these actions:
 - quickly write help function
 - hack around it as it's all built with bash
 - and more.
-
-## See it in action
-
-WIP (VIDEO)
 
 ## Installation
 
