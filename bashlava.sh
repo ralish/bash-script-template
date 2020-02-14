@@ -328,9 +328,16 @@ function test { #util> ... "test" test if requirements for bashlava are meet (no
 
   echo "\$1 value is: ${input_1}" &&\
   echo "\$2 value is: ${input_2}" &&\
-  echo "\$3 value is: ${input_3}" && 
-  my_message="Date is: ${date_sec}" App_Blue echo &&\
+  echo "\$3 value is: ${input_3}" && echo &&\
+  my_message="Date is: ${date_sec}" App_Blue &&\
 
+  if [[ $(uname) == "Darwin" ]]; then
+    my_message="Run on Darwin (Mac)." App_Blue
+  else
+    my_message="bashlava is not tested on other machine than Darmin (Mac)." App_Warning
+  fi
+
+  echo &&\
   App_Is_dockerfile &&\
   App_Is_changelog &&\
   App_Is_gitignore &&\
