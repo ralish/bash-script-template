@@ -14,7 +14,7 @@ function App_Configure_Custom_Path {
 }
 
 function App_Reset_Custom_path {
-  # this find and configure the absolute path for bashlava project
+  # this find and configure the absolute path for bashLaVa project
   readlink $(which bashlava.sh) > /usr/local/bin/bashlava_path_tmp
   cat /usr/local/bin/bashlava_path_tmp | sed 's/\/bashlava.sh//g' > /usr/local/bin/bashlava_path
   rm /usr/local/bin/bashlava_path_tmp
@@ -320,10 +320,10 @@ function diff { git diff
 }
 
 function help {
-  figlet_message="bashLaVa" App_figlet && help-main && which
+  figlet_message="bashLaVa" App_figlet && help-main && list
 }
 
-function test { #util> ... "test" test if requirements for bashlava are meet (no attribute)
+function test { #util> ... "test" test if requirements for bashLaVa are meet (no attribute)
 # test our script & fct. Idempotent bash script
 
   echo "\$1 value is: ${input_1}" &&\
@@ -334,7 +334,7 @@ function test { #util> ... "test" test if requirements for bashlava are meet (no
   if [[ $(uname) == "Darwin" ]]; then
     my_message="Run on Darwin (Mac)." App_Blue
   else
-    my_message="bashlava is not tested on other machine than Darmin (Mac)." App_Warning
+    my_message="bashLaVa is not tested on other machine than Darmin (Mac)." App_Warning
   fi
 
   echo &&\
@@ -360,7 +360,7 @@ function list { #util> ... "list" all core functions (no attribute)
   title-utilities-fct &&\
   cat /usr/local/bin/bashlava.sh | awk '/#util> /' | awk '{$1="";$3="";$4="";print $0}' | sort -k2 -n | sed '/\/usr\/local\/bin\//d' && echo
 
-  #cat /usr/local/bin/bashlava.sh | awk '/function /' | awk '{print $2}' | sort -k2 -n | sed '/App_/d' | sed '/main/d' | sed '/\/usr\/local\/bin\//d' | sed '/wip-/d'
+  #cat /usr/local/bin/bashLaVa.sh | awk '/function /' | awk '{print $2}' | sort -k2 -n | sed '/App_/d' | sed '/main/d' | sed '/\/usr\/local\/bin\//d' | sed '/wip-/d'
   #If needed, you can list your add-on fct here as well. We don't list them by default to minimize cluter.
 }
 
@@ -676,7 +676,7 @@ function App_Stop { echo "——> exit 1" && echo && exit 1
           #
 ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### #
 #
-# BASHLAVA engine (lol)
+# bashLaVa engine (lol)
 #   low-level logic
 #
 ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### #
@@ -739,7 +739,6 @@ function App_DefineVariables {
 # ENTRYPOINT
 function main() {
   
-
   trap script_trap_err ERR
   trap script_trap_exit EXIT
   source "$(dirname "${BASH_SOURCE[0]}")/.bashcheck.sh"
@@ -769,7 +768,7 @@ function main() {
   else
     input_3=$3
   fi
-  # it would be easy to have bashlava accept more than 3 attributes.
+  # it would be easy to have bashLaVa accept more than 3 attributes.
 
   script_init "$@"
   cron_init
