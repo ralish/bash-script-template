@@ -11,14 +11,35 @@
 function help-main {
 
 cat <<EOF > bashlava_help.md
-
 # help
 
-- To see all available commands, run: list
-- To understand the git workflow watch our video:
+- help-installation (help with installation)
+- list              see all commands
+- To understand the core git workflow watch our video:
 - ___ https://github.com/firepress-org/bashlava
-
 EOF
+input_2="bashlava_help.md"
+App_glow && rm bashlava_help.md || true
+}
+
+function help-installation {
+cat <<EOF > bashlava_help.md
+# help-installation
+
+You must create two symlinks from:
+  /usr/local/bin/bashlava.sh
+  /usr/local/bin/.bashcheck.sh
+
+# Example
+ln -s /path/to/original_file /usr/local/bin/source_file
+
+ln -s /Volumes/myuser/Github/firepress-org/bashlava/bashlava.sh /usr/local/bin/bashlava.sh
+ln -s /Volumes/myuser/Github/firepress-org/bashlava/.bashcheck.sh /usr/local/bin/.bashcheck.sh
+
+See video on how to do this and why it is important:
+https://github.com/firepress-org/bashlava
+EOF
+
 input_2="bashlava_help.md"
 App_glow && rm bashlava_help.md || true
 }
@@ -124,16 +145,6 @@ git rebase feat/headless-cms
 
 EOF
 
-input_2="bashlava_help.md"
-App_glow && rm bashlava_help.md || true
-}
-
-function help-template {
-cat <<EOF > bashlava_help.md
-# Warning
-
-At this point you MUST edit the newly created file (i.e Dockerfile, CHANGELOG, etc..), then commit it.
-EOF
 input_2="bashlava_help.md"
 App_glow && rm bashlava_help.md || true
 }
