@@ -12,6 +12,10 @@ Based on this [template](https://gist.github.com/pascalandy/af709db02d3fe132a3e6
 
 # Releases
 
+## 0.9.16
+### ⚡️ Updates
+- [8b98096](https://github.com/firepress-org/bashlava/commit/8b98096) UPDATE: README
+
 ## 0.9.15
 ### ⚡️ Updates
 - [137d0b7](https://github.com/firepress-org/bashlava/commit/137d0b7) Update bashlava to version 0.9.15
