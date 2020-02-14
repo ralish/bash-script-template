@@ -1,20 +1,5 @@
 #!/usr/bin/env bash
 
-function init_license {
-cat << EOF > LICENSE_template
-Copyright (C) 2020
-by Pascal Andy | https://pascalandy.com/blog/now/
-
-Project:
-https://github.com/firepress-org/PLACEHOLDER
-
-Find the GNU General Public License V3 at:
-https://github.com/pascalandy/GNU-GENERAL-PUBLIC-LICENSE/blob/master/LICENSE.md
-
-Basically, you have to credit the author AND keep the code free and open source.
-EOF
-}
-
 function init_changelog {
 cat << EOF > CHANGELOG_template.md
 ### About this changelog
@@ -35,19 +20,7 @@ Based on this [template](https://gist.github.com/pascalandy/af709db02d3fe132a3e6
 ### ⚡️ Updates
 - placeholder
 EOF
-help-template
-}
-
-function init_dockerignore {
-cat << EOF > .dockerignore_template
-.cache
-coverage
-dist
-node_modules
-npm-debug
-.git
-EOF
-help-template
+my_message="File created: ${local_bashlava_path}/CHANGELOG_template.md" App_Green
 }
 
 function init_dockerfile {
@@ -65,7 +38,7 @@ ARG GITHUB_USER="notset"
 # Start you Dockerfile from here (if any)
 ###################################
 EOF
-help-template
+my_message="File created: ${local_bashlava_path}/Dockerfile_template" App_Green
 }
 
 function init_gitignore {
@@ -176,5 +149,34 @@ TheVolumeSettingsFolder
 .FBCSemaphoreFile
 .FBCLockFolder
 EOF
-help-template
+my_message="File created: ${local_bashlava_path}/init_gitignore" App_Green
+}
+
+function init_dockerignore {
+cat << EOF > .dockerignore_template
+.cache
+coverage
+dist
+node_modules
+npm-debug
+.git
+EOF
+}
+
+function init_license {
+cat << EOF > LICENSE_template
+Copyright (C) 2020
+by Pascal Andy | https://pascalandy.com/blog/now/
+
+Project:
+https://github.com/firepress-org/bashlava
+
+At the essence, you have to credit the author AND you have
+to keep the code free AND you have to keep the code open-source AND you 
+cannot repackage this code for any commercial endeavour.
+
+Find the GNU General Public License V3 at:
+https://github.com/pascalandy/GNU-GENERAL-PUBLIC-LICENSE/blob/master/LICENSE.md
+EOF
+my_message="File created: ${local_bashlava_path}/LICENSE_template" App_Green
 }
