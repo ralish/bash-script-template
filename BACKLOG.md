@@ -6,12 +6,6 @@ Instead of creating issues for the 'ToCode' list, I'll maintain a backlog here. 
 
 ### glow show read from ~/tmp/bashlava_help.md
 
-### ugly
-rm: /Users/p_andy/temp/tmpfile: No such file or directory
-rm: /Users/p_andy/temp/tmpfile2: No such file or directory
-rm: /Users/p_andy/temp/tmpfile3: No such file or directory
-rm: /Users/p_andy/temp/tmpfile4: No such file or directory
-
 # NEXT FEATURES
 
 ### fatal error management

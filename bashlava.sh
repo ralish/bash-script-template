@@ -466,16 +466,16 @@ function App_Changelog_Update {
   App_RemoveTmpFiles && echo &&\
 
   # The system will open the CHANGELOG, in case you have to edit it.
-  nano CHANGELOG.md && echo;
+  nano CHANGELOG.md && echo
 
   # then run: release
 }
 
 function App_RemoveTmpFiles {
-  rm ~/temp/tmpfile || true > /dev/null 2>&1
-  rm ~/temp/tmpfile2 || true > /dev/null 2>&1
-  rm ~/temp/tmpfile3 || true > /dev/null 2>&1
-  rm ~/temp/tmpfile4 || true > /dev/null 2>&1
+  rm ~/temp/tmpfile > /dev/null 2>&1
+  rm ~/temp/tmpfile2 > /dev/null 2>&1
+  rm ~/temp/tmpfile3 > /dev/null 2>&1
+  rm ~/temp/tmpfile4 > /dev/null 2>&1
 }
 
 function App_Is_master {
