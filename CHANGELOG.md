@@ -12,6 +12,15 @@ Based on this [template](https://gist.github.com/pascalandy/af709db02d3fe132a3e6
 
 # Releases
 
+## 0.9.15
+### ⚡️ Updates
+- [137d0b7](https://github.com/firepress-org/bashlava/commit/137d0b7) Update bashlava to version 0.9.15
+- [31693fa](https://github.com/firepress-org/bashlava/commit/31693fa) RENAME bashLaVa
+- [e366624](https://github.com/firepress-org/bashlava/commit/e366624) ADD section: help-installation
+- [8415891](https://github.com/firepress-org/bashlava/commit/8415891) UPDATE: backlog, many things were shipped
+- [c34984f](https://github.com/firepress-org/bashlava/commit/c34984f) FIX: App_RemoveTmpFiles system prompt when rm un-existing file
+- [b14c6fb](https://github.com/firepress-org/bashlava/commit/b14c6fb) FEAT: Add warning if not running on Mac.
+
 ## 0.9.14
 ### ⚡️ Updates
 - [38b70ba](https://github.com/firepress-org/bashlava/commit/38b70ba) Update bashlava to version 0.9.14
