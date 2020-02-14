@@ -12,6 +12,10 @@ Based on this [template](https://gist.github.com/pascalandy/af709db02d3fe132a3e6
 
 # Releases
 
+## 0.9.17
+### ⚡️ Updates
+- [bbbe344](https://github.com/firepress-org/bashlava/commit/bbbe344) Update README
+
 ## 0.9.16
 ### ⚡️ Updates
 - [9146442](https://github.com/firepress-org/bashlava/commit/9146442) Add intro video in README
