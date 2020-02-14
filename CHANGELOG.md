@@ -12,6 +12,12 @@ Based on this [template](https://gist.github.com/pascalandy/af709db02d3fe132a3e6
 
 # Releases
 
+## 0.9.18
+### ⚡️ Updates
+- [c4265cb](https://github.com/firepress-org/bashlava/commit/c4265cb) Update bashlava to version 0.9.18
+- [f7de151](https://github.com/firepress-org/bashlava/commit/f7de151) MINOR: random optimizations, no news features
+- [bccb83d](https://github.com/firepress-org/bashlava/commit/bccb83d) Add custom template
+
 ## 0.9.17
 ### ⚡️ Updates
 - [bbbe344](https://github.com/firepress-org/bashlava/commit/bbbe344) Update README
