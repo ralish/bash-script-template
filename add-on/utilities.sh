@@ -2,7 +2,7 @@
 
 function title-core-fct {
 cat <<EOF > bashlava_help.md
-# Core functions are:
+# Core functions
 EOF
 input_2="bashlava_help.md"
 App_glow && rm bashlava_help.md || true
@@ -11,7 +11,7 @@ App_glow && rm bashlava_help.md || true
 function title-utilities-fct
 {
 cat <<EOF > bashlava_help.md
-# Utilities functions are:
+# Utilities functions
 EOF
 input_2="bashlava_help.md"
 App_glow && rm bashlava_help.md || true
