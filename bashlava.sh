@@ -1,26 +1,5 @@
 #!/usr/bin/env bash
 
-
-function App_Configure_Custom_Path {
-  # Check if project's path is well configured.
-  if [ ! -f ${local_bashlava_path}/bashlava.sh ]; then
-      my_message="Local path is not valid (ERR5672)" App_Pink &&\
-      App_Reset_Custom_path
-      my_message="Path was autoreset reset. Try running 'help' again." App_Warning &&\
-      App_Stop
-  else
-      echo "Path is valid. Lets continue." > /dev/null 2>&1
-  fi
-}
-
-function App_Reset_Custom_path {
-  # this find and configure the absolute path for bashLaVa project
-  readlink $(which bashlava.sh) > /usr/local/bin/bashlava_path_tmp
-  cat /usr/local/bin/bashlava_path_tmp | sed 's/\/bashlava.sh//g' > /usr/local/bin/bashlava_path
-  rm /usr/local/bin/bashlava_path_tmp
-}
-
-
 #
   #
     #
@@ -243,23 +222,20 @@ function squash {
     #
   #
 #
-function c { #core> ...... "commit" commit all + git push | usage: c "FEAT: new rule to avoid this glitch"
+function c { #core> ...... "commit" all changes + git push | usage: c "FEAT: new rule to avoid this glitch"
   commit
 }
 function v { #core> ...... "version" update your app | usage: v 1.50.1 (if no attribute, show actual version)
   version
 }
-function m { #core> ...... "master" squash + rebase + merge edge to master + update the CHANGELOG | usage: m 3.5.1
+function m { #core> ...... "master" .. squash + rebase + merge edge to m + update the CHANGELOG | usage: m 3.5.1
   master
 }
-function m-ns { #core> ... "master" rebase (no squash) + merge edge to master + update the CHANGELOG | usage: m-ns 3.5.1
+function m-ns { #core> ... "master" no squash + rebase + merge edge to m + update the CHANGELOG | usage: m 3.5.1
   master-nosq
 }
-function r { #core> ...... "release" commit CHANGELOG + push release on Github + push tag on master branch | usage: r 3.5.1
+function r { #core> ...... "release" generate CHANGELOG + push tag on m + push r on GitHub| usage: r 3.5.1
   release
-}
-function e { #core> ...... "edge" recrete a fresh edge branch from master (no attribute)
-  edge
 }
 
 function vr { #util> ..... "version read" Show app's version (no attribute)
@@ -291,6 +267,9 @@ function l { #util> ...... "log" show me the latest commits (no attribute)
 function sq { #util> ..... "squash" commits | usage: sq 3 "Add fct xyz"
   squash
 }
+function e { #util> ...... "edge" recrete a fresh edge branch from master (no attribute)
+  edge
+}
 function d { #util> ...... "diff" show me diff in my code (no attribute)
   diff
 }
@@ -305,7 +284,7 @@ function h { #util> ...... "help" alias are also set to: -h, --help, help (no at
 }
 
 function log { #util> .... "log" Show me the lastest commits (no attribute)
-    git log --all --decorate --oneline --graph --pretty=oneline -n25
+    git log --all --decorate --oneline --graph --pretty=oneline -n20
 }
 function hash { #util> ... "hash" Show me the latest hash commit (no attribute)
   git rev-parse HEAD && git rev-parse --short HEAD 
@@ -348,7 +327,7 @@ function test { #util> ... "test" test if requirements for bashLaVa are meet (no
 function continuous-integration-status {
   # Valid for Github Actions CI. Usually the CI build our Dockerfiles
   # while loop for 8 min
-  MIN="1" MAX="96"
+  MIN="1" MAX="300"
   for action in $(seq ${MIN} ${MAX}); do
     hub ci-status -v $(git rev-parse HEAD) && echo && sleep 5;
   done
@@ -686,6 +665,26 @@ function App_Stop { echo "——> exit 1" && echo && exit 1
     #
   #
 #
+
+function App_Configure_Custom_Path {
+  # See README for the installation instructions.
+  # Check if project's path is well configured.
+  if [ ! -f ${local_bashlava_path}/bashlava.sh ]; then
+      my_message="Local path is not valid (ERR5672)" App_Pink &&\
+      App_Reset_Custom_path
+      my_message="Path was autoreset reset. Try running 'help' again." App_Warning &&\
+      App_Stop
+  else
+      echo "Path is valid. Lets continue." > /dev/null 2>&1
+  fi
+}
+
+function App_Reset_Custom_path {
+  # this find and configure the absolute path for bashLaVa project
+  readlink $(which bashlava.sh) > /usr/local/bin/bashlava_path_tmp
+  cat /usr/local/bin/bashlava_path_tmp | sed 's/\/bashlava.sh//g' > /usr/local/bin/bashlava_path
+  rm /usr/local/bin/bashlava_path_tmp
+}
 
 function App_Load_Add_on {
   # every script that should not be under the main bashlava.sh shell script, should threated as an add-on.
