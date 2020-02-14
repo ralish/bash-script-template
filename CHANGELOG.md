@@ -14,6 +14,11 @@ Based on this [template](https://gist.github.com/pascalandy/af709db02d3fe132a3e6
 
 ## 0.9.16
 ### ⚡️ Updates
+- [9146442](https://github.com/firepress-org/bashlava/commit/9146442) Add intro video in README
+- [0f7a9e8](https://github.com/firepress-org/bashlava/commit/0f7a9e8) Update bashlava to version 0.9.16
+
+## 0.9.16
+### ⚡️ Updates
 - [8b98096](https://github.com/firepress-org/bashlava/commit/8b98096) UPDATE: README
 
 ## 0.9.15
