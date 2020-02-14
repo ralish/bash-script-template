@@ -132,7 +132,7 @@ function help-template {
 cat <<EOF > bashlava_help.md
 # Warning
 
-At this point you MUST edit the nnewly created file (i.e Dockerfile, CHANGELOG, etc..), then commit it.
+At this point you MUST edit the newly created file (i.e Dockerfile, CHANGELOG, etc..), then commit it.
 EOF
 input_2="bashlava_help.md"
 App_glow && rm bashlava_help.md || true
