@@ -312,7 +312,7 @@ function hash { #util> ... "hash" Show me the latest hash commit (no attribute)
 }
 function tag-read {
   latest_tag="$(git describe --tags --abbrev=0)"
-  my_message="${latest_tag} < latest commited tag" App_Blue
+  my_message="${latest_tag} < latest commited tag on master branch" App_Blue
 }
 function status { git status
 }
