@@ -8,8 +8,6 @@
 
 &nbsp;
 
-![Screen Shot 2020-02-14 at 10 48 33 AM](https://user-images.githubusercontent.com/6694151/74545859-9623eb80-4f17-11ea-81a5-518ab0a1778f.jpg)
-
 # BashLava
 
 BashLava makes your bash scripts a bunch of pieces of cakes. 
@@ -18,19 +16,27 @@ It's for developers that use git commands regularly. BashLava makes following gi
 
 Technically speaking, it's a CLI utility *(or a CLI aggregator)*. It's not a CLI per se as it does not directly call APIs. The idea is to abstract a workflow to minimize the time to do some repetitive actions.
 
+&nbsp;
+
+![bashLaVa-help](https://user-images.githubusercontent.com/6694151/74569005-5ecd3300-4f47-11ea-9cbe-a41466b34229.jpg)
+
+&nbsp;
+
 ## BashLaVa Demo - The full git workflow in 120 seconds!
 
 [![bashlava_2020-02-14](https://user-images.githubusercontent.com/6694151/74553076-95458680-4f24-11ea-9447-4882aaa20e19.jpg)](https://youtu.be/6difYNilhXo)
 
 For more explanations, check these videos:
 
-- [Introduction (step-by-step explanations)](https://youtu.be/jzGva3p7TeY)
+- [BashLaVa - Introduction (step-by-step explanations)](https://youtu.be/jzGva3p7TeY)
 - [Maintaining a real project with BashLaVA](https://youtu.be/J5ySPSTUgZA)
+- [How to import your own custom bash-scripts into BashLaVa](https://youtu.be/ezY2N2Bdux0)
+- [How to install BashLaVa on your Mac](https://youtu.be/g8pVr8-Cimw)
 
 **Per example by typing these four commands**:
 
 ```
-c "UPDATE: that thing that does X"
+c "UPDATE: that feat that does X"
 v 3.5.1
 m 3.5.1
 r 3.5.1
@@ -39,22 +45,26 @@ r 3.5.1
 you will perform all these actions:
 
 - push commits
-- rebase or merge code to master (squash when needed)
-- Generate CHANGELOG from commits and append the updates into the existing CHANGELOG
-- Tag & push master branch
+- version the project
+- squash + rebase + merge code to master (no squash is possible too)
+- Generate CHANGELOG from commits and append these updates into the existing CHANGELOG
+- tag with version & push to master branch
 - push the release on Github with a template message
-- reset your dev branch (to avoid any conflicts)
+- reset your DEV (edge) branch (to avoid any conflicts)
 
 **It also allows you**:
 
-- quickly set your custom scripts
+- [quickly set your custom scripts](https://youtu.be/ezY2N2Bdux0)
 - quickly write help function
-- hack around it as it's all built with bash
-- and more.
+- hack around  as it's all built with bash
 
 ## Installation
 
-You must create a symlink to your PATH for both files. Something like this:
+[Step-by-step on YouTube](https://youtu.be/g8pVr8-Cimw)
+
+- 1) git **clone** this repo
+
+- 2) **create a symlink** to your PATH for both files.
 
 ```
 ln -s /Volumes/myuser/Github/firepress-org/bashlava/bashlava.sh /usr/local/bin/bashlava.sh
@@ -64,10 +74,11 @@ ln -s /Volumes/myuser/Github/firepress-org/bashlava/.bashcheck.sh /usr/local/bin
 
 Assuming your $path is `/usr/local/bin`
 
-To confirm everything is running normally, run: `bashlava.sh test`
+- 3) **Test your installation**. run: `bashlava.sh test`
 
 ## Requirements
 
+- A Mac. I didn't test BashLaVa on other systems. *Let's me know if you want to help for this :)*
 - [Docker](https://docs.docker.com/install/): (markdown viewer, password generator, lint checker, etc.)
 - [Hub](https://github.com/github/hub#installation): needed to push release to Github.
 - nano (brew install nano): needed to edit your changelog when the system prompt.
@@ -108,12 +119,11 @@ bashlava.sh list
 
    Core functions
 
- c   ...... "commit" commit all + git push | usage: c "FEAT: new rule to avoid this glitch"
+ c   ...... "commit" all changes + git push | usage: c "FEAT: new rule to avoid this glitch"
  v   ...... "version" update your app | usage: v 1.50.1 (if no attribute, show actual version)
- m   ...... "master" squash + rebase + merge edge to master + update the CHANGELOG | usage: m 3.5.1
- m-ns   ... "master" rebase (no squash) + merge edge to master + update the CHANGELOG | usage: m-ns 3.5.1
- r   ...... "release" commit CHANGELOG + push release on Github + push tag on master branch | usage: r 3.5.1
- e   ...... "edge" recrete a fresh edge branch from master (no attribute)
+ m   ...... "master" .. squash + rebase + merge edge to m + update the CHANGELOG | usage: m 3.5.1
+ m-ns   ... "master" no squash + rebase + merge edge to m + update the CHANGELOG | usage: m 3.5.1
+ r   ...... "release" generate CHANGELOG + push tag on m + push r on GitHub| usage: r 3.5.1
 
 
    Utilities functions
@@ -121,6 +131,7 @@ bashlava.sh list
  ci   ..... "continous integration" CI status from Github Actions (no attribute)
  cr   ..... "changelog read" (no attribute)
  d   ...... "diff" show me diff in my code (no attribute)
+ e   ...... "edge" recrete a fresh edge branch from master (no attribute)
  h   ...... "help" alias are also set to: -h, --help, help (no attribute)
  hash   ... "hash" Show me the latest hash commit (no attribute)
  l   ...... "log" show me the latest commits (no attribute)
