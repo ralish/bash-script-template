@@ -12,6 +12,13 @@ Based on this [template](https://github.com/firepress-org/bashlava/blob/master/a
 
 # Releases
 
+## 0.9.22 (2020-02-15)
+### ⚡️ Updates
+- [821e78c](https://github.com/firepress-org/bashlava/commit/821e78c) Update bashlava to version 0.9.22
+- [adc3e34](https://github.com/firepress-org/bashlava/commit/adc3e34) ADD: new fct App_Is_license + the logic to few fct parent
+- [8006f09](https://github.com/firepress-org/bashlava/commit/8006f09) UPDATE: Changelog template
+- [6087e35](https://github.com/firepress-org/bashlava/commit/6087e35) UPDATE README, help section
+
 ## 0.9.21 (2020-02-15)
 ### ⚡️ Updates
 - [5eaf739](https://github.com/firepress-org/bashlava/commit/5eaf739) ADD date in CHANGELOG when updating it
