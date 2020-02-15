@@ -12,6 +12,11 @@ Based on this [template](https://gist.github.com/pascalandy/af709db02d3fe132a3e6
 
 # Releases
 
+## 0.9.20
+### ⚡️ Updates
+- [4a9a206](https://github.com/firepress-org/bashlava/commit/4a9a206) Update bashlava to version 0.9.20
+- [07c469f](https://github.com/firepress-org/bashlava/commit/07c469f) ADD: new fct shorturl
+
 ## 0.9.19
 ### ⚡️ Updates
 - [c5ded68](https://github.com/firepress-org/bashlava/commit/c5ded68) UPDATE readme and video tutorials
