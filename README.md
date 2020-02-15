@@ -120,7 +120,7 @@ bashlava.sh list
    Core functions
 
  c   ...... "commit" all changes + git push | usage: c "FEAT: new rule to avoid this glitch"
- v   ...... "version" update your app | usage: v 1.50.1 (if no attribute, show actual version)
+ v   ...... "version" update your app | usage: v 1.50.1 (+ no attribute)
  m   ...... "master" .. squash + rebase + merge edge to m + update the CHANGELOG | usage: m 3.5.1
  m-ns   ... "master" no squash + rebase + merge edge to m + update the CHANGELOG | usage: m 3.5.1
  r   ...... "release" generate CHANGELOG + push tag on m + push r on GitHub| usage: r 3.5.1
@@ -128,7 +128,7 @@ bashlava.sh list
 
    Utilities functions
 
- ci   ..... "continous integration" CI status from Github Actions (no attribute)
+  ci   ..... "continous integration" CI status from Github Actions (no attribute)
  cr   ..... "changelog read" (no attribute)
  d   ...... "diff" show me diff in my code (no attribute)
  e   ...... "edge" recrete a fresh edge branch from master (no attribute)
@@ -142,6 +142,7 @@ bashlava.sh list
  om   ..... "out master" Basic git checkout (no attribute)
  rr   ..... "release read" Show release from Github (attribute are optionnal)
  s   ...... "status" show me if there is something to commit (no attribute)
+ shorturl   "shortner" limited github repos | usage: shorturl firepress-org ghostfire (+ no attribute)
  sq   ..... "squash" commits | usage: sq 3 "Add fct xyz"
  test   ... "test" test if requirements for bashLaVa are meet (no attribute)
  tr   ..... "tag read" the actual tag (no attribute)
