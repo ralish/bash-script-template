@@ -162,12 +162,15 @@ EOF
 }
 
 function init_license {
+# two things two update here
+# project URL
+# URL to LICENSE.md (you should fork it)
 cat << EOF > LICENSE_template
 Copyright (C) 2020
 by Pascal Andy | https://pascalandy.com/blog/now/
 
 Project:
-https://github.com/firepress-org/bashlava
+https://github.com/owner-here/project-here
 
 At the essence, you have to credit the author AND you have
 to keep the code free AND you have to keep the code open-source AND you 

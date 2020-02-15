@@ -68,6 +68,7 @@ function master {
   App_Is_commit_unpushed
   App_Is_changelog
   App_Is_dockerfile
+  App_Is_license
   App_Is_gitignore
   log
   
@@ -118,6 +119,7 @@ function master-nosq {
   App_Is_commit_unpushed
   App_Is_changelog
   App_Is_dockerfile
+  App_Is_license
   App_Is_gitignore
 
   # Update our local state
@@ -319,6 +321,7 @@ function test { #util> ... "test" test if requirements for bashLaVa are meet (no
   echo &&\
   App_Is_dockerfile &&\
   App_Is_changelog &&\
+  App_Is_license &&\
   App_Is_gitignore &&\
   App_Is_hub_installed &&\
   App_Is_docker_installed
@@ -504,48 +507,6 @@ function App_Is_commit_unpushed {
     my_message="You must push your commit(s) before doing a rebase (ERR5683)" App_Pink && App_Stop
   fi
 }
-function App_Is_dockerfile {
-  if [ -f Dockerfile ]; then
-    echo "Good, lets continue" > /dev/null 2>&1
-  else
-    my_message="Dockerfile does not exit. Let's generate one (WAR5684)" App_Warning &&\
-    init_dockerfile &&\
-    App_Stop && echo
-  fi
-}
-function App_Is_changelog {
-  if [ -f CHANGELOG.md ]; then
-    echo "Good, lets continue" > /dev/null 2>&1
-  else
-    my_message="CHANGELOG.md does not exit. Let's generate one (WAR5685)" App_Warning &&\
-    init_changelog && \
-    App_Stop && echo
-  fi
-}
-function App_Is_gitignore {
-  if [ -f .gitignore ]; then
-    echo "Good, lets continue" > /dev/null 2>&1
-  else
-    my_message=".gitignore does not exit. Let's generate one (WAR5686)" App_Warning &&\
-    init_gitignore && \
-    App_Stop && echo
-  fi
-}
-function App_Is_hub_installed {
-  if [[ $(hub version | grep -c "hub version") == "1" ]]; then
-    my_message="Hub is installed." App_Blue
-  else
-    echo && my_message="Hub is missing. See requirements https://github.com/firepress-org/bashlava" App_Pink && \
-    open https://github.com/firepress-org/bashlava
-  fi
-}
-function App_Is_docker_installed {
-  if [[ $(docker version | grep -c "Client: Docker Engine") == "1" ]]; then
-    my_message="$(docker --version) is installed." App_Blue
-  else
-    my_message="Docker is missing. https://github.com/firepress-org/bash-script-template#requirements" App_Pink
-  fi
-}
 function App_Is_Input2 {
 # ensure the second attribute is not empty to continue
   if [[ "${input_2}" == "not-set" ]]; then
@@ -560,6 +521,59 @@ function App_Is_Input3 {
     App_Stop
   fi
 }
+
+function App_Is_dockerfile {
+  if [ -f Dockerfile ]; then
+    echo "Good, lets continue" > /dev/null 2>&1
+  else
+    my_message="Dockerfile does not exit. Let's generate one (WAR5684)" App_Warning &&\
+    init_dockerfile &&\
+    App_Stop && echo
+  fi
+}
+function App_Is_changelog {
+  if [ -f CHANGELOG.md ]; then
+    echo "Good, lets continue" > /dev/null 2>&1
+  else
+    my_message="CHANGELOG.md file does not exit. Let's generate one (WAR5685)" App_Warning &&\
+    init_changelog && \
+    App_Stop && echo
+  fi
+}
+function App_Is_gitignore {
+  if [ -f .gitignore ]; then
+    echo "Good, lets continue" > /dev/null 2>&1
+  else
+    my_message=".gitignore file does not exit. Let's generate one (WAR5686)" App_Warning &&\
+    init_gitignore && \
+    App_Stop && echo
+  fi
+}
+function App_Is_license {
+  if [ -f LICENSE ]; then
+    echo "Good, lets continue" > /dev/null 2>&1
+  else
+    my_message="LICENSE file does not exit. Let's generate one (WAR5687)" App_Warning &&\
+    init_license && \
+    App_Stop && echo
+  fi
+}
+function App_Is_hub_installed {
+  if [[ $(hub version | grep -c "hub version") == "1" ]]; then
+    my_message="Hub is installed." App_Blue
+  else
+    echo && my_message="Hub is not installed. See requirements https://github.com/firepress-org/bashlava" App_Pink && \
+    open https://github.com/firepress-org/bashlava
+  fi
+}
+function App_Is_docker_installed {
+  if [[ $(docker version | grep -c "Client: Docker Engine") == "1" ]]; then
+    my_message="$(docker --version) is installed." App_Blue
+  else
+    my_message="Docker is not installed. https://github.com/firepress-org/bash-script-template#requirements" App_Pink
+  fi
+}
+
 function App_Curlurl {
   # must receive var: url_to_check
   UPTIME_TEST=$(curl -Is ${url_to_check} | grep -io OK | head -1);
