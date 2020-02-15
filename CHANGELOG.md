@@ -1,14 +1,14 @@
-### About this changelog
+### About this CHANGELOG
 
-Based on this [template](https://gist.github.com/pascalandy/af709db02d3fe132a3e6f1c11b934fe4). Release process at FirePress ([blog post](https://firepress.org/en/software-and-ghost-updates/)). Based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+Based on this [template](https://github.com/firepress-org/bashlava/blob/master/add-on/templates.sh#L3). Release process at FirePress ([blog post](https://firepress.org/en/software-and-ghost-updates/)). Based on [keep a changelog](https://keepachangelog.com/en/1.0.0/) and this project adheres to [semantic versioning](https://semver.org/spec/v2.0.0.html).
 
-### Status template
+### Status options
 
-### ⚡️ Updates
-### 🚀 New feat.
-### 🐛 Fix bug
-### 🛑 Removed
-### 🔑 Security
+- ### ⚡️ Updates
+- ### 🚀 New feat.
+- ### 🐛 Fix bug
+- ### 🛑 Removed
+- ### 🔑 Security
 
 # Releases
 
