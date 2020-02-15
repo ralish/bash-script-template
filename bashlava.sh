@@ -454,9 +454,9 @@ function App_Changelog_Update {
   sed 's/^/-/' ~/temp/tmpfile3 > ~/temp/tmpfile4
   # create main file
   echo -e "" >> ~/temp/tmpfile
-  # insert title version
-  echo -e "## ${input_2}" >> ~/temp/tmpfile
-  # insert title Updates
+  # insert H2 title version 
+  echo -e "## ${input_2} (${date_day})" >> ~/temp/tmpfile
+  # insert H3 Updates
   echo -e "### ⚡️ Updates" >> ~/temp/tmpfile
   # insert our montage to the main file
   cat ~/temp/tmpfile4 >> ~/temp/tmpfile
