@@ -12,6 +12,11 @@ Based on this [template](https://gist.github.com/pascalandy/af709db02d3fe132a3e6
 
 # Releases
 
+## 0.9.21 (2020-02-15)
+### ⚡️ Updates
+- [5eaf739](https://github.com/firepress-org/bashlava/commit/5eaf739) ADD date in CHANGELOG when updating it
+- [967cb0c](https://github.com/firepress-org/bashlava/commit/967cb0c) CHANGELOG formatting updates
+
 ## 0.9.20
 ### 🚀 New feat.
 - [07c469f](https://github.com/firepress-org/bashlava/commit/07c469f) ADD: new fct shorturl
@@ -22,7 +27,6 @@ Based on this [template](https://gist.github.com/pascalandy/af709db02d3fe132a3e6
 
 ## 0.9.18
 ### ⚡️ Updates
-- [c4265cb](https://github.com/firepress-org/bashlava/commit/c4265cb) Update bashlava to version 0.9.18
 - [f7de151](https://github.com/firepress-org/bashlava/commit/f7de151) MINOR: random optimizations, no news features
 
 ### 🚀 New feat.
@@ -36,7 +40,6 @@ Based on this [template](https://gist.github.com/pascalandy/af709db02d3fe132a3e6
 ## 0.9.16
 ### ⚡️ Updates
 - [9146442](https://github.com/firepress-org/bashlava/commit/9146442) Add intro video in README
-- [0f7a9e8](https://github.com/firepress-org/bashlava/commit/0f7a9e8) Update bashlava to version 0.9.16
 
 ## 0.9.16
 ### ⚡️ Updates
@@ -44,7 +47,6 @@ Based on this [template](https://gist.github.com/pascalandy/af709db02d3fe132a3e6
 
 ## 0.9.15
 ### ⚡️ Updates
-- [137d0b7](https://github.com/firepress-org/bashlava/commit/137d0b7) Update bashlava to version 0.9.15
 - [31693fa](https://github.com/firepress-org/bashlava/commit/31693fa) RENAME bashLaVa
 - [e366624](https://github.com/firepress-org/bashlava/commit/e366624) ADD section: help-installation
 - [8415891](https://github.com/firepress-org/bashlava/commit/8415891) UPDATE: backlog, many things were shipped
