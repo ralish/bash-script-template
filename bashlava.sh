@@ -225,7 +225,7 @@ function squash {
 function c { #core> ...... "commit" all changes + git push | usage: c "FEAT: new rule to avoid this glitch"
   commit
 }
-function v { #core> ...... "version" update your app | usage: v 1.50.1 (if no attribute, show actual version)
+function v { #core> ...... "version" update your app | usage: v 1.50.1 (+ no attribute)
   version
 }
 function m { #core> ...... "master" .. squash + rebase + merge edge to m + update the CHANGELOG | usage: m 3.5.1
@@ -343,17 +343,27 @@ function list { #util> ... "list" all core functions (no attribute)
   #If needed, you can list your add-on fct here as well. We don't list them by default to minimize cluter.
 }
 
+function shorturl { #util> "shortner" limited github repos | usage: shorturl firepress-org ghostfire (+ no attribute)
+# output example: https://git.io/bashlava
 
-function wip-pr {
-  # tk work in progress
-  # we can reuse much of the work from m
-  # hub pull-request
+# when no attributes are passed, use configs from the current project.
+  if [[ "${input_2}" == "not-set" ]]; then
+    App_GetVarFromDockerile
+    input_2=${github_user}
+    input_3=${app_name}
+  fi
+  App_Is_Input2
+  App_Is_Input3
 
-  git checkout ghostv3-staging && git pull ghostv3-staging
-  # hub sync
-  git checkout -b mrg-dev-to-staging
-  git merge --no-ff origin/ghostv3-dev # no fast forward
-  git push -u origin mrg-dev-to-staging
+# generate URL
+  clear
+  curl -i https://git.io -F \
+    "url=https://github.com/${input_2}/${input_3}" \
+    -F "code=${input_3}" &&\
+
+# see result
+  echo && my_message="Let's open: https://git.io/${input_3}" && App_Blue && sleep 2 &&\
+  open https://git.io/${input_3}
 }
 
 function version-read {
@@ -377,6 +387,18 @@ function release-read {
     grep tag_name | awk -F ': "' '{ print $2 }' | awk -F '",' '{ print $1 }')
 
   my_message="${release_latest} < released on https://github.com/${github_user}/${app_name}/releases/tag/${release_latest}" && App_Blue
+}
+
+function wip-pr {
+  # tk work in progress
+  # we can reuse much of the work from m
+  # hub pull-request
+
+  git checkout ghostv3-staging && git pull ghostv3-staging
+  # hub sync
+  git checkout -b mrg-dev-to-staging
+  git merge --no-ff origin/ghostv3-dev # no fast forward
+  git push -u origin mrg-dev-to-staging
 }
 
 #
@@ -634,17 +656,15 @@ function App_glow {
     ${docker_img_glow} glow ${input_2}
 }
 
-function App_Pink {
-  echo -e "${col_pink} ERROR: ${my_message}"
+function App_Pink { echo -e "${col_pink} ERROR: ${my_message}"
 }
-function App_Warning {
-  echo -e "${col_pink} Warning: ${my_message}"
+function App_Warning { echo -e "${col_pink} Warning: ${my_message}"
 }
 function App_Blue { echo -e "${col_blue} ${my_message}"
 }
 function App_Green { echo -e "${col_green} ${my_message}"
 }
-function App_Stop { echo "——> exit 1" && echo && exit 1
+function App_Stop { echo -e "${col_pink} exit 1" && echo && exit 1
 }
 
 #
