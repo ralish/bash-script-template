@@ -15,6 +15,16 @@ Useful when we want to commit update on master without publishing a release.
 
 - [a342bfd](https://github.com/firepress-org/bashlava/commit/a342bfd) ADD: fct master-merge (alias m-m)
 
+### 🛑 Removed
+
+We can't specify the version anymore for these functions:
+
+- `m "FEAT: some message here`
+- `m-`
+- `r`
+
+We **only** specify version for `v 3.5.1`
+
 ### ⚡️ Updates
 - [587fadc](https://github.com/firepress-org/bashlava/commit/587fadc) UPDATE: in fct master, removed un-needed step ‘git push origin master’
 - [a342bfd](https://github.com/firepress-org/bashlava/commit/a342bfd) UPDATE: fct release don't need a version anymore
@@ -28,10 +38,11 @@ Useful when we want to commit update on master without publishing a release.
 
 ## 0.10.0 (2020-02-15)
 
-This is major stuff. We can now release in one command!! 
-Instead of doing `v`, `m`, `r`, we can accomplish the same result using `d`. Search for `deploy` in the code.
-
 ### 🚀 New feat.
+
+We can now do our releases in only one command 🎉. 
+Instead of doing `v`, `m`, `r`, we can accomplish the same result using `d`. See help.
+
 - [cf6652d](https://github.com/firepress-org/bashlava/commit/cf6652d) ADD: new fct deploy (d)
 
 ## 0.9.22 (2020-02-15)
