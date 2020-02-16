@@ -14,11 +14,14 @@ function --help { help
 function bashlava { help
 }
 
+# think no squash
 function m-no { master-nosq
 }
-function master-ns { master-nosq # think no squash
+function m-ns { master-nosq
 }
-function master-no { master-nosq # think no squash
+function master-ns { master-nosq
+}
+function master-no { master-nosq
 }
 
 function c { commit # think push commit
