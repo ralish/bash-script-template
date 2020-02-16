@@ -191,7 +191,7 @@ function release {
 
 function deploy {
 # WIP
-# usage 1:  d 3.5.1 "UPDATE chap 32 + FIX typo"
+# usage 1: d 3.5.1 "UPDATE chap 32 + FIX typo"
 
   App_Is_Input2
   App_Is_Input3
@@ -207,33 +207,23 @@ function deploy {
 # bypass CHANGELOG prompt
   flag_bypass_changelog_prompt="true"
 
-# re-write inputs from user
-  masterLogic=${input_2}
-  input_2=${input_3}
-  #input_3=${input_4}
-
-# v
   version
-
-# m or m-
-# squash or nosq on master?
-  if [[ "${masterLogic}" == "m" ]]; then
-    master
-  elif [[ "${masterLogic}" == "m-" ]]; then
-    master-nosq 
-  else
-    my_message="${latest_tag} < The command (attribute #2) does not exist. See help." App_Pink && App_Stop
-  fi
-
-# r
+  master
   release
 }
 
 function deploy-nosq {
-# usage 2:  d- 3.5.1
+# usage 2: d- 3.5.1
 
   App_Is_Input2
-  App_Is_Input3
+  # no input_3
+
+  App_Is_Input3_Empty_as_it_should
+
+  # when no attributes are passed, use configs from the current project.
+  if [[ "${input_3}" != "not-set" ]]; then
+      my_message="There must be a maximum of two attributes for this function. See help. (ERR5721)" App_Pink && App_Stop
+  fi
 
   App_Is_edge
   App_Is_commit_unpushed
@@ -242,6 +232,13 @@ function deploy-nosq {
   App_Is_dockerfile
   App_Is_license
   App_Is_gitignore
+
+# bypass CHANGELOG prompt
+  flag_bypass_changelog_prompt="true"
+
+  version
+  master-nosq
+  release
 }
 
 #
@@ -388,17 +385,17 @@ function master-merge {
   git checkout -b mrg_edge_2_master &&\
   # no need to push it to origin (local branch only)
 
-  # merge & squash edge into mrg_edge_2_master
+# merge & squash edge into mrg_edge_2_master
   git merge --squash edge &&\
   git commit . -m "${input_2} (squash)" &&\
 
-  # back to master
+# back to master
   git checkout master &&\
-  # rebase (commits are already squashed at this point)
+# rebase (commits are already squashed at this point)
   git rebase mrg_edge_2_master &&\
   git push origin master &&\
 
-  # clean up
+# clean up
   git branch -D mrg_edge_2_master || true &&\
   edge
 }
@@ -407,6 +404,8 @@ function changelog-read {
   input_2="CHANGELOG.md"
   App_Is_Input2
   App_glow50
+
+# if needed, you can specify the file using fct 'mdv'
 }
 
 function edge { 
@@ -1020,7 +1019,11 @@ function main() {
     input_3=$3
   fi
 
-  # it would be easy to have bashLaVa accept more than 3 attributes.
+  if [[ -z "$4" ]]; then    #if empty
+    input_4="not-set"
+  else
+    input_4=$4
+  fi
 
   script_init "$@"
   cron_init
