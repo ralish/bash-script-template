@@ -210,7 +210,7 @@ function deploy {
 # re-write inputs from user
   masterLogic=${input_2}
   input_2=${input_3}
-  input_3=${input_4}
+  #input_3=${input_4}
 
 # v
   version
@@ -489,8 +489,7 @@ function test-bashlava {
 
   echo "\$1 value is: ${input_1}" &&\
   echo "\$2 value is: ${input_2}" &&\
-  echo "\$3 value is: ${input_3}" &&\
-  echo "\$4 value is: ${input_4}" && echo &&\
+  echo "\$3 value is: ${input_3}" && echo &&\
   my_message="Date is: ${date_sec}" App_Blue &&\
 
   if [[ $(uname) == "Darwin" ]]; then
@@ -754,13 +753,6 @@ function App_Is_Input3 {
 # ensure the third attribute is not empty to continue
   if [[ "${input_3}" == "not-set" ]]; then
     my_message="You must provide a valid attribute (ERR5688)" App_Pink
-    App_Stop
-  fi
-}
-function App_Is_Input4 {
-# ensure the third attribute is not empty to continue
-  if [[ "${input_4}" == "not-set" ]]; then
-    my_message="You must provide a valid attribute (ERR5689)" App_Pink
     App_Stop
   fi
 }
@@ -1028,11 +1020,6 @@ function main() {
     input_3=$3
   fi
 
-  if [[ -z "$4" ]]; then    #if empty
-    input_4="not-set"
-  else
-    input_4=$4
-  fi
   # it would be easy to have bashLaVa accept more than 3 attributes.
 
   script_init "$@"
