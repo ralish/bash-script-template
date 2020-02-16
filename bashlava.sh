@@ -170,7 +170,8 @@ function master-merge {
   git push origin master &&\
 
   # clean up
-  git branch -D mrg_edge_2_master || true && echo;
+  git branch -D mrg_edge_2_master || true &&\
+  edge
 }
 
 function release {
@@ -267,8 +268,6 @@ function deploy {
 # usage 1: d m 3.5.1 "some message about the commit"
 # usage 2: d m- 0.2.38
 
-# usage 1: d m "some message about the commit" 3.5.1 
-
   App_Is_Input2
   App_Is_Input3
 
@@ -328,17 +327,17 @@ function d { #d> ...... "deploy" expert mode"
 function c { #core> ...... "commit" all changes + git push | usage: c "FEAT: new rule to avoid this glitch"
   commit
 }
-function v { #core> ...... "version" update your app | usage: v 1.50.1 (+ no attribute)
+function v { #core> ...... "version" update your app | usage: v 1.50.1 (avail without attribute)
   version
 }
-function m { #core> ...... "master" squash commit(s) + rebase + merge + update CHANGELOG | usage: m "UPDATE: xyz"
+function m { #core> ...... "master" squash commit(s) + rebase + merge + update CHANGELOG | usage: m "UPDATE chap 32 + FIX typo"
   master
 }
-function m- { #core> ..... "master-" like m, but without squashing commit(s) | usage: m-
+function m- { #core> ..... "master-" like m, but without squashing commit(s) | (no attribute)
   master-nosq
 }
 
-function r { #core> ...... "release" generate CHANGELOG + push tag on m + push r on GitHub| usage: r 3.5.1
+function r { #core> ...... "release" generate CHANGELOG + push tag on m + push r on GitHub| (no attribute)
   release
 }
 
@@ -368,7 +367,7 @@ function oe { #util> ..... "out edge" Basic git checkout (no attribute)
 function l { #util> ...... "log" show me the latest commits (no attribute)
   log
 }
-function m-m { #core> ..... "master-merge" from edge. Does not update changelog | usage: m-
+function m-m { #util> ..... "master-merge" from edge. Does not update changelog | usage: m- "UPDATE chap 32 + FIX typo"
   master-merge
 }
 function sq { #util> ..... "squash" commits | usage: sq 3 "Add fct xyz"
@@ -388,7 +387,7 @@ function h { #util> ...... "help" alias are also set to: -h, --help, help (no at
 }
 
 function log { #util> .... "log" Show me the lastest commits (no attribute)
-  git log --all --decorate --oneline --graph --pretty=oneline -n20
+  git log --all --decorate --oneline --graph --pretty=oneline | head -n 20
 }
 function hash { #util> ... "hash" Show me the latest hash commit (no attribute)
   git rev-parse HEAD && git rev-parse --short HEAD 
@@ -450,7 +449,7 @@ function list { #util> ... "list" all core functions (no attribute)
   #If needed, you can list your add-on fct here as well. We don't list them by default to minimize cluter.
 }
 
-function shorturl { #util> "shortner" limited github repos | usage: shorturl firepress-org ghostfire (+ no attribute)
+function shorturl { #util> "shortner" limited github repos | usage: shorturl firepress-org ghostfire (work without attribute)
 # output example: https://git.io/bashlava
 
 # when no attributes are passed, use configs from the current project.
