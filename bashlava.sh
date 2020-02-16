@@ -531,7 +531,6 @@ function wip-pr {
 #
 
 function App_Changelog_Update {
-  App_Is_Input2
   App_Is_master
   App_Is_changelog
   App_RemoveTmpFiles
