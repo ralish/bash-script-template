@@ -44,7 +44,19 @@ function version {
 
   App_Is_edge
   App_Is_dockerfile
-  App_UpdateDockerfileVersion &&\
+
+  # version before
+  App_Get_Var_From_Dockerile
+  version_before=${app_version}
+
+  # apply update
+  tag_version_clean=$(echo ${input_2} | sed 's/-r.*//g')
+  # sometimes we push 3.15.2-r4, this will clean "-r4"
+  sed -i '' "s/^ARG VERSION=.*$/ARG VERSION=\"$tag_version_clean\"/" Dockerfile
+
+  # version after
+  App_Get_Var_From_Dockerile
+  version_after=${app_version}
 
   App_Get_Var_From_Dockerile
   git add . &&\
@@ -57,9 +69,9 @@ function version {
 }
 
 function master {
+
   App_Show_Version_Three_Sources
   App_Is_Input2
-  App_Is_Input3
 
   App_Is_edge
   App_Is_commit_unpushed
@@ -81,7 +93,7 @@ function master {
 
   # merge & squash edge into mrg_edge_2_master
   git merge --squash edge &&\
-  git commit . -m "${input_3} (squash)" &&\
+  git commit . -m "${input_2} (squash)" &&\
 
   # back to master
   git checkout master &&\
@@ -286,14 +298,13 @@ function c { #core> ...... "commit" all changes + git push | usage: c "FEAT: new
 function v { #core> ...... "version" update your app | usage: v 1.50.1 (+ no attribute)
   version
 }
-function m { #core> ...... "master" squash commit(s) + rebase + merge + update CHANGELOG | usage: m 3.5.1 "UPDATE: xyz"
+function m { #core> ...... "master" squash commit(s) + rebase + merge + update CHANGELOG | usage: m "UPDATE: xyz"
   master
 }
-function m- { #core> ..... "master-" like m, but without squashing commit(s) | usage: m- 3.5.1
+function m- { #core> ..... "master-" like m, but without squashing commit(s) | usage: m-
   master-nosq
 }
-function m-ns { master-nosq
-}
+
 function r { #core> ...... "release" generate CHANGELOG + push tag on m + push r on GitHub| usage: r 3.5.1
   release
 }
@@ -488,7 +499,6 @@ function App_Changelog_Update {
   App_Is_Input2
   App_Is_master
   App_Is_changelog
-  App_UpdateDockerfileVersion
   App_RemoveTmpFiles
 
   # logs (raw format)
@@ -675,36 +685,6 @@ function App_release_check_vars {
 
   url_to_check=${git_repo_url}
   App_Curlurl
-}
-
-function App_UpdateDockerfileVersion {
-  # expect VAR: $tag_version
-  # update ap VERSION  within the Dockerfile.
-
-  # version before
-  App_Get_Var_From_Dockerile
-  version_before=${app_version}
-
-  # apply update
-  tag_version_clean=$(echo ${input_2} | sed 's/-r.*//g')
-  # sometimes we push 3.15.2-r4, this will clean "-r4"
-  sed -i '' "s/^ARG VERSION=.*$/ARG VERSION=\"$tag_version_clean\"/" Dockerfile
-
-  # version after
-  App_Get_Var_From_Dockerile
-  version_after=${app_version}
-
-  # To debug if needed
-      # confirm change was well executed (to dubug id needed)
-      #App_Get_Var_From_Dockerile
-      #if [[ "${version_before}" == "${version_after}" ]]; then
-      #  my_message="${version_before} <== Dockerfile version before" App_Pink
-      #  my_message="${version_after} <== Dockerfile version after" App_Pink
-      #  my_message="The versions did NOT changed. Is it ok?" App_Pink && sleep 5
-      #else
-      #  my_message="${version_before} <== Dockerfile version before" App_Green
-      #  my_message="${version_after} <== Dockerfile version after" App_Green
-      #fi
 }
 
 function App_Get_Var_From_Dockerile {
