@@ -11,9 +11,10 @@
 # GIT WORKFLOW
 #
 # c   ...... "commit"
+#
 # v   ...... "version"
-# m   ...... "master include squash"
-# m-   ... "master exclude squash"
+# m   ...... "master" (with squash)
+# m-   ..... "master" (no squash )
 # r   ...... "release"
 #
 ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### #
@@ -37,7 +38,8 @@ function commit {
 }
 
 function version {
-  # The version is tracked in the Dockerfile (even if you don't use docker)
+  # The version is tracked in a Dockerfile (it's cool if your porject don't use docker)
+  # For BashLaVa, this Dockerfile is just a config-env file
 
   App_Show_Version_Three_Sources
   App_Is_Input2
@@ -69,7 +71,6 @@ function version {
 }
 
 function master {
-
   App_Show_Version_Three_Sources
   App_Is_Input2
 
@@ -134,6 +135,235 @@ function master-nosq {
   # next step is: release
 }
 
+function release {
+  # at this point or changelog is clean.
+  App_Is_master
+  App_Get_Var_From_Dockerile
+
+  # push updates
+  git commit . -m "Update ${app_name} to version ${app_version} /CHANGELOG" &&\
+  git push origin master &&\
+
+  App_Is_dockerfile
+  App_Is_hub_installed
+
+  # Tag our release
+  git tag ${app_version} && git push --tags && echo
+
+  # prepared release
+  release_message1="Refer to [CHANGELOG.md](https://github.com/${github_user}/${app_name}/blob/master/CHANGELOG.md) for details about this release."
+  release_message2="Automatically released with [bashLaVa](https://github.com/firepress-org/bashlava)."
+
+  # push release
+  hub release create -oc \
+    -m "${app_version}" \
+    -m "${release_message1}" \
+    -m "${release_message2}" \
+    -t "$(git rev-parse HEAD)" \
+    "${app_version}" &&\
+
+  echo && my_message="https://github.com/${github_user}/${app_name}/releases/tag/${app_version}" App_Blue &&\
+  edge
+
+  # let's cheers up a bit!
+  clear && figlet_message="Good job!" App_figlet;
+  figlet_message="${app_version} is up." App_figlet;
+}
+
+#
+  #
+    #
+      #
+        #
+          #
+### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### #
+#
+# GIT WORKFLOW (Expert mode)
+# Do it all in one command without any prompt
+#
+### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### #
+          #
+        #
+      #
+    #
+  #
+#
+
+function deploy {
+# usage 1:  d 3.5.1 "UPDATE chap 32 + FIX typo"
+
+  App_Is_Input2
+  App_Is_Input3
+
+  App_Is_edge
+  App_Is_commit_unpushed
+
+  App_Is_changelog
+  App_Is_dockerfile
+  App_Is_license
+  App_Is_gitignore
+
+# bypass CHANGELOG prompt
+  flag_bypass_changelog_prompt="true"
+
+# re-write inputs from user
+  masterLogic=${input_2}
+  input_2=${input_3}
+  input_3=${input_4}
+
+# v
+  version
+
+# m or m-
+# squash or nosq on master?
+  if [[ "${masterLogic}" == "m" ]]; then
+    master
+  elif [[ "${masterLogic}" == "m-" ]]; then
+    master-nosq 
+  else
+    my_message="${latest_tag} < The command (attribute #2) does not exist. See help." App_Pink && App_Stop
+  fi
+
+# r
+  release
+}
+
+function deploy-nosq {
+# usage 2:  d- 3.5.1
+
+  App_Is_Input2
+  App_Is_Input3
+
+  App_Is_edge
+  App_Is_commit_unpushed
+
+  App_Is_changelog
+  App_Is_dockerfile
+  App_Is_license
+  App_Is_gitignore
+}
+
+#
+  #
+    #
+      #
+        #
+          #
+### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### #
+#
+# OFFICIAL SHORTCUTS
+#
+### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### #
+          #
+        #
+      #
+    #
+  #
+#
+
+function d { #exp> ...... "deploy" all steps (v,m,r) in one command (with squash) | usage: d 3.5.2 "UPDATE chap 32 + FIX typo"
+  deploy 
+}
+function d- { #exp> ..... "deploy" all steps (v,m-,r) in one command (no squash) | usage: d- 3.5.2
+  deploy-nosq
+}
+function c { #core> ...... "commit" all changes + git push | usage: c "FEAT: new rule to avoid this glitch"
+  #core> 
+  commit
+}
+function v { #core> ...... "version" update your app | usage: v 1.50.1
+  version
+}
+function m { #core> ...... "master" (with squash) rebase + merge + update CHANGELOG | usage: m "UPDATE chap 32 + FIX typo"
+  master
+}
+function m- { #core> ..... "master-" like m but with (no squash) | (no attr)
+  master-nosq
+}
+function r { #core> ...... "release" + push tag + push release on GitHub | (no attr)
+  release
+}
+function rr { #util> ..... "release read" Show release from Github (attr is opt)
+  release-read
+}
+function tr { #util> ..... "tag read" tag on master branch (no attr)
+  tag-read
+}
+function mdv { #util> .... "markdown viewer" | usage: mdv README.md
+  clear
+  App_Is_Input2
+  App_glow
+}
+function ci { #util> ..... "continous integration" CI status from Github Actions (no attr)
+  continuous-integration-status
+}
+function om { #util> ..... "out master" Basic git checkout (no attr)
+  git checkout master
+}
+function oe { #util> ..... "out edge" Basic git checkout (no attr)
+  git checkout edge
+}
+function l { #util> ...... "log" show me the latest commits (no attr)
+  log
+}
+function m-m { #util> .... "master-merge" from edge. Does not update changelog | usage: m- "UPDATE chap 32 + FIX typo"
+  master-merge
+}
+function sq { #util> ..... "squash" commits | usage: sq 3 "Add fct xyz"
+  squash
+}
+function e { #util> ...... "edge" recrete a fresh edge branch from master (no attr)
+  edge
+}
+function s { #util> ...... "status" show me if there is something to commit (no attr)
+  status
+}
+function cr { #util> ..... "changelog read" (no attr)
+  changelog-read
+}
+function h { #util> ...... "help" alias are also set to: -h, --help, help (no attr)
+  help
+}
+function log { #util> .... "log" Show me the lastest commits (no attr)
+  git log --all --decorate --oneline --graph --pretty=oneline | head -n 20
+}
+function hash { #util> ... "hash" Show me the latest hash commit (no attr)
+  git rev-parse HEAD && git rev-parse --short HEAD 
+}
+function diff { #util> ... "diff" show me diff in my code (no attr)
+    git diff
+}
+function vr { #util> ..... "version read" show app's version from Dockerfile (no attr)
+  version-read
+}
+function test { #util> ... "test" test if requirements for bashLaVa are meet (no attr)
+  test-bashlava
+}
+function shortner { #util> "shortner" limited github repos | usage: shorturl firepress-org ghostfire (opt attr)
+  shortner-url
+}
+function list { #util> ... "list" all core functions (no attr)
+  list-functions
+}
+
+#
+  #
+    #
+      #
+        #
+          #
+### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### #
+#
+# Utility's functions
+#
+### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### #
+          #
+        #
+      #
+    #
+  #
+#
+
 function master-merge {
 
   App_Show_Version_Three_Sources
@@ -172,41 +402,6 @@ function master-merge {
   edge
 }
 
-function release {
-  # at this point or changelog is clean.
-  App_Is_master
-  App_Get_Var_From_Dockerile
-
-  # push updates
-  git commit . -m "Update ${app_name} to version ${app_version} /CHANGELOG" &&\
-  git push origin master &&\
-
-  App_Is_dockerfile
-  App_Is_hub_installed
-
-  # Tag our release
-  git tag ${app_version} && git push --tags && echo
-
-  # prepared release
-  release_message1="Refer to [CHANGELOG.md](https://github.com/${github_user}/${app_name}/blob/master/CHANGELOG.md) for details about this release."
-  release_message2="Automatically released with [bashLaVa](https://github.com/firepress-org/bashlava)."
-
-  # push release
-  hub release create -oc \
-    -m "${app_version}" \
-    -m "${release_message1}" \
-    -m "${release_message2}" \
-    -t "$(git rev-parse HEAD)" \
-    "${app_version}" &&\
-
-  echo && my_message="https://github.com/${github_user}/${app_name}/releases/tag/${app_version}" App_Blue &&\
-  edge
-
-  # let's cheers up a bit!
-  clear && figlet_message="Good job!" App_figlet;
-  figlet_message="${app_version} is up." App_figlet;
-}
-
 function changelog-read {
   input_2="CHANGELOG.md"
   App_Is_Input2
@@ -214,7 +409,8 @@ function changelog-read {
 }
 
 function edge { 
-  # it assumes there will be no conflict with anybody else as I'm the only person using 'edge'
+# it assumes there will be no conflict with anybody else 
+# as I'm the only person using 'edge'.
   App_Is_commit_unpushed
 
   git branch -D edge || true &&\
@@ -243,168 +439,51 @@ function squash {
   log
 }
 
-#
-  #
-    #
-      #
-        #
-          #
-### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### #
-#
-# GIT WORKFLOW (Expert mode)
-# Do it all in one command without any prompt
-#
-### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### #
-          #
-        #
-      #
-    #
-  #
-#
+function list-functions {
 
-function deploy {
-# usage 1: d m 3.5.1 "some message about the commit"
-# usage 2: d m- 0.2.38
+  title-core &&\
+  cat /usr/local/bin/bashlava.sh | awk '/#core> /' | awk '{$1="";$3="";$4="";print $0}' | sed '/\/usr\/local\/bin\//d' && echo &&\
+  
+  title-expert-mode &&\
+  cat /usr/local/bin/bashlava.sh | awk '/#exp> /' | awk '{$1="";$3="";$4="";print $0}' | sed '/\/usr\/local\/bin\//d' && echo &&\
 
+  title-utilities &&\
+  cat /usr/local/bin/bashlava.sh | awk '/#util> /' | awk '{$1="";$3="";$4="";print $0}' | sort -k2 -n | sed '/\/usr\/local\/bin\//d' && echo
+
+  title-accronyms
+  echo " attr ==> attribute(s)"
+  echo " opt ===> optional"
+  echo " m =====> master branch"
+  echo " e =====> edge branch (DEV branch if you prefer)"
+
+  #cat /usr/local/bin/bashLaVa.sh | awk '/function /' | awk '{print $2}' | sort -k2 -n | sed '/App_/d' | sed '/main/d' | sed '/\/usr\/local\/bin\//d' | sed '/wip-/d'
+  #If needed, you can list your add-on fct here as well. We don't list them by default to minimize cluter.
+}
+
+function shortner-url {
+# output example: https://git.io/bashlava
+
+# when no attributes are passed, use configs from the current project.
+  if [[ "${input_2}" == "not-set" ]]; then
+    App_Get_Var_From_Dockerile
+    input_2=${github_user}
+    input_3=${app_name}
+  fi
   App_Is_Input2
   App_Is_Input3
 
-  App_Is_edge
-  App_Is_commit_unpushed
-
-  App_Is_changelog
-  App_Is_dockerfile
-  App_Is_license
-  App_Is_gitignore
-
-# bypass CHANGELOG prompt
-  flag_bypass_changelog_prompt="true"
-
-# re-write inputs from user
-  masterLogic=${input_2}
-  input_2=${input_3}
-  input_3=${input_4}
-
-# v
-  version
-
-# m or m-
-# squash or nosq on master?
-  if [[ "${masterLogic}" == "m" ]]; then
-    master
-  elif [[ "${masterLogic}" == "m-" ]]; then
-    master-nosq 
-  else
-    my_message="${latest_tag} < The command (attribute #2) does not exist. See help." App_Pink && App_Stop
-  fi
-
-# r
-  release
-}
-#
-  #
-    #
-      #
-        #
-          #
-### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### #
-#
-# OFFICIAL SHORTCUTS
-#
-### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### #
-          #
-        #
-      #
-    #
-  #
-#
-function d { #d> ...... "deploy" expert mode"
-    deploy 
-}
-
-function c { #core> ...... "commit" all changes + git push | usage: c "FEAT: new rule to avoid this glitch"
-  commit
-}
-function v { #core> ...... "version" update your app | usage: v 1.50.1 (avail without attribute)
-  version
-}
-function m { #core> ...... "master" squash commit(s) + rebase + merge + update CHANGELOG | usage: m "UPDATE chap 32 + FIX typo"
-  master
-}
-function m- { #core> ..... "master-" like m, but without squashing commit(s) | (no attribute)
-  master-nosq
-}
-
-function r { #core> ...... "release" generate CHANGELOG + push tag on m + push r on GitHub| (no attribute)
-  release
-}
-
-function vr { #util> ..... "version read" Show app's version from Dockerfile (no attribute)
-  version-read
-}
-function rr { #util> ..... "release read" Show release from Github (attributes are optionnal)
-  release-read
-}
-function tr { #util> ..... "tag read" tag on master branch (no attribute)
-  tag-read
-}
-function mdv { #util> ..... "markdown viewer" | usage: mdv README.md
+# generate URL
   clear
-  App_Is_Input2
-  App_glow
-}
-function ci { #util> ..... "continous integration" CI status from Github Actions (no attribute)
-  continuous-integration-status
-}
-function om { #util> ..... "out master" Basic git checkout (no attribute)
-  git checkout master
-}
-function oe { #util> ..... "out edge" Basic git checkout (no attribute)
-  git checkout edge
-}
-function l { #util> ...... "log" show me the latest commits (no attribute)
-  log
-}
-function m-m { #util> ..... "master-merge" from edge. Does not update changelog | usage: m- "UPDATE chap 32 + FIX typo"
-  master-merge
-}
-function sq { #util> ..... "squash" commits | usage: sq 3 "Add fct xyz"
-  squash
-}
-function e { #util> ...... "edge" recrete a fresh edge branch from master (no attribute)
-  edge
-}
-function s { #util> ...... "status" show me if there is something to commit (no attribute)
-  status
-}
-function cr { #util> ..... "changelog read" (no attribute)
-  changelog-read
-}
-function h { #util> ...... "help" alias are also set to: -h, --help, help (no attribute)
-  help
+  curl -i https://git.io -F \
+    "url=https://github.com/${input_2}/${input_3}" \
+    -F "code=${input_3}" &&\
+
+# see result
+  echo && my_message="Let's open: https://git.io/${input_3}" && App_Blue && sleep 2 &&\
+  open https://git.io/${input_3}
 }
 
-function log { #util> .... "log" Show me the lastest commits (no attribute)
-  git log --all --decorate --oneline --graph --pretty=oneline | head -n 20
-}
-function hash { #util> ... "hash" Show me the latest hash commit (no attribute)
-  git rev-parse HEAD && git rev-parse --short HEAD 
-}
-function tag-read {
-  latest_tag="$(git describe --tags --abbrev=0)"
-  my_message="${latest_tag} < tag version found on master branch" App_Blue
-}
-function status { git status
-}
-function diff { #util> ... "diff" show me diff in my code (no attribute)
-    git diff
-}
-
-function help {
-  figlet_message="bashLaVa" App_figlet && help-main && list
-}
-
-function test { #util> ... "test" test if requirements for bashLaVa are meet (no attribute)
+function test-bashlava {
 # test our script & fct. Idempotent bash script
 
   echo "\$1 value is: ${input_1}" &&\
@@ -428,46 +507,12 @@ function test { #util> ... "test" test if requirements for bashLaVa are meet (no
   App_Is_docker_installed
 }
 
-function continuous-integration-status {
-  # Valid for Github Actions CI. Usually the CI build our Dockerfiles
-  # while loop for 8 min
-  MIN="1" MAX="300"
-  for action in $(seq ${MIN} ${MAX}); do
-    hub ci-status -v $(git rev-parse HEAD) && echo && sleep 5;
-  done
+function tag-read {
+  latest_tag="$(git describe --tags --abbrev=0)"
+  my_message="${latest_tag} < tag version found on master branch" App_Blue
 }
-
-function list { #util> ... "list" all core functions (no attribute)
-  title-core-fct &&\
-  cat /usr/local/bin/bashlava.sh | awk '/#core> /' | awk '{$1="";$3="";$4="";print $0}' | sed '/\/usr\/local\/bin\//d' && echo &&\
-  title-utilities-fct &&\
-  cat /usr/local/bin/bashlava.sh | awk '/#util> /' | awk '{$1="";$3="";$4="";print $0}' | sort -k2 -n | sed '/\/usr\/local\/bin\//d' && echo
-
-  #cat /usr/local/bin/bashLaVa.sh | awk '/function /' | awk '{print $2}' | sort -k2 -n | sed '/App_/d' | sed '/main/d' | sed '/\/usr\/local\/bin\//d' | sed '/wip-/d'
-  #If needed, you can list your add-on fct here as well. We don't list them by default to minimize cluter.
-}
-
-function shorturl { #util> "shortner" limited github repos | usage: shorturl firepress-org ghostfire (work without attribute)
-# output example: https://git.io/bashlava
-
-# when no attributes are passed, use configs from the current project.
-  if [[ "${input_2}" == "not-set" ]]; then
-    App_Get_Var_From_Dockerile
-    input_2=${github_user}
-    input_3=${app_name}
-  fi
-  App_Is_Input2
-  App_Is_Input3
-
-# generate URL
-  clear
-  curl -i https://git.io -F \
-    "url=https://github.com/${input_2}/${input_3}" \
-    -F "code=${input_3}" &&\
-
-# see result
-  echo && my_message="Let's open: https://git.io/${input_3}" && App_Blue && sleep 2 &&\
-  open https://git.io/${input_3}
+function status { 
+  git status
 }
 
 function version-read {
@@ -477,6 +522,20 @@ function version-read {
 function version-read-from-dockerfile {
   App_Get_Var_From_Dockerile
   my_message="${app_version} < version found in Dockerfile" App_Blue
+}
+function help {
+  figlet_message="bashLaVa" App_figlet
+  help-main
+  list
+}
+
+function continuous-integration-status {
+  # Valid for Github Actions CI. Usually the CI build our Dockerfiles
+  # while loop for 8 min
+  MIN="1" MAX="300"
+  for action in $(seq ${MIN} ${MAX}); do
+    hub ci-status -v $(git rev-parse HEAD) && echo && sleep 5;
+  done
 }
 
 function release-read {
@@ -497,6 +556,64 @@ function release-read {
   my_message="${release_latest} < latest release found on https://github.com/${github_user}/${app_name}/releases/tag/${release_latest}" && App_Blue
 }
 
+#
+  #
+    #
+      #
+        #
+          #
+### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### #
+#
+# WIP work in progress
+#
+### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### #
+          #
+        #
+      #
+    #
+  #
+#
+
+function wip-sync-origin-from-upstream {
+# Syncing a fork, update from a forked
+
+# Context
+#
+# In my case, it's useful as I paid for some Ghost templates.
+# When a venfor updates his project, all I have is a zip file
+# with the new code. 
+#
+# TWO GIT REPOS
+#
+# Your fork is "origin". The repo you forked from is "upstream".
+# 1) I maintain a vendor-themeX "origin" repo where I commit the code from the zip file.
+# 2) I maintain a themeX-myproject "upstream" repo where I maintain the custom code.
+
+# Add the remote, call it "upstream":
+  git remote add upstream https://github.com/${input_2}/${input_3}.git
+
+# Fetch all the branches of that remote into remote-tracking branches,
+# such as upstream/master:
+  git fetch upstream
+
+# pulls all new commits made to upstream/master
+  git pull upstream master
+
+# Make sure that you're on your master branch:
+  git checkout master
+
+# Rewrite your master branch so that any commits of yours that
+# aren't already in upstream/master are replayed on top of that
+# other branch:
+  # git merge upstream/master
+  git rebase upstream/master
+
+# then --> 'c'
+
+  #git commit -am "Merged from upstream"
+  #git push --follow-tags origin master
+}
+
 function wip-pr {
   # tk work in progress
   # we can reuse much of the work from m
@@ -507,7 +624,16 @@ function wip-pr {
   git checkout -b mrg-dev-to-staging
   git merge --no-ff origin/ghostv3-dev # no fast forward
   git push -u origin mrg-dev-to-staging
+
+# Something went wrong?
+# Reset to Upstream. This will delete all your local changes to master
+  #git reset --hard upstream/master
+ 
+# take care, this will delete all your changes on your forked master
+  #git push origin master --force
 }
+
+
 
 #
   #
@@ -518,7 +644,7 @@ function wip-pr {
 ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### #
 #
 # CHILD FUNCTIONS
-#   (the user don't directly call these fct)
+# For BashLaVa, Apps are functions the user don't directly call
 #
 ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### #
           #

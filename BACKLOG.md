@@ -10,8 +10,14 @@ As the project is young, instead of creating issues for FEATURE, BUG, etc., I'll
 
 # 2) NEXT FEATURES
 	
+- `d and d-` now without `m or m-`
+	
+- wip-sync-origin-from-upstream
+
 - list functions from add-on
 - show custom script to update a package.json version
+
+
 
 # 3) NEED HELP
 
