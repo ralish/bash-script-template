@@ -122,9 +122,9 @@ function master-nosq {
   # rebase
   git rebase edge && \
   git push origin master && echo;
-  # update CHANGELOG
-  export tag_version="${input_2}"
+
   App_Changelog_Update
+  
   # next setp is: release
 }
 

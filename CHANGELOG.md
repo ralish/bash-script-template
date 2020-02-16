@@ -13,24 +13,32 @@ Based on this [template](https://github.com/firepress-org/bashlava/blob/master/a
 # Releases
 
 ## 0.10.0 (2020-02-15)
-### ⚡️ Updates
-- [cf6652d](https://github.com/firepress-org/bashlava/commit/cf6652d) ADD: new fct deploy , Bashlava can now receive 4 attributes
+
+This is major stuff. We can now release in one command!! 
+Instead of doing `v`, `m`, `r`, we can accomplish the same result using `d`.
+
+### 🚀 New feat.
+- [cf6652d](https://github.com/firepress-org/bashlava/commit/cf6652d) ADD: new fct deploy (d)
 
 ## 0.9.22 (2020-02-15)
-### ⚡️ Updates
-- [821e78c](https://github.com/firepress-org/bashlava/commit/821e78c) Update bashlava to version 0.9.22
+
+### 🚀 New feat.
 - [adc3e34](https://github.com/firepress-org/bashlava/commit/adc3e34) ADD: new fct App_Is_license + the logic to few fct parent
+
+### ⚡️ Updates
 - [8006f09](https://github.com/firepress-org/bashlava/commit/8006f09) UPDATE: Changelog template
 - [6087e35](https://github.com/firepress-org/bashlava/commit/6087e35) UPDATE README, help section
 
 ## 0.9.21 (2020-02-15)
-### ⚡️ Updates
+### 🚀 New feat.
 - [5eaf739](https://github.com/firepress-org/bashlava/commit/5eaf739) ADD date in CHANGELOG when updating it
+
+### ⚡️ Updates
 - [967cb0c](https://github.com/firepress-org/bashlava/commit/967cb0c) CHANGELOG formatting updates
 
 ## 0.9.20
 ### 🚀 New feat.
-- [07c469f](https://github.com/firepress-org/bashlava/commit/07c469f) ADD: new fct shorturl
+- [07c469f](https://github.com/firepress-org/bashlava/commit/07c469f) ADD: new fct shorturl (git.io/xyz)
 
 ## 0.9.19
 ### ⚡️ Updates
@@ -41,7 +49,6 @@ Based on this [template](https://github.com/firepress-org/bashlava/blob/master/a
 - [f7de151](https://github.com/firepress-org/bashlava/commit/f7de151) MINOR: random optimizations, no news features
 
 ### 🚀 New feat.
-
 - [bccb83d](https://github.com/firepress-org/bashlava/commit/bccb83d) Add custom template
 
 ## 0.9.17
@@ -57,17 +64,21 @@ Based on this [template](https://github.com/firepress-org/bashlava/blob/master/a
 - [8b98096](https://github.com/firepress-org/bashlava/commit/8b98096) UPDATE: README
 
 ## 0.9.15
+### 🚀 New feat.
+- [e366624](https://github.com/firepress-org/bashlava/commit/e366624) ADD section: help-installation
+
 ### ⚡️ Updates
 - [31693fa](https://github.com/firepress-org/bashlava/commit/31693fa) RENAME bashLaVa
-- [e366624](https://github.com/firepress-org/bashlava/commit/e366624) ADD section: help-installation
 - [8415891](https://github.com/firepress-org/bashlava/commit/8415891) UPDATE: backlog, many things were shipped
 - [c34984f](https://github.com/firepress-org/bashlava/commit/c34984f) FIX: App_RemoveTmpFiles system prompt when rm un-existing file
 - [b14c6fb](https://github.com/firepress-org/bashlava/commit/b14c6fb) FEAT: Add warning if not running on Mac.
 
 ## 0.9.14
+### 🚀 New feat.
+- [5e5fe8d](https://github.com/firepress-org/bashlava/commit/5e5fe8d) ADD: App_Configure_Custom_Path , UPDATE: fct test, RENAME some VARS
+
 ### ⚡️ Updates
 - [38b70ba](https://github.com/firepress-org/bashlava/commit/38b70ba) Update bashlava to version 0.9.14
-- [5e5fe8d](https://github.com/firepress-org/bashlava/commit/5e5fe8d) ADD: App_Configure_Custom_Path , UPDATE: fct test, RENAME some VARS
 - [7481bd3](https://github.com/firepress-org/bashlava/commit/7481bd3) UDPATE: templates
 - [cd89510](https://github.com/firepress-org/bashlava/commit/cd89510) Update LICENSE copy
 - [6943fa5](https://github.com/firepress-org/bashlava/commit/6943fa5) UPDATE: Improve comments and copy
@@ -82,19 +93,21 @@ Based on this [template](https://github.com/firepress-org/bashlava/blob/master/a
 - [5eda5dd](https://github.com/firepress-org/bashlava/commit/5eda5dd) update: help copy
 - [3698a2a](https://github.com/firepress-org/bashlava/commit/3698a2a) UPDATE: major fct renaming + improve /help
 - [8b7fe7a](https://github.com/firepress-org/bashlava/commit/8b7fe7a) backlog updates
-- [5f4605a](https://github.com/firepress-org/bashlava/commit/5f4605a) ADDED: /title-core-fct | Needed by /list
+- [5f4605a](https://github.com/firepress-org/bashlava/commit/5f4605a) UPDATE: /title-core-fct | Needed by /list
 - [0090a02](https://github.com/firepress-org/bashlava/commit/0090a02) rename dk dk-view cl-view / move docker_img_figlet into the global variables
 - [fd9afb2](https://github.com/firepress-org/bashlava/commit/fd9afb2) update BACKLOG
 - [313e23b](https://github.com/firepress-org/bashlava/commit/313e23b) /help rename which to list
 - [b5f5947](https://github.com/firepress-org/bashlava/commit/b5f5947) major alias revamp
 
 ## 0.9.13
+### 🚀 New feat.
+- [2aeb034](https://github.com/firepress-org/bashlava/commit/2aeb034) init BACKLOG
+- [0e4dc42](https://github.com/firepress-org/bashlava/commit/0e4dc42) ADD --help to alias
+
 ### ⚡️ Updates
 - [628ea06](https://github.com/firepress-org/bashlava/commit/628ea06) Update bashlava to version 0.9.13
-- [0e4dc42](https://github.com/firepress-org/bashlava/commit/0e4dc42) ADD --help to alias
 - [661808d](https://github.com/firepress-org/bashlava/commit/661808d) better copy for /help
 - [a21fd90](https://github.com/firepress-org/bashlava/commit/a21fd90) add rule /App_Is_dockerfile in /dk
-- [2aeb034](https://github.com/firepress-org/bashlava/commit/2aeb034) init BACKLOG
 
 ## 0.9.12
 ### ⚡️ Updates
@@ -103,8 +116,10 @@ Based on this [template](https://github.com/firepress-org/bashlava/blob/master/a
 - [d1afd4c](https://github.com/firepress-org/bashlava/commit/d1afd4c) FIX: re-write many > /dev/null 2>&1
 
 ## 0.9.11
-### ⚡️ Updates
+### 🚀 New feat.
 - [7b3bb76](https://github.com/firepress-org/bashlava/commit/7b3bb76) Add fct /tag. This helps when we pushing app version.
+
+### ⚡️ Updates
 - [f3cbf55](https://github.com/firepress-org/bashlava/commit/f3cbf55) Improve: README
 - [47c84c0](https://github.com/firepress-org/bashlava/commit/47c84c0) Improve: commit messages
 - [a872462](https://github.com/firepress-org/bashlava/commit/a872462) Improve App_Changelog_Update tmp file deletion & comments
@@ -122,23 +137,27 @@ Based on this [template](https://github.com/firepress-org/bashlava/blob/master/a
 - [3edfb00](https://github.com/firepress-org/bashlava/commit/3edfb00) Improve Changelog and fix typo / Add /log into /master /squashed
 
 ## 0.9.7
+### 🚀 New feat.
+- [e91a2b4](https://github.com/firepress-org/bashlava/commit/e91a2b4) Adding 3 examples for custom scripts
+
 ### ⚡️ Updates
 - [878e2f2](https://github.com/firepress-org/bashlava/commit/878e2f2) Make the local variable more obvious
 - [878e2f2](https://github.com/firepress-org/bashlava/commit/878e2f2) Cleaner way to manage custom_scripts
 - [878e2f2](https://github.com/firepress-org/bashlava/commit/878e2f2) Better error handling
-- [e91a2b4](https://github.com/firepress-org/bashlava/commit/e91a2b4) Adding 3 examples for custom scripts
+
 - [beaa2e0](https://github.com/firepress-org/bashlava/commit/beaa2e0) Improve fct CI / FIX custom_urls.sh
 - [36685ea](https://github.com/firepress-org/bashlava/commit/36685ea) Improve template for Dockferfile
 - [71602ed](https://github.com/firepress-org/bashlava/commit/71602ed) Improve README
 
 ## 0.9.6
-As you can see here, our commit hash link back to the actual commit :)
+### 🚀 New feat.
+As you can see here, our commit hash are clickable!
+- [22ead68](https://github.com/firepress-org/bashlava/commit/22ead68) Changelog_Update / create URLs from git commits
 
 ### ⚡️ Updates
 - [0d2bec1](https://github.com/firepress-org/bashlava/commit/0d2bec1) App_changelog_update, Improve create URLs from git commits & remove vars during QA
 - [2d79b65](https://github.com/firepress-org/bashlava/commit/2d79b65) App_changelog_update, Improve create URLs from git commits, RENAME out-m & out-e
 - [6ee27a2](https://github.com/firepress-org/bashlava/commit/6ee27a2) new alias
-- [22ead68](https://github.com/firepress-org/bashlava/commit/22ead68) Changelog_Update / create URLs from git commits
 - [b27be25](https://github.com/firepress-org/bashlava/commit/b27be25) improved fct log
 - [a14ccf7](https://github.com/firepress-org/bashlava/commit/a14ccf7) init alias
 - [909c531](https://github.com/firepress-org/bashlava/commit/909c531) improve prompt messages
@@ -151,7 +170,7 @@ As you can see here, our commit hash link back to the actual commit :)
 - [e8e6861](https://github.com/firepress-org/bashlava/commit/e8e6861) rename dk-version to dk
 - [1dfe01a](https://github.com/firepress-org/bashlava/commit/1dfe01a) update Dockerfile template
 - [299082d](https://github.com/firepress-org/bashlava/commit/299082d) improve alias
-- [fcb4075](https://github.com/firepress-org/bashlava/commit/fcb4075) fct cl FIX var, minor optimzations
+- [fcb4075](https://github.com/firepress-org/bashlava/commit/fcb4075) fct cl FIX var, minor optimizations
 
 ## 0.9.5
 ### ⚡️ Updates
