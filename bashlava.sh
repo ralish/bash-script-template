@@ -104,10 +104,7 @@ function master {
     # git add . &&\
     # git rebase --continue || true
 
-  # update CHANGELOG
   App_Changelog_Update &&\
-
-  # push updates
   git push origin master &&\
 
   # clean up
@@ -118,7 +115,6 @@ function master {
 
 function master-nosq {
   App_Show_Version_Three_Sources
-  App_Is_Input2
 
   App_Is_edge
   App_Is_commit_unpushed
@@ -137,12 +133,48 @@ function master-nosq {
 
   App_Changelog_Update
   
-  # next setp is: release
+  # next step is: release
+}
+
+function master-merge {
+
+  App_Show_Version_Three_Sources
+  App_Is_Input2
+
+  App_Is_edge
+  App_Is_commit_unpushed
+
+  App_Is_changelog
+  App_Is_dockerfile
+  App_Is_license
+  App_Is_gitignore
+
+  # Update our local state
+  git checkout master &&\
+  git pull origin master &&\
+
+  # by using mrg_edge_2_master we create one clean squashed commit
+  # remove and create mrg_edge_2_master
+  git branch -D mrg_edge_2_master || true &&\
+  git checkout -b mrg_edge_2_master &&\
+  # no need to push it to origin (local branch only)
+
+  # merge & squash edge into mrg_edge_2_master
+  git merge --squash edge &&\
+  git commit . -m "${input_2} (squash)" &&\
+
+  # back to master
+  git checkout master &&\
+  # rebase (commits are already squashed at this point)
+  git rebase mrg_edge_2_master &&\
+  git push origin master &&\
+
+  # clean up
+  git branch -D mrg_edge_2_master || true && echo;
 }
 
 function release {
   # at this point or changelog is clean.
-  App_Is_Input2
   App_Is_master
   App_Get_Var_From_Dockerile
 
@@ -235,7 +267,8 @@ function deploy {
 # usage 1: d m 3.5.1 "some message about the commit"
 # usage 2: d m- 0.2.38
 
-  # 
+# usage 1: d m "some message about the commit" 3.5.1 
+
   App_Is_Input2
   App_Is_Input3
 
@@ -334,6 +367,9 @@ function oe { #util> ..... "out edge" Basic git checkout (no attribute)
 }
 function l { #util> ...... "log" show me the latest commits (no attribute)
   log
+}
+function m-m { #core> ..... "master-merge" from edge. Does not update changelog | usage: m-
+  master-merge
 }
 function sq { #util> ..... "squash" commits | usage: sq 3 "Add fct xyz"
   squash
