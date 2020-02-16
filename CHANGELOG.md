@@ -1,14 +1,9 @@
-### About this CHANGELOG
+This changelog is based on this [template](https://github.com/firepress-org/bashlava/blob/master/add-on/templates.sh#L3). That's the way we release our code at FirePress ([blog post](https://firepress.org/en/software-and-ghost-updates/)). It's based on [keep a changelog](https://keepachangelog.com/en/1.0.0/) and it adheres to [semantic versioning](https://semver.org/spec/v2.0.0.html).
 
-Based on this [template](https://github.com/firepress-org/bashlava/blob/master/add-on/templates.sh#L3). Release process at FirePress ([blog post](https://firepress.org/en/software-and-ghost-updates/)). Based on [keep a changelog](https://keepachangelog.com/en/1.0.0/) and this project adheres to [semantic versioning](https://semver.org/spec/v2.0.0.html).
-
-### Status options
-
-- ### ⚡️ Updates
-- ### 🚀 New feat.
-- ### 🐛 Fix bug
-- ### 🛑 Removed
-- ### 🔑 Security
+Status template:
+| ⚡️ Updates | 🚀 Added | ⚠️ Changed |
+🐛 Fixed | 🛑 Removed | 🔑 Security |
+🙈 Oops | 🎨 Design | 🎉 happy | 🙌 blessed
 
 # Releases
 
@@ -34,7 +29,7 @@ Useful when we want to commit update on master without publishing a release.
 ## 0.10.0 (2020-02-15)
 
 This is major stuff. We can now release in one command!! 
-Instead of doing `v`, `m`, `r`, we can accomplish the same result using `d`.
+Instead of doing `v`, `m`, `r`, we can accomplish the same result using `d`. Search for `deploy` in the code.
 
 ### 🚀 New feat.
 - [cf6652d](https://github.com/firepress-org/bashlava/commit/cf6652d) ADD: new fct deploy (d)
