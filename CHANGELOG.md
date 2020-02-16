@@ -12,6 +12,25 @@ Based on this [template](https://github.com/firepress-org/bashlava/blob/master/a
 
 # Releases
 
+## 0.10.1 (2020-02-15)
+
+### 🚀 New feat.
+
+Useful when we want to commit update on master without publishing a release.
+
+- [a342bfd](https://github.com/firepress-org/bashlava/commit/a342bfd) ADD: fct master-merge (alias m-m)
+
+### ⚡️ Updates
+- [587fadc](https://github.com/firepress-org/bashlava/commit/587fadc) UPDATE: in fct master, removed un-needed step ‘git push origin master’
+- [a342bfd](https://github.com/firepress-org/bashlava/commit/a342bfd) UPDATE: fct release don't need a version anymore
+- [43f3008](https://github.com/firepress-org/bashlava/commit/43f3008) UPDATE: bashlava to version 0.10.1 /Dockerfile
+- [c28b3ed](https://github.com/firepress-org/bashlava/commit/c28b3ed) REMOVE: un-needed rule in App_Changelog_Update
+- [fbc5257](https://github.com/firepress-org/bashlava/commit/fbc5257) UPDATE: master-merge + alias ‘m-m’
+- [3745ba2](https://github.com/firepress-org/bashlava/commit/3745ba2) REMOVE App_UpdateDockerfileVersion logic
+- [6441cda](https://github.com/firepress-org/bashlava/commit/6441cda) UPDATE: improve alias
+- [ec39e6f](https://github.com/firepress-org/bashlava/commit/ec39e6f) IMPROVE: syntax remove space
+- [24bfa40](https://github.com/firepress-org/bashlava/commit/24bfa40) UPDATE: Changelog formatting
+
 ## 0.10.0 (2020-02-15)
 
 This is major stuff. We can now release in one command!! 
