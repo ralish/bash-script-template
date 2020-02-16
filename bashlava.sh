@@ -47,8 +47,8 @@ function version {
   App_UpdateDockerfileVersion &&\
 
   App_Get_Var_From_Dockerile
-  git add . && \
-  git commit . -m "Update ${app_name} to version ${app_version} /Dockerfile" && \
+  git add . &&\
+  git commit . -m "Update ${app_name} to version ${app_version} /Dockerfile" &&\
   git push origin edge
 
   echo && my_message="run ci to check status of your built on Github Actions (if any)" App_Blue
@@ -70,26 +70,26 @@ function master {
   App_Is_gitignore
 
   # Update our local state
-  git checkout master && \
-  git pull origin master && \
+  git checkout master &&\
+  git pull origin master &&\
 
   # by using mrg_edge_2_master we create one clean squashed commit
   # remove and create mrg_edge_2_master
-  git branch -D mrg_edge_2_master || true && \
-  git checkout -b mrg_edge_2_master && \
+  git branch -D mrg_edge_2_master || true &&\
+  git checkout -b mrg_edge_2_master &&\
   # no need to push it to origin (local branch only)
 
   # merge & squash edge into mrg_edge_2_master
-  git merge --squash edge && \
-  git commit . -m "${input_3} (squash)" && \
+  git merge --squash edge &&\
+  git commit . -m "${input_3} (squash)" &&\
 
   # back to master
-  git checkout master && \
+  git checkout master &&\
   # rebase (commits are already squashed at this point)
-  git rebase mrg_edge_2_master && \
+  git rebase mrg_edge_2_master &&\
 
     # fix conflicts manually if any, then
-    # git add . && \
+    # git add . &&\
     # git rebase --continue || true
 
   # update CHANGELOG
@@ -117,10 +117,10 @@ function master-nosq {
   App_Is_gitignore
 
   # Update our local state
-  git checkout master && \
-  git pull origin master && \
+  git checkout master &&\
+  git pull origin master &&\
   # rebase
-  git rebase edge && \
+  git rebase edge &&\
   git push origin master && echo;
 
   App_Changelog_Update
@@ -135,8 +135,8 @@ function release {
   App_Get_Var_From_Dockerile
 
   # push updates
-  git commit . -m "Update ${app_name} to version ${app_version} /CHANGELOG" && \
-  git push origin master && \
+  git commit . -m "Update ${app_name} to version ${app_version} /CHANGELOG" &&\
+  git push origin master &&\
 
   App_Is_dockerfile
   App_Is_hub_installed
@@ -154,9 +154,9 @@ function release {
     -m "${release_message1}" \
     -m "${release_message2}" \
     -t "$(git rev-parse HEAD)" \
-    "${app_version}" && \
+    "${app_version}" &&\
 
-  echo && my_message="https://github.com/${github_user}/${app_name}/releases/tag/${app_version}" App_Blue && \
+  echo && my_message="https://github.com/${github_user}/${app_name}/releases/tag/${app_version}" App_Blue &&\
   edge
 
   # let's cheers up a bit!
@@ -174,9 +174,9 @@ function edge {
   # it assumes there will be no conflict with anybody else as I'm the only person using 'edge'
   App_Is_commit_unpushed
 
-  git branch -D edge || true && \
-  git checkout -b edge && \
-  git push --set-upstream origin edge -f && \
+  git branch -D edge || true &&\
+  git checkout -b edge &&\
+  git push --set-upstream origin edge -f &&\
   echo && my_message="<edge> was create from scratch (from <master>)" App_Blue
 }
 
@@ -189,12 +189,12 @@ function squash {
   git_message="${input_3}"
   usage="sq 3 'Add fct xyz'"
 
-  git reset --hard HEAD~"${backwards_steps}" && \
-  git merge --squash HEAD@{1} && \
-  git push origin HEAD --force && \
-  git status && \
-  git add -A && \
-  git commit -m "${git_message} (squash)" && \
+  git reset --hard HEAD~"${backwards_steps}" &&\
+  git merge --squash HEAD@{1} &&\
+  git push origin HEAD --force &&\
+  git status &&\
+  git add -A &&\
+  git commit -m "${git_message} (squash)" &&\
   git push;
 
   log
@@ -610,7 +610,7 @@ function App_Is_changelog {
     echo "Good, lets continue" > /dev/null 2>&1
   else
     my_message="CHANGELOG.md file does not exit. Let's generate one (WAR5685)" App_Warning &&\
-    init_changelog && \
+    init_changelog &&\
     App_Stop && echo
   fi
 }
@@ -619,7 +619,7 @@ function App_Is_gitignore {
     echo "Good, lets continue" > /dev/null 2>&1
   else
     my_message=".gitignore file does not exit. Let's generate one (WAR5686)" App_Warning &&\
-    init_gitignore && \
+    init_gitignore &&\
     App_Stop && echo
   fi
 }
@@ -628,7 +628,7 @@ function App_Is_license {
     echo "Good, lets continue" > /dev/null 2>&1
   else
     my_message="LICENSE file does not exit. Let's generate one (WAR5687)" App_Warning &&\
-    init_license && \
+    init_license &&\
     App_Stop && echo
   fi
 }
@@ -636,7 +636,7 @@ function App_Is_hub_installed {
   if [[ $(hub version | grep -c "hub version") == "1" ]]; then
     my_message="Hub is installed." App_Blue
   else
-    echo && my_message="Hub is not installed. See requirements https://github.com/firepress-org/bashlava" App_Pink && \
+    echo && my_message="Hub is not installed. See requirements https://github.com/firepress-org/bashlava" App_Pink &&\
     open https://github.com/firepress-org/bashlava
   fi
 }
