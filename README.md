@@ -10,9 +10,9 @@
 
 # BashLava
 
-BashLava makes your bash scripts a bunch of pieces of cakes. 
+BashLaVa makes your bash scripts a bunch of pieces of cakes. 
 
-It's for developers that use git commands regularly. BashLava makes following git workflow a breeze without having to leave your terminal or use the GitHub GUI.
+It's for developers that use git commands regularly. BashLaVa makes following git workflow a breeze without having to leave your terminal or use the GitHub GUI.
 
 Technically speaking, it's a CLI utility *(or a CLI aggregator)*. It's not a CLI per se as it does not directly call APIs. The idea is to abstract a workflow to minimize the time to do some repetitive actions.
 
