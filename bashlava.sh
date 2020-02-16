@@ -190,6 +190,7 @@ function release {
 #
 
 function deploy {
+# WIP
 # usage 1:  d 3.5.1 "UPDATE chap 32 + FIX typo"
 
   App_Is_Input2
