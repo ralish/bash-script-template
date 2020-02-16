@@ -105,8 +105,6 @@ function master {
     # git rebase --continue || true
 
   App_Changelog_Update &&\
-  git push origin master &&\
-
   # clean up
   git branch -D mrg_edge_2_master || true && echo;
 
