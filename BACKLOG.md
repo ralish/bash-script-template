@@ -5,6 +5,8 @@ As the project is young, instead of creating issues for FEATURE, BUG, etc., I'll
 # 1) GLITCHES
 
 - glow show read from ~/tmp/bashlava_help.md
+- find and replace && \ by &&\ (no space)
+- indent comments properly (no spacing)
 
 # 2) NEXT FEATURES
 	

@@ -10,8 +10,11 @@
 #
 # GIT WORKFLOW
 #
-#   push commits, update CHANGELOG, rebase or merge, squash (when needed)
-#   tag and push the release. All without leaving the terminal!
+# c   ...... "commit"
+# v   ...... "version"
+# m   ...... "master include squash"
+# m-   ... "master exclude squash"
+# r   ...... "release"
 #
 ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### #
           #
@@ -28,53 +31,43 @@ function commit {
   fi
 
   App_Is_Input2
-  git status && git add -A && \
-  git commit -m "${input_2}" && clear && git push;
+  git status && git add -A &&\
+  git commit -m "${input_2}" && clear && git push  &&\
+  version-read-from-dockerfile
 }
 
 function version {
   # The version is tracked in the Dockerfile (even if you don't use docker)
 
-  App_Is_dockerfile
-
-  # when no attrbutes are passed
-  if [[ "${input_2}" == "not-set" ]]; then
-    my_message="Three version checkpoints:" && App_Blue &&\
-    version-read &&\
-    tag-read &&\
-    release-read && echo &&\
-    my_message="To update the project's version, please use this format: v 3.5.1" && App_Warning && App_Stop
-  fi
-
+  App_Show_Version_Three_Sources
   App_Is_Input2
+
   App_Is_edge
+  App_Is_dockerfile
+  App_UpdateDockerfileVersion &&\
 
-  tag_version="${input_2}"
-  App_UpdateDockerfileVersion && \
-
-  App_GetVarFromDockerile
+  App_Get_Var_From_Dockerile
   git add . && \
-  git commit . -m "Update ${app_name} to version ${app_version} (Dockerfile)" && \
+  git commit . -m "Update ${app_name} to version ${app_version} /Dockerfile" && \
   git push origin edge
 
   echo && my_message="run ci to check status of your built on Github Actions (if any)" App_Blue
+
+  # next step is to: 'm' or 'm-'
 }
 
 function master {
-  if [[ "${input_2}" == "not-set" ]]; then
-    version-read
-  fi
+  App_Show_Version_Three_Sources
   App_Is_Input2
+  App_Is_Input3
+
+  App_Is_edge
   App_Is_commit_unpushed
+
   App_Is_changelog
   App_Is_dockerfile
   App_Is_license
   App_Is_gitignore
-  log
-  
-  # prompt
-  my_message="Squash message of what we want to merge:" App_Blue
-  read -p ">>> " squash_message
 
   # Update our local state
   git checkout master && \
@@ -88,7 +81,7 @@ function master {
 
   # merge & squash edge into mrg_edge_2_master
   git merge --squash edge && \
-  git commit . -m "${squash_message} (squash)" && \
+  git commit . -m "${input_3} (squash)" && \
 
   # back to master
   git checkout master && \
@@ -99,24 +92,25 @@ function master {
     # git add . && \
     # git rebase --continue || true
 
-  # push updates
-  git push origin master && \
-  # clean up
-  git branch -D mrg_edge_2_master || true true && echo;
-
   # update CHANGELOG
-  export tag_version="${input_2}"
-  App_Changelog_Update
+  App_Changelog_Update &&\
 
-  # next step is: release
+  # push updates
+  git push origin master &&\
+
+  # clean up
+  git branch -D mrg_edge_2_master || true && echo;
+
+  # next step is to: 'release'
 }
 
 function master-nosq {
-  if [[ "${input_2}" == "not-set" ]]; then
-    version-read
-  fi
+  App_Show_Version_Three_Sources
   App_Is_Input2
+
+  App_Is_edge
   App_Is_commit_unpushed
+
   App_Is_changelog
   App_Is_dockerfile
   App_Is_license
@@ -138,10 +132,10 @@ function release {
   # at this point or changelog is clean.
   App_Is_Input2
   App_Is_master
-  App_GetVarFromDockerile
+  App_Get_Var_From_Dockerile
 
   # push updates
-  git commit . -m "Update ${app_name} to version ${app_version} (CHANGELOG)" && \
+  git commit . -m "Update ${app_name} to version ${app_version} /CHANGELOG" && \
   git push origin master && \
 
   App_Is_dockerfile
@@ -152,7 +146,7 @@ function release {
 
   # prepared release
   release_message1="Refer to [CHANGELOG.md](https://github.com/${github_user}/${app_name}/blob/master/CHANGELOG.md) for details about this release."
-  release_message2="Released with [bashLaVa](https://github.com/firepress-org/bashlava). You should try it, it's addictive."
+  release_message2="Automatically released with [bashLaVa](https://github.com/firepress-org/bashlava)."
 
   # push release
   hub release create -oc \
@@ -214,8 +208,8 @@ function squash {
           #
 ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### #
 #
-# OFFICIAL SHORTCUTS
-# core> | we use it in order to 'grep' it in our fct list
+# GIT WORKFLOW (Expert mode)
+# Do it all in one command without any prompt
 #
 ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### #
           #
@@ -224,29 +218,93 @@ function squash {
     #
   #
 #
+
+function deploy {
+# usage 1: d m 3.5.1 "some message about the commit"
+# usage 2: d m- 0.2.38
+
+  # 
+  App_Is_Input2
+  App_Is_Input3
+
+  App_Is_edge
+  App_Is_commit_unpushed
+
+  App_Is_changelog
+  App_Is_dockerfile
+  App_Is_license
+  App_Is_gitignore
+
+# bypass CHANGELOG prompt
+  flag_bypass_changelog_prompt="true"
+
+# re-write inputs from user
+  masterLogic=${input_2}
+  input_2=${input_3}
+  input_3=${input_4}
+
+# v
+  version
+
+# m or m-
+# squash or nosq on master?
+  if [[ "${masterLogic}" == "m" ]]; then
+    master
+  elif [[ "${masterLogic}" == "m-" ]]; then
+    master-nosq 
+  else
+    my_message="${latest_tag} < The command (attribute #2) does not exist. See help." App_Pink && App_Stop
+  fi
+
+# r
+  release
+}
+#
+  #
+    #
+      #
+        #
+          #
+### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### #
+#
+# OFFICIAL SHORTCUTS
+#
+### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### #
+          #
+        #
+      #
+    #
+  #
+#
+function d { #d> ...... "deploy" expert mode"
+    deploy 
+}
+
 function c { #core> ...... "commit" all changes + git push | usage: c "FEAT: new rule to avoid this glitch"
   commit
 }
 function v { #core> ...... "version" update your app | usage: v 1.50.1 (+ no attribute)
   version
 }
-function m { #core> ...... "master" .. squash + rebase + merge edge to m + update the CHANGELOG | usage: m 3.5.1
+function m { #core> ...... "master" squash commit(s) + rebase + merge + update CHANGELOG | usage: m 3.5.1 "UPDATE: xyz"
   master
 }
-function m-ns { #core> ... "master" no squash + rebase + merge edge to m + update the CHANGELOG | usage: m 3.5.1
+function m- { #core> ..... "master-" like m, but without squashing commit(s) | usage: m- 3.5.1
   master-nosq
+}
+function m-ns { master-nosq
 }
 function r { #core> ...... "release" generate CHANGELOG + push tag on m + push r on GitHub| usage: r 3.5.1
   release
 }
 
-function vr { #util> ..... "version read" Show app's version (no attribute)
+function vr { #util> ..... "version read" Show app's version from Dockerfile (no attribute)
   version-read
 }
-function rr { #util> ..... "release read" Show release from Github (attribute are optionnal)
+function rr { #util> ..... "release read" Show release from Github (attributes are optionnal)
   release-read
 }
-function tr { #util> ..... "tag read" the actual tag (no attribute)
+function tr { #util> ..... "tag read" tag on master branch (no attribute)
   tag-read
 }
 function mdv { #util> ..... "markdown viewer" | usage: mdv README.md
@@ -272,9 +330,6 @@ function sq { #util> ..... "squash" commits | usage: sq 3 "Add fct xyz"
 function e { #util> ...... "edge" recrete a fresh edge branch from master (no attribute)
   edge
 }
-function d { #util> ...... "diff" show me diff in my code (no attribute)
-  diff
-}
 function s { #util> ...... "status" show me if there is something to commit (no attribute)
   status
 }
@@ -286,18 +341,19 @@ function h { #util> ...... "help" alias are also set to: -h, --help, help (no at
 }
 
 function log { #util> .... "log" Show me the lastest commits (no attribute)
-    git log --all --decorate --oneline --graph --pretty=oneline -n20
+  git log --all --decorate --oneline --graph --pretty=oneline -n20
 }
 function hash { #util> ... "hash" Show me the latest hash commit (no attribute)
   git rev-parse HEAD && git rev-parse --short HEAD 
 }
 function tag-read {
   latest_tag="$(git describe --tags --abbrev=0)"
-  my_message="${latest_tag} < latest commited tag on master branch" App_Blue
+  my_message="${latest_tag} < tag version found on master branch" App_Blue
 }
 function status { git status
 }
-function diff { git diff
+function diff { #util> ... "diff" show me diff in my code (no attribute)
+    git diff
 }
 
 function help {
@@ -309,7 +365,8 @@ function test { #util> ... "test" test if requirements for bashLaVa are meet (no
 
   echo "\$1 value is: ${input_1}" &&\
   echo "\$2 value is: ${input_2}" &&\
-  echo "\$3 value is: ${input_3}" && echo &&\
+  echo "\$3 value is: ${input_3}" &&\
+  echo "\$4 value is: ${input_4}" && echo &&\
   my_message="Date is: ${date_sec}" App_Blue &&\
 
   if [[ $(uname) == "Darwin" ]]; then
@@ -351,7 +408,7 @@ function shorturl { #util> "shortner" limited github repos | usage: shorturl fir
 
 # when no attributes are passed, use configs from the current project.
   if [[ "${input_2}" == "not-set" ]]; then
-    App_GetVarFromDockerile
+    App_Get_Var_From_Dockerile
     input_2=${github_user}
     input_3=${app_name}
   fi
@@ -370,17 +427,21 @@ function shorturl { #util> "shortner" limited github repos | usage: shorturl fir
 }
 
 function version-read {
-  App_GetVarFromDockerile
-  my_message="${app_version} < version in Dockerfile" App_Blue
+  App_Show_Version_Three_Sources
+}
+
+function version-read-from-dockerfile {
+  App_Get_Var_From_Dockerile
+  my_message="${app_version} < version found in Dockerfile" App_Blue
 }
 
 function release-read {
-  # find the latest release that was pushed on github
+# Find version of any GitHub projects | usage: rr pascalandy docker-stack-this
 
-  # for this project
+# Find version for THIS project
   if [[ "${input_2}" == "not-set" ]] && [[ "${input_3}" == "not-set" ]] ; then
-    App_GetVarFromDockerile
-  # for any project on GitHub (ie. pascalandy docker-stack-this)
+    App_Get_Var_From_Dockerile
+# Find version for ANY projects
   else
     github_user=${input_2}
     app_name=${input_3}
@@ -389,7 +450,7 @@ function release-read {
   release_latest=$(curl -s https://api.github.com/repos/${github_user}/${app_name}/releases/latest | \
     grep tag_name | awk -F ': "' '{ print $2 }' | awk -F '",' '{ print $1 }')
 
-  my_message="${release_latest} < released on https://github.com/${github_user}/${app_name}/releases/tag/${release_latest}" && App_Blue
+  my_message="${release_latest} < latest release found on https://github.com/${github_user}/${app_name}/releases/tag/${release_latest}" && App_Blue
 }
 
 function wip-pr {
@@ -439,11 +500,11 @@ function App_Changelog_Update {
   # copy logs in a file
   echo -e "${git_logs}" > ~/temp/tmpfile2
 
-  # --- Time to reformat the logs
+  # --- Time to make the log pretty for the CHANGELOG
 
   # find the number of line in this file
   number_of_lines=$(cat ~/temp/tmpfile2 | wc -l | awk '{print $1}')
-  App_GetVarFromDockerile
+  App_Get_Var_From_Dockerile
   for lineID in $(seq 1 ${number_of_lines}); do
     hash_to_replace=$(cat ~/temp/tmpfile2 | sed -n "${lineID},${lineID}p;" | awk '{print $1}')
     # create URLs from commits
@@ -458,7 +519,7 @@ function App_Changelog_Update {
   # create main file
   echo -e "" >> ~/temp/tmpfile
   # insert H2 title version 
-  echo -e "## ${input_2} (${date_day})" >> ~/temp/tmpfile
+  echo -e "## ${app_version} (${date_day})" >> ~/temp/tmpfile
   # insert H3 Updates
   echo -e "### ⚡️ Updates" >> ~/temp/tmpfile
   # insert our montage to the main file
@@ -469,10 +530,14 @@ function App_Changelog_Update {
   cat ~/temp/tmpfile | awk 'NF > 0 {blank=0} NF == 0 {blank++} blank < 2' > CHANGELOG.md
   App_RemoveTmpFiles && echo &&\
 
-  # The system will open the CHANGELOG, in case you have to edit it.
-  nano CHANGELOG.md && echo
-
-  # then run: release
+  if [[ "${flag_bypass_changelog_prompt}" == "false" ]]; then
+    # The system will open the CHANGELOG, in case you have to edit it.
+    nano CHANGELOG.md && echo
+  elif [[ "${flag_bypass_changelog_prompt}" == "true" ]]; then
+    echo "Do not prompt" > /dev/null 2>&1
+  else
+    my_message="FATAL error: Please open an issue for this behavior (ERR5701)" App_Pink && App_Stop
+  fi
 }
 
 function App_RemoveTmpFiles {
@@ -500,6 +565,7 @@ function App_Is_edge {
     my_message="Try: out-e" App_Blue && App_Stop
   fi
 }
+
 function App_Is_commit_unpushed {
   if [[ $(git status | grep -c "nothing to commit") == "1" ]]; then
     echo "Good, lets continue" > /dev/null 2>&1
@@ -507,6 +573,7 @@ function App_Is_commit_unpushed {
     my_message="You must push your commit(s) before doing a rebase (ERR5683)" App_Pink && App_Stop
   fi
 }
+
 function App_Is_Input2 {
 # ensure the second attribute is not empty to continue
   if [[ "${input_2}" == "not-set" ]]; then
@@ -518,6 +585,13 @@ function App_Is_Input3 {
 # ensure the third attribute is not empty to continue
   if [[ "${input_3}" == "not-set" ]]; then
     my_message="You must provide a valid attribute (ERR5688)" App_Pink
+    App_Stop
+  fi
+}
+function App_Is_Input4 {
+# ensure the third attribute is not empty to continue
+  if [[ "${input_4}" == "not-set" ]]; then
+    my_message="You must provide a valid attribute (ERR5689)" App_Pink
     App_Stop
   fi
 }
@@ -608,21 +682,21 @@ function App_UpdateDockerfileVersion {
   # update ap VERSION  within the Dockerfile.
 
   # version before
-  App_GetVarFromDockerile
+  App_Get_Var_From_Dockerile
   version_before=${app_version}
 
   # apply update
-  tag_version_clean=$(echo $tag_version | sed 's/-r.*//g')
+  tag_version_clean=$(echo ${input_2} | sed 's/-r.*//g')
   # sometimes we push 3.15.2-r4, this will clean "-r4"
   sed -i '' "s/^ARG VERSION=.*$/ARG VERSION=\"$tag_version_clean\"/" Dockerfile
 
   # version after
-  App_GetVarFromDockerile
+  App_Get_Var_From_Dockerile
   version_after=${app_version}
 
   # To debug if needed
       # confirm change was well executed (to dubug id needed)
-      #App_GetVarFromDockerile
+      #App_Get_Var_From_Dockerile
       #if [[ "${version_before}" == "${version_after}" ]]; then
       #  my_message="${version_before} <== Dockerfile version before" App_Pink
       #  my_message="${version_after} <== Dockerfile version after" App_Pink
@@ -633,7 +707,7 @@ function App_UpdateDockerfileVersion {
       #fi
 }
 
-function App_GetVarFromDockerile {
+function App_Get_Var_From_Dockerile {
   # Extract vars from our Dockerfile
   app_name=$(cat Dockerfile | grep APP_NAME= | head -n 1 | grep -o '".*"' | sed 's/"//g')
   app_version=$(cat Dockerfile | grep VERSION= | head -n 1 | grep -o '".*"' | sed 's/"//g')
@@ -648,6 +722,16 @@ function App_GetVarFromDockerile {
   elif [[ -z "${github_user}" ]] ; then    #if empty
     clear
     my_message="Can't find GITHUB_USER in the Dockerfile (ERR5680)" App_Pink && App_Stop
+  fi
+}
+
+function App_Show_Version_Three_Sources {
+  # Read the version from three sources
+  if [[ "${input_2}" == "not-set" ]]; then
+    my_message="Three version checkpoints:" && App_Blue &&\
+    version-read-from-dockerfile &&\
+    tag-read &&\
+    release-read && echo
   fi
 }
 
@@ -739,6 +823,9 @@ function App_DefineVariables {
   local_bashlava_path="$(cat /usr/local/bin/bashlava_path)"
   local_bashlava_addon_path="$(cat /usr/local/bin/bashlava_path)/add-on"
 
+# set flags
+  flag_bypass_changelog_prompt="false"
+
 #	docker images 
   docker_img_figlet="devmtl/figlet:1.0"
   docker_img_glow="devmtl/glow:0.2.0"
@@ -800,6 +887,12 @@ function main() {
     input_3="not-set"
   else
     input_3=$3
+  fi
+
+  if [[ -z "$4" ]]; then    #if empty
+    input_4="not-set"
+  else
+    input_4=$4
   fi
   # it would be easy to have bashLaVa accept more than 3 attributes.
 
