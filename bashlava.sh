@@ -220,7 +220,7 @@ function edge {
   git branch -D edge || true &&\
   git checkout -b edge &&\
   git push --set-upstream origin edge -f &&\
-  echo && my_message="<edge> was create from scratch (from <master>)" App_Blue
+  my_message="<edge> was freshly branched out from master" App_Blue
 }
 
 function squash {
