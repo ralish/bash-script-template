@@ -12,6 +12,10 @@ Based on this [template](https://github.com/firepress-org/bashlava/blob/master/a
 
 # Releases
 
+## 0.10.0 (2020-02-15)
+### ⚡️ Updates
+- [cf6652d](https://github.com/firepress-org/bashlava/commit/cf6652d) ADD: new fct deploy , Bashlava can now receive 4 attributes
+
 ## 0.9.22 (2020-02-15)
 ### ⚡️ Updates
 - [821e78c](https://github.com/firepress-org/bashlava/commit/821e78c) Update bashlava to version 0.9.22
