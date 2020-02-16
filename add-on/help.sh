@@ -13,10 +13,10 @@ function help-main {
 cat <<EOF > bashlava_help.md
 # help
 
-- help-installation (help with installation)
+
 - list              see all commands
-- To understand the core git workflow watch our video:
-- ___ https://github.com/firepress-org/bashlava
+- help-installation (help with installation)
+- More details at: https://git.io/bashlava
 EOF
 input_2="bashlava_help.md"
 App_glow && rm bashlava_help.md || true
@@ -59,18 +59,20 @@ function help-installation {
 cat <<EOF > bashlava_help.md
 # help-installation
 
-You must create two symlinks from:
-  /usr/local/bin/bashlava.sh
-  /usr/local/bin/.bashcheck.sh
-
-# Example
-ln -s /path/to/original_file /usr/local/bin/source_file
-
-ln -s /Volumes/myuser/Github/firepress-org/bashlava/bashlava.sh /usr/local/bin/bashlava.sh
-ln -s /Volumes/myuser/Github/firepress-org/bashlava/.bashcheck.sh /usr/local/bin/.bashcheck.sh
-
 See video on how to do this and why it is important:
-https://github.com/firepress-org/bashlava
+https://git.io/bashlava
+
+You must create two symlinks:
+- /usr/local/bin/bashlava.sh
+- /usr/local/bin/.bashcheck.sh
+
+# symlinks example
+
+- ln -s /Volumes/myuser/Github/firepress-org/bashlava/bashlava.sh /usr/local/bin/bashlava.sh
+- ln -s /Volumes/myuser/Github/firepress-org/bashlava/.bashcheck.sh /usr/local/bin/.bashcheck.sh
+
+The first path is where you cloned the project and the second path is where you must put the symlink.
+
 EOF
 
 input_2="bashlava_help.md"
