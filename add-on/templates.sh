@@ -184,3 +184,16 @@ cat << EOF > README_template.md
 This README is still empty.
 EOF
 }
+
+# optional as not everyone needs this option
+function init_dockerfile_ignore {
+cat << EOF > .dockerfile_template
+.cache
+coverage
+dist
+node_modules
+npm-debug
+.git
+EOF
+
+}
