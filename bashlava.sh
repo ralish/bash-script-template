@@ -40,13 +40,16 @@ function commit {
 function version {
 # The version is tracked in a Dockerfile (it's cool if your porject don't use docker)
 # For BashLaVa, this Dockerfile is just a config-env file
+  App_Is_edge
+  App_Is_commit_unpushed
+  App_Are_files_existing
+  App_Is_required_apps_installed
 
   App_Show_version_from_three_sources
   App_Is_input_2
+  App_Is_Version_a_Valid_Number
 
-  App_Is_edge
-  App_Are_files_existing
-  App_Is_required_apps_installed
+  App_Is_input_3_empty_as_it_should
 
 # version before
   App_Get_var_from_dockerfile
@@ -72,14 +75,15 @@ function version {
 }
 
 function master {
+  App_Is_edge
+  App_Is_commit_unpushed
+  App_Are_files_existing
+  App_Is_required_apps_installed
+
   App_Show_version_from_three_sources
   App_Is_input_2
 
-  App_Is_edge
-  App_Is_commit_unpushed
-
-  App_Are_files_existing
-  App_Is_required_apps_installed
+  App_Is_input_3_empty_as_it_should
 
 # if this function is running as a child of "deploy"
 # we need to overide input_2
@@ -117,12 +121,12 @@ function master {
 }
 
 function master-nosq {
-  App_Show_version_from_three_sources
-
   App_Is_edge
   App_Is_commit_unpushed
   App_Are_files_existing
   App_Is_required_apps_installed
+
+  App_Show_version_from_three_sources
 
 # Update our local state
   git checkout master &&\
@@ -140,6 +144,7 @@ function release {
   App_Is_master
   App_Are_files_existing
   App_Is_required_apps_installed
+
   App_Get_var_from_dockerfile
 
 # push updates
@@ -162,6 +167,8 @@ function release {
     "${app_version}" &&\
 
   echo && my_message="https://github.com/${github_user}/${app_name}/releases/tag/${app_version}" App_Blue &&\
+
+# reset dev branch
   edge
 
 # Let's cheers up a bit!
@@ -189,15 +196,16 @@ function release {
 #
 
 function deploy {
-  App_Is_input_2
-  App_Is_version_syntax_valid
-
-  App_Is_input_3
-
   App_Is_edge
   App_Is_commit_unpushed
   App_Are_files_existing
   App_Is_required_apps_installed
+
+  App_Is_input_2
+  App_Is_version_syntax_valid
+
+# must have a message (to squash commit)
+  App_Is_input_3
 
 # bypass CHANGELOG prompt
   flag_bypass_changelog_prompt="true"
@@ -205,24 +213,28 @@ function deploy {
 # inject message to work with fct 'master'
   deploy_commit_message=${input_3}
 
+# Let's do our full release cycle
   version
   master
   release
 }
 
 function deploy-nosq {
-  App_Is_input_2
-  App_Is_version_syntax_valid
-
-  App_Is_input_3_empty_as_it_should
-
   App_Is_edge
   App_Is_commit_unpushed
   App_Are_files_existing
+  App_Is_required_apps_installed
+
+  App_Is_input_2
+  App_Is_version_syntax_valid
+
+# must NOT have a message
+  App_Is_input_3_empty_as_it_should
 
 # bypass CHANGELOG prompt
   flag_bypass_changelog_prompt="true"
 
+# Let's do our full release cycle
   version
   master-nosq
   release
@@ -272,6 +284,7 @@ function rr { #util> ..... "release read" Show release from Github (attr is opt)
   release-read
 }
 function tr { #util> ..... "tag read" tag on master branch (no attr)
+  App_Is_input_2_empty_as_it_should
   tag-read
 }
 function mdv { #util> .... "markdown viewer" | usage: mdv README.md
@@ -280,6 +293,7 @@ function mdv { #util> .... "markdown viewer" | usage: mdv README.md
   App_glow
 }
 function ci { #util> ..... "continous integration" CI status from Github Actions (no attr)
+  App_Is_input_2_empty_as_it_should
   continuous-integration-status
 }
 function om { #util> ..... "out master" Basic git checkout (no attr)
@@ -304,6 +318,7 @@ function s { #util> ...... "status" show me if there is something to commit (no 
   status
 }
 function cr { #util> ..... "changelog read" (no attr)
+  App_Is_input_2_empty_as_it_should
   changelog-read
 }
 function h { #util> ...... "help" alias are also set to: -h, --help, help (no attr)
@@ -319,6 +334,7 @@ function diff { #util> ... "diff" show me diff in my code (no attr)
     git diff
 }
 function vr { #util> ..... "version read" show app's version from Dockerfile (no attr)
+  App_Is_input_2_empty_as_it_should
   version-read
 }
 function test { #util> ... "test" test if requirements for bashLaVa are meet (no attr)
@@ -350,15 +366,12 @@ function list { #util> ... "list" all core functions (no attr)
 #
 
 function master-merge {
-
-  App_Show_version_from_three_sources
-  App_Is_input_2
-
   App_Is_edge
   App_Is_commit_unpushed
-
   App_Are_files_existing
   App_Is_required_apps_installed
+
+  App_Is_input_2
 
 # Update our local state
   git checkout master &&\
@@ -735,6 +748,12 @@ function App_Is_input_3 {
   if [[ "${input_3}" == "not-set" ]]; then
     my_message="You must provide three attributes. See help (ERR5688)" App_Pink
     App_Stop
+  fi
+}
+function App_Is_input_2_empty_as_it_should {
+# Stop if 3 attributes are passed.
+  if [[ "${input_2}" != "not-set" ]]; then
+      my_message="You cannot use two attributes for this function. See help (ERR5721)" App_Pink && App_Stop
   fi
 }
 function App_Is_input_3_empty_as_it_should {
