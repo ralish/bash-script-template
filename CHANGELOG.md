@@ -7,6 +7,23 @@ Status template:
 
 # Releases
 
+## 0.10.2 (2020-02-16)
+### ⚡️ Updates
+- [6e242a5](https://github.com/firepress-org/bashlava/commit/6e242a5) Update bashlava to version 0.10.2 /Dockerfile
+- [68992c5](https://github.com/firepress-org/bashlava/commit/68992c5) UPDATE: `deploy` now without `m` + ADD: App_Is_Version_a_Valid_Number +
+- [6d7173e](https://github.com/firepress-org/bashlava/commit/6d7173e) ADD backlog notes
+- [61501bc](https://github.com/firepress-org/bashlava/commit/61501bc) UPDATE: optimizing fct deploy
+- [58bdbb7](https://github.com/firepress-org/bashlava/commit/58bdbb7) UPDATE: Improve help-installation
+- [d7d782f](https://github.com/firepress-org/bashlava/commit/d7d782f) remove input_4 fct deploy is simpler
+- [c49fc36](https://github.com/firepress-org/bashlava/commit/c49fc36) UPDATE: major update to deploy. It does not need the attr ‘m’ or ‘m-‘ anymore. Still wip.
+- [469877a](https://github.com/firepress-org/bashlava/commit/469877a) UPDATE: changelog
+- [929d1b4](https://github.com/firepress-org/bashlava/commit/929d1b4) ADD: wip-sync-origin-from-upstream + reorgonize fct grouping
+- [82fa6f1](https://github.com/firepress-org/bashlava/commit/82fa6f1) minor move title function together
+- [6a1cd39](https://github.com/firepress-org/bashlava/commit/6a1cd39) minor rename fct
+- [35809dd](https://github.com/firepress-org/bashlava/commit/35809dd) minor updates README
+- [d491fed](https://github.com/firepress-org/bashlava/commit/d491fed) UPDATE: fct edge: improve message
+- [642b007](https://github.com/firepress-org/bashlava/commit/642b007) IMPROVE changelog template
+
 ## 0.10.1 (2020-02-15)
 
 ### 🚀 New feat.
