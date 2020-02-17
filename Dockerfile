@@ -3,7 +3,7 @@
 # REQUIRED for Github Action CI template https://github.com/firepress-org/ghostfire/tree/master/.github/workflows
 ###################################
 
-ARG VERSION="0.10.2"
+ARG VERSION="0.10.3"
 ARG APP_NAME="bashlava"
 ARG GITHUB_USER="firepress-org"
 

@@ -26,7 +26,7 @@
 #
 
 function commit {
-  # if no attribute were past, well... let's see what changed:
+# if no attribute were past, well... let's see what changed:
   if [[ "${input_2}" == "not-set" ]]; then
     diff
   fi
@@ -38,8 +38,8 @@ function commit {
 }
 
 function version {
-  # The version is tracked in a Dockerfile (it's cool if your porject don't use docker)
-  # For BashLaVa, this Dockerfile is just a config-env file
+# The version is tracked in a Dockerfile (it's cool if your porject don't use docker)
+# For BashLaVa, this Dockerfile is just a config-env file
 
   App_Show_Version_Three_Sources
   App_Is_Input2
@@ -47,16 +47,16 @@ function version {
   App_Is_edge
   App_Is_dockerfile
 
-  # version before
+# version before
   App_Get_Var_From_Dockerile
   version_before=${app_version}
 
-  # apply update
+# apply update
   tag_version_clean=$(echo ${input_2} | sed 's/-r.*//g')
-  # sometimes we push 3.15.2-r4, this will clean "-r4"
+# sometimes we push 3.15.2-r4, this will clean "-r4"
   sed -i '' "s/^ARG VERSION=.*$/ARG VERSION=\"$tag_version_clean\"/" Dockerfile
 
-  # version after
+# version after
   App_Get_Var_From_Dockerile
   version_after=${app_version}
 
@@ -67,7 +67,7 @@ function version {
 
   echo && my_message="run ci to check status of your built on Github Actions (if any)" App_Blue
 
-  # next step is to: 'm' or 'm-'
+# next step is to: 'm' or 'm-'
 }
 
 function master {
@@ -83,43 +83,38 @@ function master {
   App_Is_gitignore
 
 # if this function is running as a child of "deploy"
-# we need to reset the commit message
-  if [[ "${commit_message}" != "not-set" ]]; then
+# we need to overide input_2
+  if [[ "${deploy_commit_message}" != "not-set" ]]; then
     _commit_message=${deploy_commit_message}
-  elif [[ "${commit_message}" != "not-set" ]]; then
+  elif [[ "${deploy_commit_message}" == "not-set" ]]; then
     _commit_message=${input_2}
   else
     my_message="FATAL: Please open an issue for this behavior (ERR5702)" App_Pink && App_Stop
   fi
 
-  # Update our local state
+# Update our local state
   git checkout master &&\
   git pull origin master &&\
 
-  # by using mrg_edge_2_master we create one clean squashed commit
-  # remove and create mrg_edge_2_master
+# by using mrg_edge_2_master we create one clean squashed commit
+# remove and create mrg_edge_2_master
   git branch -D mrg_edge_2_master || true &&\
   git checkout -b mrg_edge_2_master &&\
-  # no need to push it to origin (local branch only)
+# no need to push it to origin (local branch only)
 
-  # merge & squash edge into mrg_edge_2_master
+# merge & squash edge into mrg_edge_2_master
   git merge --squash edge &&\
   git commit . -m "${_commit_message} (squash)" &&\
 
-  # back to master
+# back to master
   git checkout master &&\
-  # rebase (commits are already squashed at this point)
+# rebase (commits are already squashed at this point)
   git rebase mrg_edge_2_master &&\
-
-    # fix conflicts manually if any, then
-    # git add . &&\
-    # git rebase --continue || true
-
   App_Changelog_Update &&\
-  # clean up
+# clean up
   git branch -D mrg_edge_2_master || true && echo;
 
-  # next step is to: 'release'
+# next step is to: 'release'
 }
 
 function master-nosq {
@@ -133,38 +128,37 @@ function master-nosq {
   App_Is_license
   App_Is_gitignore
 
-  # Update our local state
+# Update our local state
   git checkout master &&\
   git pull origin master &&\
-  # rebase
+# rebase
   git rebase edge &&\
-  git push origin master && echo;
-
+  git push origin master && echo &&\
   App_Changelog_Update
   
-  # next step is: release
+# next step is: release
 }
 
 function release {
-  # at this point or changelog is clean.
+# at this point or changelog is clean.
   App_Is_master
   App_Get_Var_From_Dockerile
 
-  # push updates
+# push updates
   git commit . -m "Update ${app_name} to version ${app_version} /CHANGELOG" &&\
   git push origin master &&\
 
   App_Is_dockerfile
   App_Is_hub_installed
 
-  # Tag our release
+# Tag our release
   git tag ${app_version} && git push --tags && echo
 
-  # prepared release
+# prepared release
   release_message1="Refer to [CHANGELOG.md](https://github.com/${github_user}/${app_name}/blob/master/CHANGELOG.md) for details about this release."
   release_message2="Automatically released with [bashLaVa](https://github.com/firepress-org/bashlava)."
 
-  # push release
+# push release
   hub release create -oc \
     -m "${app_version}" \
     -m "${release_message1}" \
@@ -175,7 +169,7 @@ function release {
   echo && my_message="https://github.com/${github_user}/${app_name}/releases/tag/${app_version}" App_Blue &&\
   edge
 
-  # let's cheers up a bit!
+# Let's cheers up a bit!
   clear && figlet_message="Good job!" App_figlet;
   figlet_message="${app_version} is up." App_figlet;
 }
@@ -189,7 +183,7 @@ function release {
 ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### #
 #
 # GIT WORKFLOW (Expert mode)
-# Do it all in one command without any prompt
+# Do the full agile release cycle in one command (no prompt)
 #
 ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### #
           #
@@ -200,9 +194,6 @@ function release {
 #
 
 function deploy {
-# WIP
-# usage 1: d 3.5.1 "UPDATE chap 32 + FIX typo"
-
   App_Is_Input2
   App_Is_Version_a_Valid_Number
 
@@ -228,8 +219,6 @@ function deploy {
 }
 
 function deploy-nosq {
-# usage 2: d- 3.5.1
-
   App_Is_Input2
   App_Is_Version_a_Valid_Number
 
@@ -385,12 +374,12 @@ function master-merge {
   App_Is_license
   App_Is_gitignore
 
-  # Update our local state
+# Update our local state
   git checkout master &&\
   git pull origin master &&\
 
-  # by using mrg_edge_2_master we create one clean squashed commit
-  # remove and create mrg_edge_2_master
+# by using mrg_edge_2_master we create one clean squashed commit
+# remove and create mrg_edge_2_master
   git branch -D mrg_edge_2_master || true &&\
   git checkout -b mrg_edge_2_master &&\
   # no need to push it to origin (local branch only)
@@ -466,8 +455,8 @@ function list-functions {
   echo " m =====> master branch"
   echo " e =====> edge branch (DEV branch if you prefer)"
 
-  #cat /usr/local/bin/bashLaVa.sh | awk '/function /' | awk '{print $2}' | sort -k2 -n | sed '/App_/d' | sed '/main/d' | sed '/\/usr\/local\/bin\//d' | sed '/wip-/d'
-  #If needed, you can list your add-on fct here as well. We don't list them by default to minimize cluter.
+#cat /usr/local/bin/bashLaVa.sh | awk '/function /' | awk '{print $2}' | sort -k2 -n | sed '/App_/d' | sed '/main/d' | sed '/\/usr\/local\/bin\//d' | sed '/wip-/d'
+#If needed, you can list your add-on fct here as well. We don't list them by default to minimize cluter.
 }
 
 function shortner-url {
@@ -498,13 +487,13 @@ function test-bashlava {
 
   echo "\$1 value is: ${input_1}" &&\
   echo "\$2 value is: ${input_2}" &&\
-  echo "\$3 value is: ${input_3}" && echo &&\
-  my_message="Date is: ${date_sec}" App_Blue &&\
+  echo "\$3 value is: ${input_3}" &&\
+  echo "\$4 value is: ${input_4}" && echo &&\
 
   if [[ $(uname) == "Darwin" ]]; then
-    my_message="Run on Darwin (Mac)." App_Blue
+    my_message="Running on a Mac (Darwin)" App_Blue
   else
-    my_message="bashLaVa is not tested on other machine than Darmin (Mac)." App_Warning
+    my_message="bashLaVa is not tested on other machine than Darmin (Mac). Please let me know if you want to contribute." App_Warning
   fi
 
   echo &&\
@@ -539,8 +528,8 @@ function help {
 }
 
 function continuous-integration-status {
-  # Valid for Github Actions CI. Usually the CI build our Dockerfiles
-  # while loop for 8 min
+# Valid for Github Actions CI. Usually the CI build our Dockerfiles
+# while loop for 8 min
   MIN="1" MAX="300"
   for action in $(seq ${MIN} ${MAX}); do
     hub ci-status -v $(git rev-parse HEAD) && echo && sleep 5;
@@ -624,9 +613,9 @@ function wip-sync-origin-from-upstream {
 }
 
 function wip-pr {
-  # tk work in progress
-  # we can reuse much of the work from m
-  # hub pull-request
+# tk work in progress
+# we can reuse much of the work from m
+# hub pull-request
 
   git checkout ghostv3-staging && git pull ghostv3-staging
   # hub sync
@@ -668,18 +657,18 @@ function App_Changelog_Update {
   App_Is_changelog
   App_RemoveTmpFiles
 
-  # logs (raw format)
+# logs (raw format)
   git_logs="$(git --no-pager log --abbrev-commit --decorate=short --pretty=oneline -n25 | \
     awk '/HEAD ->/{flag=1} /tag:/{flag=0} flag' | \
     sed -e 's/([^()]*)//g' | \
     awk '$1=$1')"
 
-  # copy logs in a file
+# copy logs in a file
   echo -e "${git_logs}" > ~/temp/tmpfile2
 
-  # --- Time to make the log pretty for the CHANGELOG
+# --- Time to make the log pretty for the CHANGELOG
 
-  # find the number of line in this file
+# find the number of line in this file
   number_of_lines=$(cat ~/temp/tmpfile2 | wc -l | awk '{print $1}')
   App_Get_Var_From_Dockerile
   for lineID in $(seq 1 ${number_of_lines}); do
@@ -689,22 +678,22 @@ function App_Changelog_Update {
       # The workaround is to set an empty string. Here we use ''
     sed -i '' "s/${hash_to_replace}/[${hash_to_replace}](https:\/\/github.com\/${github_user}\/${app_name}\/commit\/${hash_to_replace})/" ~/temp/tmpfile2
   done
-  # add space at the begining of a line
+# add space at the begining of a line
   sed 's/^/ /' ~/temp/tmpfile2 > ~/temp/tmpfile3
-  # add sign "-" at the begining of a line
+# add sign "-" at the begining of a line
   sed 's/^/-/' ~/temp/tmpfile3 > ~/temp/tmpfile4
-  # create main file
+# create main file
   echo -e "" >> ~/temp/tmpfile
-  # insert H2 title version 
+# insert H2 title version 
   echo -e "## ${app_version} (${date_day})" >> ~/temp/tmpfile
-  # insert H3 Updates
+# insert H3 Updates
   echo -e "### ⚡️ Updates" >> ~/temp/tmpfile
-  # insert our montage to the main file
+# insert our montage to the main file
   cat ~/temp/tmpfile4 >> ~/temp/tmpfile
-  # Insert our release notes after pattern "# Release"
+# Insert our release notes after pattern "# Release"
   bottle="$(cat ~/temp/tmpfile)"
-  # VERY IMPORTANT: we allign our updates under the title Release.
-  # We must keep our template intacts for this reason.
+# VERY IMPORTANT: we allign our updates under the title Release.
+# We must keep our template intacts for this reason.
   awk -vbottle="$bottle" '/# Releases/{print;print bottle;next}1' CHANGELOG.md > ~/temp/tmpfile
   cat ~/temp/tmpfile | awk 'NF > 0 {blank=0} NF == 0 {blank++} blank < 2' > CHANGELOG.md
   App_RemoveTmpFiles && echo &&\
@@ -767,13 +756,13 @@ function App_Is_Input3 {
   fi
 }
 function App_Is_Input3_Empty_as_it_should {
-  # Stop if 3 attributes are passed.
+# Stop if 3 attributes are passed.
   if [[ "${input_3}" != "not-set" ]]; then
       my_message="You cannot use three attributes for this function. See help (ERR5721)" App_Pink && App_Stop
   fi
 }
 function App_Is_Input4_Empty_as_it_should {
-  # Stop if 4 attributes are passed.
+# Stop if 4 attributes are passed.
   if [[ "${input_4}" != "not-set" ]]; then
       my_message="You cannot use four attributes with BashLava. See help (ERR5721)" App_Pink && App_Stop
   fi
@@ -844,7 +833,7 @@ function App_Is_docker_installed {
 }
 
 function App_Curlurl {
-  # must receive var: url_to_check
+# must receive var: url_to_check
   UPTIME_TEST=$(curl -Is ${url_to_check} | grep -io OK | head -1);
   MATCH_UPTIME_TEST1="OK";
   MATCH_UPTIME_TEST2="ok";
@@ -873,7 +862,7 @@ function App_release_check_vars {
 }
 
 function App_Get_Var_From_Dockerile {
-  # Extract vars from our Dockerfile
+# Extract vars from our Dockerfile
   app_name=$(cat Dockerfile | grep APP_NAME= | head -n 1 | grep -o '".*"' | sed 's/"//g')
   app_version=$(cat Dockerfile | grep VERSION= | head -n 1 | grep -o '".*"' | sed 's/"//g')
   github_user=$(cat Dockerfile | grep GITHUB_USER= | head -n 1 | grep -o '".*"' | sed 's/"//g')
@@ -891,7 +880,7 @@ function App_Get_Var_From_Dockerile {
 }
 
 function App_Show_Version_Three_Sources {
-  # Read the version from three sources
+# Read the version from three sources
   if [[ "${input_2}" == "not-set" ]]; then
     my_message="Three version checkpoints:" && App_Blue &&\
     version-read-from-dockerfile &&\
@@ -950,8 +939,8 @@ function App_Stop { echo -e "${col_pink} exit 1" && echo && exit 1
 #
 
 function App_Configure_Custom_Path {
-  # See README for the installation instructions.
-  # Check if project's path is well configured.
+# See README for the installation instructions.
+# Check if project's path is well configured.
   if [ ! -f ${local_bashlava_path}/bashlava.sh ]; then
       my_message="Local path is not valid (ERR5672)" App_Pink &&\
       App_Reset_Custom_path
@@ -963,23 +952,23 @@ function App_Configure_Custom_Path {
 }
 
 function App_Reset_Custom_path {
-  # this find and configure the absolute path for bashLaVa project
+# this find and configure the absolute path for bashLaVa project
   readlink $(which bashlava.sh) > /usr/local/bin/bashlava_path_tmp
   cat /usr/local/bin/bashlava_path_tmp | sed 's/\/bashlava.sh//g' > /usr/local/bin/bashlava_path
   rm /usr/local/bin/bashlava_path_tmp
 }
 
 function App_Load_Add_on {
-  # every script that should not be under the main bashlava.sh shell script, should threated as an add-on.
-  # This will make easier to maintain de project, minimise cluter, minimise break changes, easy to accept PR
-  # tk readlink -f `which command`
+# every script that should not be under the main bashlava.sh shell script, should threated as an add-on.
+# This will make easier to maintain de project, minimise cluter, minimise break changes, easy to accept PR
+# tk readlink -f `which command`
   source "${local_bashlava_addon_path}/help.sh"
   source "${local_bashlava_addon_path}/alias.sh"
   source "${local_bashlava_addon_path}/examples.sh"
   source "${local_bashlava_addon_path}/templates.sh"
   source "${local_bashlava_addon_path}/utilities.sh"
 
-  # Define your own custom add-on scripts. `custom_*.sh` files are in part .gitignore so they will not be commited.
+# Define your own custom add-on scripts. `custom_*.sh` files are in part .gitignore so they will not be commited.
   source "${local_bashlava_addon_path}/custom_scripts_entrypoint.sh"
 }
 
@@ -988,8 +977,10 @@ function App_DefineVariables {
   local_bashlava_path="$(cat /usr/local/bin/bashlava_path)"
   local_bashlava_addon_path="$(cat /usr/local/bin/bashlava_path)/add-on"
 
-# set flags
+# reset flags
   flag_bypass_changelog_prompt="false"
+  deploy_commit_message="not-set"
+  _commit_message="not-set"
 
 #	docker images 
   docker_img_figlet="devmtl/figlet:1.0"
@@ -1028,14 +1019,14 @@ function main() {
   trap script_trap_exit EXIT
   source "$(dirname "${BASH_SOURCE[0]}")/.bashcheck.sh"
 
-  # Load variables
+# Load variables
   App_DefineVariables
   App_Configure_Custom_Path
 
-  # Load custom Add-on
+# Load custom Add-on
   App_Load_Add_on
 
-  # set empty input. The user must provide 1 to 3 attributes
+# set empty input. The user must provide 1 to 3 attributes
   input_1=$1
   if [[ -z "$1" ]]; then    #if empty
     clear
@@ -1062,21 +1053,21 @@ function main() {
     input_4=$4
   fi
 
-  # Load functions from .bashcheck.sh
+# Load functions from .bashcheck.sh
   script_init "$@"
   cron_init
   colour_init
 
-  # Error if there are too many attributes
+# Error if there are too many attributes
   App_Is_Input4_Empty_as_it_should
 
-  ### optionnal
+### optional
   # lock_init system
 
-  ### optionnal Trace the execution of the script to debug (if needed)
+### optionnal Trace the execution of the script to debug (if needed)
   # set -o xtrace
   
-  ### ADD logic to confirm the function exist or not | tk
+# ToDo: Add logic to confirm the function exist or not | tk
   clear
   $1
 }

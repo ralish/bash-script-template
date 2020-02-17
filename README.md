@@ -14,7 +14,23 @@ BashLaVa makes your bash scripts a bunch of pieces of cakes.
 
 It's for developers that use git commands regularly. BashLaVa makes following git workflow a breeze without having to leave your terminal or use the GitHub GUI.
 
-Technically speaking, it's a CLI utility *(or a CLI aggregator)*. It's not a CLI per se as it does not directly call APIs. The idea is to abstract a workflow to minimize the time to do some repetitive actions.
+In other word, **the Agile release cycle should be something you master. BashLaVa helps you to get there.**
+
+Technically speaking, it's a CLI utility *(or a CLI aggregator)*. The idea is to abstract a workflow to minimize the time to do some repetitive actions.
+
+The abstraction is deep. In *expert-mode* *(it means, you know what you do no question asked)*, you can accomplish all these steps in **one command**:
+
+Context: you made few commits on your DEV branch. You are ready to release. So you need to:
+
+1. **version** the project
+2. **squash** + **rebase** + **merge** code to master (not squashing is possible as well)
+3. Generate or **update the CHANGELOG**
+4. **tag** with version & **push tag** to master branch
+5. push the **release** on GitHub with a template message
+6. **reset** your DEV (edge) branch (to avoid any conflicts)
+7. Back to work for the next release!
+
+In. One. Command.
 
 &nbsp;
 
@@ -33,24 +49,15 @@ For more explanations, check these videos:
 - [How to import your own custom bash-scripts into BashLaVa](https://youtu.be/ezY2N2Bdux0)
 - [How to install BashLaVa on your Mac](https://youtu.be/g8pVr8-Cimw)
 
-**Per example by typing these four commands**:
+When starting with BashLava, I recommend to use these four commands:
 
 ```
 c "UPDATE: that feat that does X"
 v 3.5.1
-m 3.5.1
-r 3.5.1
+m-
+r
 ```
 
-you will perform all these actions:
-
-- push commits
-- version the project
-- squash + rebase + merge code to master (no squash is possible too)
-- Generate CHANGELOG from commits and append these updates into the existing CHANGELOG
-- tag with version & push to master branch
-- push the release on Github with a template message
-- reset your DEV (edge) branch (to avoid any conflicts)
 
 **It also allows you**:
 
