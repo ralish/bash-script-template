@@ -12,12 +12,17 @@ As the project is young, instead of creating issues for FEATURE, BUG, etc., I'll
 	
 - `d and d-` now without `m or m-`
 	
-- wip-sync-origin-from-upstream
+add rules to more fct
+	- App_Is_Version_a_Valid_Number
+	- App_Is_Input3_Empty_as_it_should
+  
+if else ... 
+	- add more FATAL error possibilities
+  
+- fct wip-sync-origin-from-upstream
 
 - list functions from add-on
 - show custom script to update a package.json version
-
-
 
 # 3) NEED HELP
 
