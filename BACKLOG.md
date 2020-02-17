@@ -5,13 +5,13 @@ As the project is young, instead of creating issues for FEATURE, BUG, etc., I'll
 # 1) GLITCHES
 
 - glow show read from ~/tmp/bashlava_help.md
-- find and replace && \ by &&\ (no space)
+
 - indent comments properly (no spacing)
 
 # 2) NEXT FEATURES
-	
-- `d and d-` now without `m or m-`
-	
+		
+update_changelog: don't write on disk
+			
 add rules to more fct
 	- App_Is_Version_a_Valid_Number
 	- App_Is_Input3_Empty_as_it_should

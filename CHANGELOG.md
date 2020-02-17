@@ -8,32 +8,35 @@ Status template:
 # Releases
 
 ## 0.10.2 (2020-02-16)
+### ⚠️ Changed
+
+We can `deploy` now without `m`. Now, we can use `deploy` this way:
+
+- `bashlava.sh d- 3.5.2`
+- `bashlava.sh d 3.5.2 "UPDATE chap 32 + FIX typo"`
+
+We can understand that the second option will squash our commits from edge into master. See help.
+
+It's the highest level of abstraction we can think of for the whole release cycle.
+
 ### ⚡️ Updates
-- [6e242a5](https://github.com/firepress-org/bashlava/commit/6e242a5) Update bashlava to version 0.10.2 /Dockerfile
-- [68992c5](https://github.com/firepress-org/bashlava/commit/68992c5) UPDATE: `deploy` now without `m` + ADD: App_Is_Version_a_Valid_Number +
-- [6d7173e](https://github.com/firepress-org/bashlava/commit/6d7173e) ADD backlog notes
-- [61501bc](https://github.com/firepress-org/bashlava/commit/61501bc) UPDATE: optimizing fct deploy
+- [6e242a5](https://github.com/firepress-org/bashlava/commit/6e242a5) UPDATE: bashlava to version 0.10.2 /Dockerfile
+- [68992c5](https://github.com/firepress-org/bashlava/commit/68992c5) MAJOR PDATE: `deploy` now without `m` + ADD: App_Is_Version_a_Valid_Number
 - [58bdbb7](https://github.com/firepress-org/bashlava/commit/58bdbb7) UPDATE: Improve help-installation
-- [d7d782f](https://github.com/firepress-org/bashlava/commit/d7d782f) remove input_4 fct deploy is simpler
-- [c49fc36](https://github.com/firepress-org/bashlava/commit/c49fc36) UPDATE: major update to deploy. It does not need the attr ‘m’ or ‘m-‘ anymore. Still wip.
-- [469877a](https://github.com/firepress-org/bashlava/commit/469877a) UPDATE: changelog
+- [d7d782f](https://github.com/firepress-org/bashlava/commit/d7d782f) REMOVE: input_4 fct as `deploy` is now simpler
+- [c49fc36](https://github.com/firepress-org/bashlava/commit/
 - [929d1b4](https://github.com/firepress-org/bashlava/commit/929d1b4) ADD: wip-sync-origin-from-upstream + reorgonize fct grouping
-- [82fa6f1](https://github.com/firepress-org/bashlava/commit/82fa6f1) minor move title function together
-- [6a1cd39](https://github.com/firepress-org/bashlava/commit/6a1cd39) minor rename fct
-- [35809dd](https://github.com/firepress-org/bashlava/commit/35809dd) minor updates README
 - [d491fed](https://github.com/firepress-org/bashlava/commit/d491fed) UPDATE: fct edge: improve message
 - [642b007](https://github.com/firepress-org/bashlava/commit/642b007) IMPROVE changelog template
 
 ## 0.10.1 (2020-02-15)
-
 ### 🚀 New feat.
 
-Useful when we want to commit update on master without publishing a release.
+Useful when we want to commit update on master without publishing a release and without updating the changelog.
 
 - [a342bfd](https://github.com/firepress-org/bashlava/commit/a342bfd) ADD: fct master-merge (alias m-m)
 
 ### 🛑 Removed
-
 We can't specify the version anymore for these functions:
 
 - `m "FEAT: some message here`
@@ -54,7 +57,6 @@ We **only** specify version for `v 3.5.1`
 - [24bfa40](https://github.com/firepress-org/bashlava/commit/24bfa40) UPDATE: Changelog formatting
 
 ## 0.10.0 (2020-02-15)
-
 ### 🚀 New feat.
 
 We can now do our releases in only one command 🎉. 
@@ -63,7 +65,6 @@ Instead of doing `v`, `m`, `r`, we can accomplish the same result using `d`. See
 - [cf6652d](https://github.com/firepress-org/bashlava/commit/cf6652d) ADD: new fct deploy (d)
 
 ## 0.9.22 (2020-02-15)
-
 ### 🚀 New feat.
 - [adc3e34](https://github.com/firepress-org/bashlava/commit/adc3e34) ADD: new fct App_Is_license + the logic to few fct parent
 
