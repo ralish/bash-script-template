@@ -10,7 +10,9 @@ As the project is young, instead of creating issues for FEATURE, BUG, etc., I'll
 		
 - Produce new videos: since `deploy` is simpler and without `m`
 	
-- App_update_changelog: don't write on disk !!
+- Don't write on disk!
+	- App_update_changelog: 
+	- help
 			
 - add rules to more fct
 	- App_Is_Version_a_Valid_Number
