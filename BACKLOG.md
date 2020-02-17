@@ -7,12 +7,10 @@ As the project is young, instead of creating issues for FEATURE, BUG, etc., I'll
 - glow show read from ~/tmp/bashlava_help.md or from a variable
 
 # 2) NEXT FEATURES
+		
+- Produce new videos: since `deploy` is simpler and without `m`
 	
-- indent comments properly (no spacing)
-	
-- new videos: since deploy is simpler
-	
-- update_changelog: don't write on disk
+- App_update_changelog: don't write on disk !!
 			
 - add rules to more fct
 	- App_Is_Version_a_Valid_Number

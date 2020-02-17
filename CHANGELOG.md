@@ -7,6 +7,10 @@ Status template:
 
 # Releases
 
+## 0.10.3 (2020-02-17)
+### ⚡️ Updates
+- [fc4ca34](https://github.com/firepress-org/bashlava/commit/fc4ca34) FIX: flags in fct master + better comments linting + README updates
+
 ## 0.10.2 (2020-02-16)
 ### ⚠️ Changed
 
