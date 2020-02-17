@@ -43,13 +43,11 @@ function version {
   App_Is_edge
   App_Is_commit_unpushed
   App_Are_files_existing
-  App_Is_required_apps_installed
 
   App_Show_version_from_three_sources
+
   App_Is_input_2
   App_Is_Version_a_Valid_Number
-
-  App_Is_input_3_empty_as_it_should
 
 # version before
   App_Get_var_from_dockerfile
@@ -82,8 +80,6 @@ function master {
 
   App_Show_version_from_three_sources
   App_Is_input_2
-
-  App_Is_input_3_empty_as_it_should
 
 # if this function is running as a child of "deploy"
 # we need to overide input_2
