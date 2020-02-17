@@ -178,3 +178,9 @@ https://github.com/pascalandy/GNU-GENERAL-PUBLIC-LICENSE/blob/master/LICENSE.md
 EOF
 my_message="File created: ${local_bashlava_path}/LICENSE_template" App_Green
 }
+
+function init_readme {
+cat << EOF > README_template.md
+This README is still empty.
+EOF
+}
