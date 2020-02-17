@@ -764,7 +764,7 @@ function App_Is_Version_a_Valid_Number {
 
 function App_Are_Files_Existing {
 # --- 1)
-  if [ -f CHANGELOG.md ]; then
+  if [ -f CHANGELOG.md ] || [ -f CHANGELOG_template.md ]; then
     echo "Good, lets continue" > /dev/null 2>&1
   else
     my_message="CHANGELOG.md file does not exit (WAR5684). Let's generate one:" App_Warning &&\
@@ -772,7 +772,7 @@ function App_Are_Files_Existing {
     App_Stop && echo
   fi
 # --- 2)
-  if [ -f Dockerfile ]; then
+  if [ -f Dockerfile ] || [ -f Dockerfile_template ]; then
     echo "Good, lets continue" > /dev/null 2>&1
   else
     my_message="Dockerfile does not exit (WAR5685). Let's generate one:" App_Warning &&\
@@ -780,7 +780,7 @@ function App_Are_Files_Existing {
     App_Stop && echo
   fi
 # --- 3)
-  if [ -f .gitignore ]; then
+  if [ -f .gitignore ] || [ -f .gitignore_template ]; then
     echo "Good, lets continue" > /dev/null 2>&1
   else
     my_message=".gitignore file does not exit. Let's generate one (WAR5686)" App_Warning &&\
@@ -788,7 +788,7 @@ function App_Are_Files_Existing {
     App_Stop && echo
   fi
 # --- 4)
-  if [ -f LICENSE ]; then
+  if [ -f LICENSE ] || [ -f LICENSE_template ]; then
     echo "Good, lets continue" > /dev/null 2>&1
   else
     my_message="LICENSE file does not exit. Let's generate one (WAR5687)" App_Warning &&\
@@ -796,7 +796,7 @@ function App_Are_Files_Existing {
     App_Stop && echo
   fi
 # --- 5)
-  if [ -f README.md ]; then
+  if [ -f README.md ] || [ -f README_template.md ]; then
     echo "Good, lets continue" > /dev/null 2>&1
   else
     my_message="README.md file does not exit. Let's generate one (WAR5688)" App_Warning &&\
