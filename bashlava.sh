@@ -45,7 +45,8 @@ function version {
   App_Is_Input2
 
   App_Is_edge
-  App_Is_dockerfile
+  App_Are_Files_Existing
+  App_Is_required_apps_installed
 
 # version before
   App_Get_Var_From_Dockerile
@@ -77,10 +78,8 @@ function master {
   App_Is_edge
   App_Is_commit_unpushed
 
-  App_Is_changelog
-  App_Is_dockerfile
-  App_Is_license
-  App_Is_gitignore
+  App_Are_Files_Existing
+  App_Is_required_apps_installed
 
 # if this function is running as a child of "deploy"
 # we need to overide input_2
@@ -122,11 +121,8 @@ function master-nosq {
 
   App_Is_edge
   App_Is_commit_unpushed
-
-  App_Is_changelog
-  App_Is_dockerfile
-  App_Is_license
-  App_Is_gitignore
+  App_Are_Files_Existing
+  App_Is_required_apps_installed
 
 # Update our local state
   git checkout master &&\
@@ -142,14 +138,13 @@ function master-nosq {
 function release {
 # at this point or changelog is clean.
   App_Is_master
+  App_Are_Files_Existing
+  App_Is_required_apps_installed
   App_Get_Var_From_Dockerile
 
 # push updates
   git commit . -m "Update ${app_name} to version ${app_version} /CHANGELOG" &&\
   git push origin master &&\
-
-  App_Is_dockerfile
-  App_Is_hub_installed
 
 # Tag our release
   git tag ${app_version} && git push --tags && echo
@@ -201,11 +196,8 @@ function deploy {
 
   App_Is_edge
   App_Is_commit_unpushed
-
-  App_Is_changelog
-  App_Is_dockerfile
-  App_Is_license
-  App_Is_gitignore
+  App_Are_Files_Existing
+  App_Is_required_apps_installed
 
 # bypass CHANGELOG prompt
   flag_bypass_changelog_prompt="true"
@@ -226,11 +218,7 @@ function deploy-nosq {
 
   App_Is_edge
   App_Is_commit_unpushed
-
-  App_Is_changelog
-  App_Is_dockerfile
-  App_Is_license
-  App_Is_gitignore
+  App_Are_Files_Existing
 
 # bypass CHANGELOG prompt
   flag_bypass_changelog_prompt="true"
@@ -369,10 +357,8 @@ function master-merge {
   App_Is_edge
   App_Is_commit_unpushed
 
-  App_Is_changelog
-  App_Is_dockerfile
-  App_Is_license
-  App_Is_gitignore
+  App_Are_Files_Existing
+  App_Is_required_apps_installed
 
 # Update our local state
   git checkout master &&\
@@ -497,12 +483,8 @@ function test-bashlava {
   fi
 
   echo &&\
-  App_Is_dockerfile &&\
-  App_Is_changelog &&\
-  App_Is_license &&\
-  App_Is_gitignore &&\
-  App_Is_hub_installed &&\
-  App_Is_docker_installed
+  App_Are_Files_Existing
+  App_Is_required_apps_installed
 }
 
 function tag-read {
@@ -780,25 +762,24 @@ function App_Is_Version_a_Valid_Number {
   fi
 }
 
-function App_Is_dockerfile {
-  if [ -f Dockerfile ]; then
-    echo "Good, lets continue" > /dev/null 2>&1
-  else
-    my_message="Dockerfile does not exit (WAR5684). Let's generate one:" App_Warning &&\
-    init_dockerfile &&\
-    App_Stop && echo
-  fi
-}
-function App_Is_changelog {
+function App_Are_Files_Existing {
+# --- 1)
   if [ -f CHANGELOG.md ]; then
     echo "Good, lets continue" > /dev/null 2>&1
   else
-    my_message="CHANGELOG.md file does not exit (WAR5685). Let's generate one:" App_Warning &&\
+    my_message="CHANGELOG.md file does not exit (WAR5684). Let's generate one:" App_Warning &&\
     init_changelog &&\
     App_Stop && echo
   fi
-}
-function App_Is_gitignore {
+# --- 2)
+  if [ -f Dockerfile ]; then
+    echo "Good, lets continue" > /dev/null 2>&1
+  else
+    my_message="Dockerfile does not exit (WAR5685). Let's generate one:" App_Warning &&\
+    init_dockerfile &&\
+    App_Stop && echo
+  fi
+# --- 3)
   if [ -f .gitignore ]; then
     echo "Good, lets continue" > /dev/null 2>&1
   else
@@ -806,8 +787,7 @@ function App_Is_gitignore {
     init_gitignore &&\
     App_Stop && echo
   fi
-}
-function App_Is_license {
+# --- 4)
   if [ -f LICENSE ]; then
     echo "Good, lets continue" > /dev/null 2>&1
   else
@@ -815,16 +795,25 @@ function App_Is_license {
     init_license &&\
     App_Stop && echo
   fi
+# --- 5)
+  if [ -f README.md ]; then
+    echo "Good, lets continue" > /dev/null 2>&1
+  else
+    my_message="README.md file does not exit. Let's generate one (WAR5688)" App_Warning &&\
+    init_readme &&\
+    App_Stop && echo
+  fi
 }
-function App_Is_hub_installed {
+
+function App_Is_required_apps_installed {
+# hub
   if [[ $(hub version | grep -c "hub version") == "1" ]]; then
     my_message="Hub is installed." App_Blue
   else
     echo && my_message="Hub is not installed. See requirements https://github.com/firepress-org/bashlava" App_Pink &&\
     open https://github.com/firepress-org/bashlava
   fi
-}
-function App_Is_docker_installed {
+# docker
   if [[ $(docker version | grep -c "Client: Docker Engine") == "1" ]]; then
     my_message="$(docker --version) is installed." App_Blue
   else
