@@ -340,7 +340,7 @@ function vr { #util> ..... "version read" show app's version from Dockerfile (no
 function test { #util> ... "test" test if requirements for bashLaVa are meet (no attr)
   test-bashlava
 }
-function shortner { #util> "shortner" limited github repos | usage: shorturl firepress-org ghostfire (opt attr)
+function gitio { #util> .. "git.io shortner" work only with GitHub repos | usage: shorturl firepress-org ghostfire (opt attr)
   shortner-url
 }
 function list { #util> ... "list" all core functions (no attr)
@@ -467,6 +467,7 @@ function shortner-url {
     input_2=${github_user}
     input_3=${app_name}
   fi
+
   App_Is_input_2
   App_Is_input_3
 
