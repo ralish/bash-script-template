@@ -8,16 +8,16 @@ As the project is young, instead of creating issues for FEATURE, BUG, etc., I'll
 
 # 2) NEXT FEATURES
 		
+- add rules to more fct
+	- App_Is_Version_a_Valid_Number
+	- App_Is_Input3_Empty_as_it_should
+
 - Produce new videos: since `deploy` is simpler and without `m`
 	
 - Don't write on disk!
 	- App_update_changelog: 
 	- help
-			
-- add rules to more fct
-	- App_Is_Version_a_Valid_Number
-	- App_Is_Input3_Empty_as_it_should
-  
+		
 - if else logic ... 
 	- add more FATAL error possibilities
   
