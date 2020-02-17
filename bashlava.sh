@@ -82,6 +82,16 @@ function master {
   App_Is_license
   App_Is_gitignore
 
+# if this function is running as a child of "deploy"
+# we need to reset the commit message
+  if [[ "${commit_message}" != "not-set" ]]; then
+    _commit_message=${deploy_commit_message}
+  elif [[ "${commit_message}" != "not-set" ]]; then
+    _commit_message=${input_2}
+  else
+    my_message="FATAL: Please open an issue for this behavior (ERR5702)" App_Pink && App_Stop
+  fi
+
   # Update our local state
   git checkout master &&\
   git pull origin master &&\
@@ -94,7 +104,7 @@ function master {
 
   # merge & squash edge into mrg_edge_2_master
   git merge --squash edge &&\
-  git commit . -m "${input_2} (squash)" &&\
+  git commit . -m "${_commit_message} (squash)" &&\
 
   # back to master
   git checkout master &&\
@@ -194,6 +204,8 @@ function deploy {
 # usage 1: d 3.5.1 "UPDATE chap 32 + FIX typo"
 
   App_Is_Input2
+  App_Is_Version_a_Valid_Number
+
   App_Is_Input3
 
   App_Is_edge
@@ -207,6 +219,9 @@ function deploy {
 # bypass CHANGELOG prompt
   flag_bypass_changelog_prompt="true"
 
+# convert message to work with fct 'master'
+  deploy_commit_message=${input_3}
+
   version
   master
   release
@@ -216,14 +231,9 @@ function deploy-nosq {
 # usage 2: d- 3.5.1
 
   App_Is_Input2
-  # no input_3
+  App_Is_Version_a_Valid_Number
 
   App_Is_Input3_Empty_as_it_should
-
-  # when no attributes are passed, use configs from the current project.
-  if [[ "${input_3}" != "not-set" ]]; then
-      my_message="There must be a maximum of two attributes for this function. See help. (ERR5721)" App_Pink && App_Stop
-  fi
 
   App_Is_edge
   App_Is_commit_unpushed
@@ -693,17 +703,18 @@ function App_Changelog_Update {
   cat ~/temp/tmpfile4 >> ~/temp/tmpfile
   # Insert our release notes after pattern "# Release"
   bottle="$(cat ~/temp/tmpfile)"
+  # VERY IMPORTANT: we allign our updates under the title Release.
+  # We must keep our template intacts for this reason.
   awk -vbottle="$bottle" '/# Releases/{print;print bottle;next}1' CHANGELOG.md > ~/temp/tmpfile
   cat ~/temp/tmpfile | awk 'NF > 0 {blank=0} NF == 0 {blank++} blank < 2' > CHANGELOG.md
   App_RemoveTmpFiles && echo &&\
 
   if [[ "${flag_bypass_changelog_prompt}" == "false" ]]; then
-    # The system will open the CHANGELOG, in case you have to edit it.
     nano CHANGELOG.md && echo
   elif [[ "${flag_bypass_changelog_prompt}" == "true" ]]; then
     echo "Do not prompt" > /dev/null 2>&1
   else
-    my_message="FATAL error: Please open an issue for this behavior (ERR5701)" App_Pink && App_Stop
+    my_message="FATAL: Please open an issue for this behavior (ERR5701)" App_Pink && App_Stop
   fi
 }
 
@@ -744,15 +755,39 @@ function App_Is_commit_unpushed {
 function App_Is_Input2 {
 # ensure the second attribute is not empty to continue
   if [[ "${input_2}" == "not-set" ]]; then
-    my_message="You must provide a valid attribute (ERR5687)" App_Pink
+    my_message="You must provide two attributes. See help (ERR5687)" App_Pink
     App_Stop
   fi
 }
 function App_Is_Input3 {
 # ensure the third attribute is not empty to continue
   if [[ "${input_3}" == "not-set" ]]; then
-    my_message="You must provide a valid attribute (ERR5688)" App_Pink
+    my_message="You must provide three attributes. See help (ERR5688)" App_Pink
     App_Stop
+  fi
+}
+function App_Is_Input3_Empty_as_it_should {
+  # Stop if 3 attributes are passed.
+  if [[ "${input_3}" != "not-set" ]]; then
+      my_message="You cannot use three attributes for this function. See help (ERR5721)" App_Pink && App_Stop
+  fi
+}
+function App_Is_Input4_Empty_as_it_should {
+  # Stop if 4 attributes are passed.
+  if [[ "${input_4}" != "not-set" ]]; then
+      my_message="You cannot use four attributes with BashLava. See help (ERR5721)" App_Pink && App_Stop
+  fi
+}
+
+function App_Is_Version_a_Valid_Number {
+# Version is limited to these characters: 1234567890.rR-
+# so we can do: '3.5.13-r3'
+  ver_striped=$(echo "${input_2}" | sed 's/[^0123456789.rR\-]//g')
+
+  if [[ "${input_2}" == "${ver_striped}" ]]; then
+    echo "Version is valid, lets continue" > /dev/null 2>&1
+  else
+    my_message="The version format is not valid (ERR5731)" App_Pink && App_Stop
   fi
 }
 
@@ -760,7 +795,7 @@ function App_Is_dockerfile {
   if [ -f Dockerfile ]; then
     echo "Good, lets continue" > /dev/null 2>&1
   else
-    my_message="Dockerfile does not exit. Let's generate one (WAR5684)" App_Warning &&\
+    my_message="Dockerfile does not exit (WAR5684). Let's generate one:" App_Warning &&\
     init_dockerfile &&\
     App_Stop && echo
   fi
@@ -769,7 +804,7 @@ function App_Is_changelog {
   if [ -f CHANGELOG.md ]; then
     echo "Good, lets continue" > /dev/null 2>&1
   else
-    my_message="CHANGELOG.md file does not exit. Let's generate one (WAR5685)" App_Warning &&\
+    my_message="CHANGELOG.md file does not exit (WAR5685). Let's generate one:" App_Warning &&\
     init_changelog &&\
     App_Stop && echo
   fi
@@ -996,13 +1031,15 @@ function main() {
   # Load variables
   App_DefineVariables
   App_Configure_Custom_Path
+
+  # Load custom Add-on
   App_Load_Add_on
 
   # set empty input. The user must provide 1 to 3 attributes
   input_1=$1
   if [[ -z "$1" ]]; then    #if empty
     clear
-    my_message="You must provide at least one attribute (ERR5671)" App_Pink && help && App_Stop
+    help
   else
     input_1=$1
   fi
@@ -1025,13 +1062,21 @@ function main() {
     input_4=$4
   fi
 
+  # Load functions from .bashcheck.sh
   script_init "$@"
   cron_init
   colour_init
-  #lock_init system
-  #set -o xtrace # <==  / Trace the execution of the script to debug (if needed)
+
+  # Error if there are too many attributes
+  App_Is_Input4_Empty_as_it_should
+
+  ### optionnal
+  # lock_init system
+
+  ### optionnal Trace the execution of the script to debug (if needed)
+  # set -o xtrace
   
-  # tk input_1: FEAT add logic to confirm the fct exist or not
+  ### ADD logic to confirm the function exist or not | tk
   clear
   $1
 }
