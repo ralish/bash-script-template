@@ -31,7 +31,7 @@ function commit {
     diff
   fi
 
-  App_Is_Input2
+  App_Is_input_2
   git status && git add -A &&\
   git commit -m "${input_2}" && clear && git push  &&\
   version-read-from-dockerfile
@@ -41,15 +41,15 @@ function version {
 # The version is tracked in a Dockerfile (it's cool if your porject don't use docker)
 # For BashLaVa, this Dockerfile is just a config-env file
 
-  App_Show_Version_Three_Sources
-  App_Is_Input2
+  App_Show_version_from_three_sources
+  App_Is_input_2
 
   App_Is_edge
-  App_Are_Files_Existing
+  App_Are_files_existing
   App_Is_required_apps_installed
 
 # version before
-  App_Get_Var_From_Dockerile
+  App_Get_var_from_dockerfile
   version_before=${app_version}
 
 # apply update
@@ -58,10 +58,10 @@ function version {
   sed -i '' "s/^ARG VERSION=.*$/ARG VERSION=\"$tag_version_clean\"/" Dockerfile
 
 # version after
-  App_Get_Var_From_Dockerile
+  App_Get_var_from_dockerfile
   version_after=${app_version}
 
-  App_Get_Var_From_Dockerile
+  App_Get_var_from_dockerfile
   git add . &&\
   git commit . -m "Update ${app_name} to version ${app_version} /Dockerfile" &&\
   git push origin edge
@@ -72,13 +72,13 @@ function version {
 }
 
 function master {
-  App_Show_Version_Three_Sources
-  App_Is_Input2
+  App_Show_version_from_three_sources
+  App_Is_input_2
 
   App_Is_edge
   App_Is_commit_unpushed
 
-  App_Are_Files_Existing
+  App_Are_files_existing
   App_Is_required_apps_installed
 
 # if this function is running as a child of "deploy"
@@ -117,11 +117,11 @@ function master {
 }
 
 function master-nosq {
-  App_Show_Version_Three_Sources
+  App_Show_version_from_three_sources
 
   App_Is_edge
   App_Is_commit_unpushed
-  App_Are_Files_Existing
+  App_Are_files_existing
   App_Is_required_apps_installed
 
 # Update our local state
@@ -138,9 +138,9 @@ function master-nosq {
 function release {
 # at this point or changelog is clean.
   App_Is_master
-  App_Are_Files_Existing
+  App_Are_files_existing
   App_Is_required_apps_installed
-  App_Get_Var_From_Dockerile
+  App_Get_var_from_dockerfile
 
 # push updates
   git commit . -m "Update ${app_name} to version ${app_version} /CHANGELOG" &&\
@@ -189,20 +189,20 @@ function release {
 #
 
 function deploy {
-  App_Is_Input2
-  App_Is_Version_a_Valid_Number
+  App_Is_input_2
+  App_Is_version_syntax_valid
 
-  App_Is_Input3
+  App_Is_input_3
 
   App_Is_edge
   App_Is_commit_unpushed
-  App_Are_Files_Existing
+  App_Are_files_existing
   App_Is_required_apps_installed
 
 # bypass CHANGELOG prompt
   flag_bypass_changelog_prompt="true"
 
-# convert message to work with fct 'master'
+# inject message to work with fct 'master'
   deploy_commit_message=${input_3}
 
   version
@@ -211,14 +211,14 @@ function deploy {
 }
 
 function deploy-nosq {
-  App_Is_Input2
-  App_Is_Version_a_Valid_Number
+  App_Is_input_2
+  App_Is_version_syntax_valid
 
-  App_Is_Input3_Empty_as_it_should
+  App_Is_input_3_empty_as_it_should
 
   App_Is_edge
   App_Is_commit_unpushed
-  App_Are_Files_Existing
+  App_Are_files_existing
 
 # bypass CHANGELOG prompt
   flag_bypass_changelog_prompt="true"
@@ -276,7 +276,7 @@ function tr { #util> ..... "tag read" tag on master branch (no attr)
 }
 function mdv { #util> .... "markdown viewer" | usage: mdv README.md
   clear
-  App_Is_Input2
+  App_Is_input_2
   App_glow
 }
 function ci { #util> ..... "continous integration" CI status from Github Actions (no attr)
@@ -351,13 +351,13 @@ function list { #util> ... "list" all core functions (no attr)
 
 function master-merge {
 
-  App_Show_Version_Three_Sources
-  App_Is_Input2
+  App_Show_version_from_three_sources
+  App_Is_input_2
 
   App_Is_edge
   App_Is_commit_unpushed
 
-  App_Are_Files_Existing
+  App_Are_files_existing
   App_Is_required_apps_installed
 
 # Update our local state
@@ -387,7 +387,7 @@ function master-merge {
 
 function changelog-read {
   input_2="CHANGELOG.md"
-  App_Is_Input2
+  App_Is_input_2
   App_glow50
 
 # if needed, you can specify the file using fct 'mdv'
@@ -406,8 +406,8 @@ function edge {
 
 function squash {
   App_Is_commit_unpushed
-  App_Is_Input2
-  App_Is_Input3
+  App_Is_input_2
+  App_Is_input_3
 
   backwards_steps="${input_2}"
   git_message="${input_3}"
@@ -450,12 +450,12 @@ function shortner-url {
 
 # when no attributes are passed, use configs from the current project.
   if [[ "${input_2}" == "not-set" ]]; then
-    App_Get_Var_From_Dockerile
+    App_Get_var_from_dockerfile
     input_2=${github_user}
     input_3=${app_name}
   fi
-  App_Is_Input2
-  App_Is_Input3
+  App_Is_input_2
+  App_Is_input_3
 
 # generate URL
   clear
@@ -483,7 +483,7 @@ function test-bashlava {
   fi
 
   echo &&\
-  App_Are_Files_Existing
+  App_Are_files_existing
   App_Is_required_apps_installed
 }
 
@@ -496,11 +496,11 @@ function status {
 }
 
 function version-read {
-  App_Show_Version_Three_Sources
+  App_Show_version_from_three_sources
 }
 
 function version-read-from-dockerfile {
-  App_Get_Var_From_Dockerile
+  App_Get_var_from_dockerfile
   my_message="${app_version} < version found in Dockerfile" App_Blue
 }
 function help {
@@ -523,7 +523,7 @@ function release-read {
 
 # Find version for THIS project
   if [[ "${input_2}" == "not-set" ]] && [[ "${input_3}" == "not-set" ]] ; then
-    App_Get_Var_From_Dockerile
+    App_Get_var_from_dockerfile
 # Find version for ANY projects
   else
     github_user=${input_2}
@@ -652,7 +652,7 @@ function App_Changelog_Update {
 
 # find the number of line in this file
   number_of_lines=$(cat ~/temp/tmpfile2 | wc -l | awk '{print $1}')
-  App_Get_Var_From_Dockerile
+  App_Get_var_from_dockerfile
   for lineID in $(seq 1 ${number_of_lines}); do
     hash_to_replace=$(cat ~/temp/tmpfile2 | sed -n "${lineID},${lineID}p;" | awk '{print $1}')
     # create URLs from commits
@@ -723,34 +723,34 @@ function App_Is_commit_unpushed {
   fi
 }
 
-function App_Is_Input2 {
+function App_Is_input_2 {
 # ensure the second attribute is not empty to continue
   if [[ "${input_2}" == "not-set" ]]; then
     my_message="You must provide two attributes. See help (ERR5687)" App_Pink
     App_Stop
   fi
 }
-function App_Is_Input3 {
+function App_Is_input_3 {
 # ensure the third attribute is not empty to continue
   if [[ "${input_3}" == "not-set" ]]; then
     my_message="You must provide three attributes. See help (ERR5688)" App_Pink
     App_Stop
   fi
 }
-function App_Is_Input3_Empty_as_it_should {
+function App_Is_input_3_empty_as_it_should {
 # Stop if 3 attributes are passed.
   if [[ "${input_3}" != "not-set" ]]; then
       my_message="You cannot use three attributes for this function. See help (ERR5721)" App_Pink && App_Stop
   fi
 }
-function App_Is_Input4_Empty_as_it_should {
+function App_Is_Input_4_empty_as_it_should {
 # Stop if 4 attributes are passed.
   if [[ "${input_4}" != "not-set" ]]; then
       my_message="You cannot use four attributes with BashLava. See help (ERR5721)" App_Pink && App_Stop
   fi
 }
 
-function App_Is_Version_a_Valid_Number {
+function App_Is_version_syntax_valid {
 # Version is limited to these characters: 1234567890.rR-
 # so we can do: '3.5.13-r3'
   ver_striped=$(echo "${input_2}" | sed 's/[^0123456789.rR\-]//g')
@@ -762,47 +762,45 @@ function App_Is_Version_a_Valid_Number {
   fi
 }
 
-function App_Are_Files_Existing {
+function App_Are_files_existing {
 # --- 1)
   if [ -f CHANGELOG.md ] || [ -f CHANGELOG_template.md ]; then
     echo "Good, lets continue" > /dev/null 2>&1
   else
-    my_message="CHANGELOG.md file does not exit (WAR5684). Let's generate one:" App_Warning &&\
-    init_changelog &&\
-    App_Stop && echo
+    my_message="CHANGELOG.md file does not exit (WAR5684). Let's generate one:" App_Warning && init_changelog && App_Stop && echo
   fi
 # --- 2)
   if [ -f Dockerfile ] || [ -f Dockerfile_template ]; then
     echo "Good, lets continue" > /dev/null 2>&1
   else
-    my_message="Dockerfile does not exit (WAR5685). Let's generate one:" App_Warning &&\
-    init_dockerfile &&\
-    App_Stop && echo
+    my_message="Dockerfile does not exit (WAR5685). Let's generate one:" App_Warning && init_dockerfile && App_Stop && echo
   fi
 # --- 3)
   if [ -f .gitignore ] || [ -f .gitignore_template ]; then
     echo "Good, lets continue" > /dev/null 2>&1
   else
-    my_message=".gitignore file does not exit. Let's generate one (WAR5686)" App_Warning &&\
-    init_gitignore &&\
-    App_Stop && echo
+    my_message=".gitignore file does not exit. Let's generate one (WAR5686)" App_Warning && init_gitignore && App_Stop && echo
   fi
 # --- 4)
   if [ -f LICENSE ] || [ -f LICENSE_template ]; then
     echo "Good, lets continue" > /dev/null 2>&1
   else
-    my_message="LICENSE file does not exit. Let's generate one (WAR5687)" App_Warning &&\
-    init_license &&\
-    App_Stop && echo
+    my_message="LICENSE file does not exit. Let's generate one (WAR5687)" App_Warning && init_license && App_Stop && echo
   fi
 # --- 5)
   if [ -f README.md ] || [ -f README_template.md ]; then
     echo "Good, lets continue" > /dev/null 2>&1
   else
-    my_message="README.md file does not exit. Let's generate one (WAR5688)" App_Warning &&\
-    init_readme &&\
-    App_Stop && echo
+    my_message="README.md file does not exit. Let's generate one (WAR5688)" App_Warning && init_readme && App_Stop && echo
   fi
+# --- 6)
+  if [ -d .git ]; then
+    echo "Good, lets continue" > /dev/null 2>&1
+  else
+    my_message="This is not a git repo (WAR5689)" App_Warning && App_Stop
+  fi
+# --- 7)
+  # 'init_dockerfile_ignore' is optional as not everyone needs this option
 }
 
 function App_Is_required_apps_installed {
@@ -850,7 +848,7 @@ function App_release_check_vars {
   App_Curlurl
 }
 
-function App_Get_Var_From_Dockerile {
+function App_Get_var_from_dockerfile {
 # Extract vars from our Dockerfile
   app_name=$(cat Dockerfile | grep APP_NAME= | head -n 1 | grep -o '".*"' | sed 's/"//g')
   app_version=$(cat Dockerfile | grep VERSION= | head -n 1 | grep -o '".*"' | sed 's/"//g')
@@ -868,7 +866,7 @@ function App_Get_Var_From_Dockerile {
   fi
 }
 
-function App_Show_Version_Three_Sources {
+function App_Show_version_from_three_sources {
 # Read the version from three sources
   if [[ "${input_2}" == "not-set" ]]; then
     my_message="Three version checkpoints:" && App_Blue &&\
@@ -1048,7 +1046,7 @@ function main() {
   colour_init
 
 # Error if there are too many attributes
-  App_Is_Input4_Empty_as_it_should
+  App_Is_Input_4_empty_as_it_should
 
 ### optional
   # lock_init system
