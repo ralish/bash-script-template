@@ -110,9 +110,10 @@ function master {
   git checkout master &&\
 # rebase (commits are already squashed at this point)
   git rebase mrg_edge_2_master &&\
-  App_Changelog_Update &&\
 # clean up
-  git branch -D mrg_edge_2_master || true && echo;
+  git branch -D mrg_edge_2_master || true &&\
+
+  App_Changelog_Update
 
 # next step is to: 'release'
 }
@@ -130,7 +131,7 @@ function master-nosq {
   git pull origin master &&\
 # rebase
   git rebase edge &&\
-  git push origin master && echo &&\
+
   App_Changelog_Update
   
 # next step is: release
@@ -697,7 +698,7 @@ function App_Changelog_Update {
 
   echo -e "### 🔍 Compare" >> ~/temp/tmpfile4
   echo -e "against the previous release: [${second_latest_tag} <> ${app_version}](https://github.com/${github_user}/${app_name}/compare/${second_latest_tag}...${app_version})" >> ~/temp/tmpfile4
-# --- GENERATE COMPARE URL / END
+# --- GENERATE COMPARE URL / END 
 
 # start and create changelog updates
   echo -e "" > ~/temp/tmpfile
@@ -739,7 +740,6 @@ function App_Is_master {
     echo "Good, lets continue" > /dev/null 2>&1
   else
     my_message="You must be on <master> branch to perform this action (ERR5681)" App_Pink
-    my_message="Try: out-m" App_Blue && App_Stop
   fi
 }
 function App_Is_edge {
