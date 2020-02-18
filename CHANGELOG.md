@@ -7,6 +7,13 @@ Status template:
 
 # Releases
 
+## 0.10.5 (2020-02-17)
+### ⚡️ Updates
+- [230fbbf](https://github.com/firepress-org/bashlava/commit/230fbbf) UPDATE 'release" where 'edge' was sometime bypassed
+
+### 🔍 Compare
+- ... with previous release: [0.10.4 <> 0.10.5](https://github.com/firepress-org/bashlava/compare/0.10.4...0.10.5)
+
 ## 0.10.4 (2020-02-17)
 ### ⚡️ Updates
 - [077c45b](https://github.com/firepress-org/bashlava/commit/077c45b) update master-nosq
