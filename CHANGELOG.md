@@ -7,6 +7,23 @@ Status template:
 
 # Releases
 
+## 0.10.4 (2020-02-17)
+### ⚡️ Updates
+- [933846d](https://github.com/firepress-org/bashlava/commit/933846d) Update bashlava to version 0.10.4 /Dockerfile
+- [2389ef2](https://github.com/firepress-org/bashlava/commit/2389ef2) ADD: Add compare message in CHANGELOG + fix typo + add log to fct: version
+- [872d22a](https://github.com/firepress-org/bashlava/commit/872d22a) FIX: removed some rule that were in conflict when using ‘deploy’
+- [786ffe9](https://github.com/firepress-org/bashlava/commit/786ffe9) UPDATE: make bashlava more idempotent
+- [c19b79e](https://github.com/firepress-org/bashlava/commit/c19b79e) CHANGE fct shortner is now gitio
+- [7ca586b](https://github.com/firepress-org/bashlava/commit/7ca586b) UDPATE: various rules to minimize errors
+- [bf840cd](https://github.com/firepress-org/bashlava/commit/bf840cd) UPDATE: rename few fct + ADD rule to check if git repo is valid
+- [59c9ec0](https://github.com/firepress-org/bashlava/commit/59c9ec0) ADD init_dockerfile_ignore
+- [0e96cf0](https://github.com/firepress-org/bashlava/commit/0e96cf0) ADD: init_readme + regroup App rules
+- [f24bf7e](https://github.com/firepress-org/bashlava/commit/f24bf7e) ADD: init_readme + regroup App rules
+- [bfa8869](https://github.com/firepress-org/bashlava/commit/bfa8869) ADD: init_readme
+
+### 🔍 Compare
+against the previous release: [0.10.3 <> 0.10.4](https://github.com/firepress-org/bashlava/compare/0.10.3...0.10.4)
+
 ## 0.10.3 (2020-02-17)
 ### ⚡️ Updates
 - [fc4ca34](https://github.com/firepress-org/bashlava/commit/fc4ca34) FIX: flags in fct master + better comments linting + README updates
