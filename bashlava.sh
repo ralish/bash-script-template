@@ -53,10 +53,11 @@ function version {
   App_Get_var_from_dockerfile
   version_before=${app_version}
 
-# apply update
-  tag_version_clean=$(echo ${input_2} | sed 's/-r.*//g')
 # sometimes we push 3.15.2-r4, this will clean "-r4"
-  sed -i '' "s/^ARG VERSION=.*$/ARG VERSION=\"$tag_version_clean\"/" Dockerfile
+  #tag_version_clean=$(echo ${input_2} | sed 's/-r.*//g')
+
+# apply update
+  sed -i '' "s/^ARG VERSION=.*$/ARG VERSION=\"$input_2\"/" Dockerfile
 
 # version after
   App_Get_var_from_dockerfile
@@ -133,7 +134,7 @@ function master-nosq {
   git rebase edge &&\
 
   App_Changelog_Update
-  
+
 # next step is: release
 }
 
@@ -257,13 +258,13 @@ function deploy-nosq {
 #
 
 function d { #exp> ...... "deploy" all steps (v,m,r) in one command (with squash) | usage: d 3.5.2 "UPDATE chap 32 + FIX typo"
-  deploy 
+  deploy
 }
 function d- { #exp> ..... "deploy" all steps (v,m-,r) in one command (no squash) | usage: d- 3.5.2
   deploy-nosq
 }
 function c { #core> ...... "commit" all changes + git push | usage: c "FEAT: new rule to avoid this glitch"
-  #core> 
+  #core>
   commit
 }
 function v { #core> ...... "version" update your app | usage: v 1.50.1
@@ -326,10 +327,10 @@ function log { #util> .... "log" Show me the lastest commits (no attr)
   git log --all --decorate --oneline --graph --pretty=oneline | head -n 20
 }
 function hash { #util> ... "hash" Show me the latest hash commit (no attr)
-  git rev-parse HEAD && git rev-parse --short HEAD 
+  git rev-parse HEAD && git rev-parse --short HEAD
 }
 function diff { #util> ... "diff" show me diff in my code (no attr)
-    git diff
+  git diff
 }
 function vr { #util> ..... "version read" show app's version from Dockerfile (no attr)
   App_Is_input_2_empty_as_it_should
@@ -404,8 +405,8 @@ function changelog-read {
 # if needed, you can specify the file using fct 'mdv'
 }
 
-function edge { 
-# it assumes there will be no conflict with anybody else 
+function edge {
+# it assumes there will be no conflict with anybody else
 # as I'm the only person using 'edge'.
   App_Is_commit_unpushed
 
@@ -439,7 +440,7 @@ function list-functions {
 
   title-core &&\
   cat /usr/local/bin/bashlava.sh | awk '/#core> /' | awk '{$1="";$3="";$4="";print $0}' | sed '/\/usr\/local\/bin\//d' && echo &&\
-  
+
   title-expert-mode &&\
   cat /usr/local/bin/bashlava.sh | awk '/#exp> /' | awk '{$1="";$3="";$4="";print $0}' | sed '/\/usr\/local\/bin\//d' && echo &&\
 
@@ -505,7 +506,7 @@ function tag-read {
   latest_tag="$(git describe --tags --abbrev=0)"
   my_message="${latest_tag} < tag version found on master branch" App_Blue
 }
-function status { 
+function status {
   git status
 }
 
@@ -573,42 +574,56 @@ function release-read {
 function wip-sync-origin-from-upstream {
 # Syncing a fork, update from a forked
 
-# Context
-#
+# CONTEXT
 # In my case, it's useful as I paid for some Ghost templates.
 # When a venfor updates his project, all I have is a zip file
-# with the new code. 
+# with the new code.
 #
 # TWO GIT REPOS
-#
 # Your fork is "origin". The repo you forked from is "upstream".
-# 1) I maintain a vendor-themeX "origin" repo where I commit the code from the zip file.
-# 2) I maintain a themeX-myproject "upstream" repo where I maintain the custom code.
+# 1) I maintain a themeX-from-vendor "origin" repo where I commit the code from the zip file.
+# 2) I maintain a themeX-on-firepress "upstream" repo where I maintain the custom code.
 
+### ### ### ### ### ### ### ### ###
+# STEP #1
+### ### ### ### ### ### ### ### ###
+# go to edge branch
+  git checkout edge &&\
 # Add the remote, call it "upstream":
-  git remote add upstream https://github.com/${input_2}/${input_3}.git
-
+  git remote add upstream git@github.com:pascalandy/nurui-from-vendor.git && git remote -v &&\
 # Fetch all the branches of that remote into remote-tracking branches,
-# such as upstream/master:
-  git fetch upstream
+# such as upstream/edge:
+# pulls all new commits made to upstream/edge
+  git fetch upstream && git pull upstream edge &&\
+# There are good chances that conflict might occur
+  git diff --name-only --diff-filter=U
 
-# pulls all new commits made to upstream/master
-  git pull upstream master
+### ### ### ### ### ### ### ### ###
+# STEP #2
+### ### ### ### ### ### ### ### ###
+# first, update these two
+  git add CHANGELOG.md  # edit
+  git add Dockerfile    # edit and dont update it from upstream!
 
-# Make sure that you're on your master branch:
-  git checkout master
+# fix one file at a time
+  git add fileYXZ   # optional, using add help us to know which files have been resolved
+  git add fileYXZ   # optional, using add help us to know which files have been resolved
+  git add fileYXZ   # optional, using add help us to know which files have been resolved
 
-# Rewrite your master branch so that any commits of yours that
-# aren't already in upstream/master are replayed on top of that
-# other branch:
-  # git merge upstream/master
-  git rebase upstream/master
+### ### ### ### ### ### ### ### ###
+# STEP #3
+### ### ### ### ### ### ### ### ###
+# remove upstream as it will conflict with 'm,r'
+  git remote remove upstream && git remote -v &&\
 
-# then --> 'c'
+# Once all conflicts are resolved
+  bashlava.sh c "Fixed conflicts / merged from 'nurui-from-vendor'"
 
-  #git commit -am "Merged from upstream"
-  #git push --follow-tags origin master
+# go for the full release cycle 'deploy'
+  d- 3.5.1
 }
+
+
 
 function wip-pr {
 # tk work in progress
@@ -621,10 +636,12 @@ function wip-pr {
   git merge --no-ff origin/ghostv3-dev # no fast forward
   git push -u origin mrg-dev-to-staging
 
+  hub pull-request -b "${submit_pr_to}" -h "${submit_pr_from}" -m "${hub_message}"
+
 # Something went wrong?
 # Reset to Upstream. This will delete all your local changes to master
   #git reset --hard upstream/master
- 
+
 # take care, this will delete all your changes on your forked master
   #git push origin master --force
 }
@@ -698,11 +715,11 @@ function App_Changelog_Update {
 
   echo -e "### 🔍 Compare" >> ~/temp/tmpfile4
   echo -e "- ... with previous release: [${second_latest_tag} <> ${app_version}](https://github.com/${github_user}/${app_name}/compare/${second_latest_tag}...${app_version})" >> ~/temp/tmpfile4
-# --- GENERATE COMPARE URL / END 
+# --- GENERATE COMPARE URL / END
 
 # start and create changelog updates
   echo -e "" > ~/temp/tmpfile
-# insert H2 title version 
+# insert H2 title version
   echo -e "## ${app_version} (${date_day})" >> ~/temp/tmpfile
 # insert H3 Updates
   echo -e "### ⚡️ Updates" >> ~/temp/tmpfile
@@ -1055,7 +1072,7 @@ function App_DefineVariables {
   deploy_commit_message="not-set"
   _commit_message="not-set"
 
-#	docker images 
+#	docker images
   docker_img_figlet="devmtl/figlet:1.0"
   docker_img_glow="devmtl/glow:0.2.0"
 
@@ -1087,7 +1104,7 @@ function App_DefineVariables {
 
 # ENTRYPOINT
 function main() {
-  
+
   trap script_trap_err ERR
   trap script_trap_exit EXIT
   source "$(dirname "${BASH_SOURCE[0]}")/.bashcheck.sh"
@@ -1139,7 +1156,7 @@ function main() {
 
 ### optionnal Trace the execution of the script to debug (if needed)
   # set -o xtrace
-  
+
 # ToDo: Add logic to confirm the function exist or not | tk
   clear
   $1
