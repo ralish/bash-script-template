@@ -167,11 +167,11 @@ function release {
   echo && my_message="https://github.com/${github_user}/${app_name}/releases/tag/${app_version}" App_Blue &&\
 
 # reset dev branch
-  edge
+  edge &&\
 
 # Let's cheers up a bit!
-  clear && figlet_message="Good job!" App_figlet;
-  figlet_message="${app_version} is up." App_figlet;
+  clear && figlet_message="Good job!" App_figlet &&\
+  figlet_message="${app_version} is up." App_figlet
 }
 
 #
@@ -697,7 +697,7 @@ function App_Changelog_Update {
     grep tag_name | awk -F ': "' '{ print $2 }' | awk -F '",' '{ print $1 }')
 
   echo -e "### 🔍 Compare" >> ~/temp/tmpfile4
-  echo -e "against the previous release: [${second_latest_tag} <> ${app_version}](https://github.com/${github_user}/${app_name}/compare/${second_latest_tag}...${app_version})" >> ~/temp/tmpfile4
+  echo -e "- ... with previous release: [${second_latest_tag} <> ${app_version}](https://github.com/${github_user}/${app_name}/compare/${second_latest_tag}...${app_version})" >> ~/temp/tmpfile4
 # --- GENERATE COMPARE URL / END 
 
 # start and create changelog updates
