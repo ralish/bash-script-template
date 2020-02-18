@@ -47,7 +47,7 @@ function version {
   App_Show_version_from_three_sources
 
   App_Is_input_2
-  App_Is_Version_a_Valid_Number
+  App_Is_version_syntax_valid
 
 # version before
   App_Get_var_from_dockerfile
@@ -69,6 +69,7 @@ function version {
 
   echo && my_message="run ci to check status of your built on Github Actions (if any)" App_Blue
 
+  log
 # next step is to: 'm' or 'm-'
 }
 
@@ -650,10 +651,11 @@ function wip-pr {
 
 function App_Changelog_Update {
   App_Is_master
-  App_Is_changelog
   App_RemoveTmpFiles
 
-# logs (raw format)
+
+# --- GENERATE LOGS / START
+# get logs / raw format
   git_logs="$(git --no-pager log --abbrev-commit --decorate=short --pretty=oneline -n25 | \
     awk '/HEAD ->/{flag=1} /tag:/{flag=0} flag' | \
     sed -e 's/([^()]*)//g' | \
@@ -666,26 +668,47 @@ function App_Changelog_Update {
 
 # find the number of line in this file
   number_of_lines=$(cat ~/temp/tmpfile2 | wc -l | awk '{print $1}')
+
   App_Get_var_from_dockerfile
+
+# create URL for each hash commit
   for lineID in $(seq 1 ${number_of_lines}); do
     hash_to_replace=$(cat ~/temp/tmpfile2 | sed -n "${lineID},${lineID}p;" | awk '{print $1}')
     # create URLs from commits
       # Unlike Ubuntu, OS X requires the extension to be explicitly specified.
-      # The workaround is to set an empty string. Here we use ''
+      # The workaround is to set an empty string --> ''
     sed -i '' "s/${hash_to_replace}/[${hash_to_replace}](https:\/\/github.com\/${github_user}\/${app_name}\/commit\/${hash_to_replace})/" ~/temp/tmpfile2
   done
-# add space at the begining of a line
+# add space at the begining of line
   sed 's/^/ /' ~/temp/tmpfile2 > ~/temp/tmpfile3
-# add sign "-" at the begining of a line
+# add sign "-" at the begining of line
   sed 's/^/-/' ~/temp/tmpfile3 > ~/temp/tmpfile4
-# create main file
-  echo -e "" >> ~/temp/tmpfile
+# --- GENERATE LOGS / END
+
+
+# --- GENERATE COMPARE URL / START
+# create empty line
+  echo -e "" >> ~/temp/tmpfile4
+
+# find the latest tag on Github for this project
+# Don't forget, 'release' will push the newest a big later. That's this tag is second_latest_tag
+  second_latest_tag=$(curl -s https://api.github.com/repos/${github_user}/${app_name}/releases/latest | \
+    grep tag_name | awk -F ': "' '{ print $2 }' | awk -F '",' '{ print $1 }')
+
+  echo -e "### 🔍 Compare" >> ~/temp/tmpfile4
+  echo -e "against the previous release: [${second_latest_tag} <> ${app_version}](https://github.com/${github_user}/${app_name}/compare/${second_latest_tag}...${app_version})" >> ~/temp/tmpfile4
+# --- GENERATE COMPARE URL / END
+
+# start and create changelog updates
+  echo -e "" > ~/temp/tmpfile
 # insert H2 title version 
   echo -e "## ${app_version} (${date_day})" >> ~/temp/tmpfile
 # insert H3 Updates
   echo -e "### ⚡️ Updates" >> ~/temp/tmpfile
-# insert our montage to the main file
+# insert commits
   cat ~/temp/tmpfile4 >> ~/temp/tmpfile
+
+
 # Insert our release notes after pattern "# Release"
   bottle="$(cat ~/temp/tmpfile)"
 # VERY IMPORTANT: we allign our updates under the title Release.
