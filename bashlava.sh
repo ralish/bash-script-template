@@ -85,9 +85,9 @@ function master {
 
 # if this function is running as a child of "deploy"
 # we need to overide input_2
-  if [[ "${deploy_commit_message}" != "not-set" ]]; then
-    _commit_message=${deploy_commit_message}
-  elif [[ "${deploy_commit_message}" == "not-set" ]]; then
+  if [[ "${_flag_deploy_commit_message}" != "not-set" ]]; then
+    _commit_message=${_flag_deploy_commit_message}
+  elif [[ "${_flag_deploy_commit_message}" == "not-set" ]]; then
     _commit_message=${input_2}
   else
     my_message="FATAL: Please open an issue for this behavior (err_f11)" App_Pink && App_Stop
@@ -207,10 +207,10 @@ function deploy {
   App_Is_input_3
 
 # bypass CHANGELOG prompt
-  flag_bypass_changelog_prompt="true"
+  _flag_bypass_changelog_prompt="true"
 
 # inject message to work with fct 'master'
-  deploy_commit_message=${input_3}
+  _flag_deploy_commit_message=${input_3}
 
 # Let's do our full release cycle
   version
@@ -231,7 +231,7 @@ function deploy-nosq {
   App_Is_input_3_empty_as_it_should
 
 # bypass CHANGELOG prompt
-  flag_bypass_changelog_prompt="true"
+  _flag_bypass_changelog_prompt="true"
 
 # Let's do our full release cycle
   version
@@ -439,13 +439,13 @@ function squash {
 function list-functions {
 
   title-core &&\
-  cat /usr/local/bin/bashlava.sh | awk '/#core> /' | awk '{$1="";$3="";$4="";print $0}' | sed '/\/usr\/local\/bin\//d' && echo &&\
+  cat ${my_path}/${bashlava_executable} | awk '/#core> /' | awk '{$1="";$3="";$4="";print $0}' | sed '/\/usr\/local\/bin\//d' && echo &&\
 
   title-expert-mode &&\
-  cat /usr/local/bin/bashlava.sh | awk '/#exp> /' | awk '{$1="";$3="";$4="";print $0}' | sed '/\/usr\/local\/bin\//d' && echo &&\
+  cat ${my_path}/${bashlava_executable} | awk '/#exp> /' | awk '{$1="";$3="";$4="";print $0}' | sed '/\/usr\/local\/bin\//d' && echo &&\
 
   title-utilities &&\
-  cat /usr/local/bin/bashlava.sh | awk '/#util> /' | awk '{$1="";$3="";$4="";print $0}' | sort -k2 -n | sed '/\/usr\/local\/bin\//d' && echo
+  cat ${my_path}/${bashlava_executable} | awk '/#util> /' | awk '{$1="";$3="";$4="";print $0}' | sort -k2 -n | sed '/\/usr\/local\/bin\//d' && echo
 
   title-accronyms
   echo " attr ==> attribute(s)"
@@ -453,7 +453,7 @@ function list-functions {
   echo " m =====> master branch"
   echo " e =====> edge branch (DEV branch if you prefer)"
 
-#cat /usr/local/bin/bashLaVa.sh | awk '/function /' | awk '{print $2}' | sort -k2 -n | sed '/App_/d' | sed '/main/d' | sed '/\/usr\/local\/bin\//d' | sed '/wip-/d'
+#cat ${my_path}/${bashlava_executable} | awk '/function /' | awk '{print $2}' | sort -k2 -n | sed '/App_/d' | sed '/main/d' | sed '/\/usr\/local\/bin\//d' | sed '/wip-/d'
 #If needed, you can list your add-on fct here as well. We don't list them by default to minimize cluter.
 }
 
@@ -484,6 +484,8 @@ function shortner-url {
 function test-bashlava {
 # test our script & fct. Idempotent bash script
 
+  figlet_message="bashLaVa" App_figlet
+
   echo "\$1 value is: ${input_1}" &&\
   echo "\$2 value is: ${input_2}" &&\
   echo "\$3 value is: ${input_3}" &&\
@@ -500,6 +502,9 @@ function test-bashlava {
   echo &&\
   App_Are_files_existing
   App_Is_required_apps_installed
+
+  my_message="This banner below confirm that your add-on is well configured:" App_Blue
+  banner
 }
 
 function tag-read {
@@ -735,9 +740,9 @@ function App_Changelog_Update {
   cat ~/temp/tmpfile | awk 'NF > 0 {blank=0} NF == 0 {blank++} blank < 2' > CHANGELOG.md
   App_RemoveTmpFiles && echo &&\
 
-  if [[ "${flag_bypass_changelog_prompt}" == "false" ]]; then
+  if [[ "${_flag_bypass_changelog_prompt}" == "false" ]]; then
     nano CHANGELOG.md && echo
-  elif [[ "${flag_bypass_changelog_prompt}" == "true" ]]; then
+  elif [[ "${_flag_bypass_changelog_prompt}" == "true" ]]; then
     echo "Do not prompt" > /dev/null 2>&1
   else
     my_message="FATAL: Please open an issue for this behavior (err_f14)" App_Pink && App_Stop
@@ -905,8 +910,8 @@ function App_Is_required_apps_installed {
   if [[ $(hub version | grep -c "hub version") == "1" ]]; then
     my_message="Hub is installed." App_Blue
   elif [[ $(hub version | grep -c "hub version") != "1" ]]; then
-    echo && my_message="Hub is not installed. See requirements https://github.com/firepress-org/bashlava" App_Pink &&\
-    open https://github.com/firepress-org/bashlava
+    echo && my_message="Hub is not installed. See requirements https://git.io/bashlava" App_Pink &&\
+    open https://git.io/bashlava
   else
     my_message="FATAL: Please open an issue for this behavior (err_f26)" App_Pink && App_Stop
   fi
@@ -1026,50 +1031,50 @@ function App_Stop { echo -e "${col_pink} exit 1" && echo && exit 1
   #
 #
 
-function App_Configure_Custom_Path {
-# See README for the installation instructions.
-# Check if project's path is well configured.
-  if [ ! -f ${local_bashlava_path}/bashlava.sh ]; then
-      my_message="Local path is not valid (ERR5672)" App_Pink &&\
-      App_Reset_Custom_path
-      my_message="Path was autoreset reset. Try running 'help' again." App_Warning &&\
-      App_Stop
-  elif [ -f ${local_bashlava_path}/bashlava.sh ]; then
+function App_Reset_Custom_path {
+# In file ${my_path}/bashlava_path_tmp, we set an absolute path like: '/Users/pascalandy/Documents/github/firepress-org/bashlava'
+# It finds and configures it automatically. This way we don't have to hard code it :)
+# Don't confuse it with the symlink which is usually at "/usr/local/bin/bashlava.sh"
+# We write bashlava_path on disk to avoid running this request all the time.
+# Again, ${my_path}/bashlava_path point to a file on disk (not a variable)
+  if [ ! -f ${my_path}/bashlava_path ]; then
+    readlink $(which "${bashlava_executable}") > "${my_path}/bashlava_path_tmp"
+    # this will strip "/bashlava.sh" from the absolute path
+    cat "${my_path}/bashlava_path_tmp" | sed 's/\/bashlava.sh//g' > "${my_path}/bashlava_path"
+    # clean up
+    rm ${my_path}/bashlava_path_tmp
+  elif [ -f ${my_path}/bashlava_path ]; then
       echo "Path is valid. Lets continue." > /dev/null 2>&1
   else
-    my_message="FATAL: Please open an issue for this behavior (err_f28)" App_Pink && App_Stop
+    my_message="FATAL: Please open an issue for this behavior (err_f29)" App_Pink && App_Stop
   fi
 }
 
-function App_Reset_Custom_path {
-# this find and configure the absolute path for bashLaVa project
-  readlink $(which bashlava.sh) > /usr/local/bin/bashlava_path_tmp
-  cat /usr/local/bin/bashlava_path_tmp | sed 's/\/bashlava.sh//g' > /usr/local/bin/bashlava_path
-  rm /usr/local/bin/bashlava_path_tmp
-}
+function App_DefineVariables {
+# Default var & path. Customize if need. Usefull if you want to have multiple instance of bashLaVa on your machine
+  bashlava_executable="bashlava.sh" # if you rename, rename it in App_Reset_Custom_path as well. 
+  my_path="/usr/local/bin"
 
-function App_Load_Add_on {
-# every script that should not be under the main bashlava.sh shell script, should threated as an add-on.
-# This will make easier to maintain de project, minimise cluter, minimise break changes, easy to accept PR
-# tk readlink -f `which command`
+# Reset if needed
+  App_Reset_Custom_path
+
+# Set absolute path for the add-on scripts
+  local_bashlava_addon_path="$(cat ${my_path}/bashlava_path)/add-on"
+
+# every scripts that are not under the main bashLaVa app, should be threated as an add-on.
+# It makes it easier to maintain the project, it minimises cluter, it minimise break changes, it makes it easy to accept PR, more modular, etc.
   source "${local_bashlava_addon_path}/help.sh"
   source "${local_bashlava_addon_path}/alias.sh"
   source "${local_bashlava_addon_path}/examples.sh"
   source "${local_bashlava_addon_path}/templates.sh"
   source "${local_bashlava_addon_path}/utilities.sh"
 
-# Define your own custom add-on scripts. `custom_*.sh` files are in part .gitignore so they will not be commited.
+# load your custom script in there:
   source "${local_bashlava_addon_path}/custom_scripts_entrypoint.sh"
-}
-
-function App_DefineVariables {
-
-  local_bashlava_path="$(cat /usr/local/bin/bashlava_path)"
-  local_bashlava_addon_path="$(cat /usr/local/bin/bashlava_path)/add-on"
 
 # reset flags
-  flag_bypass_changelog_prompt="false"
-  deploy_commit_message="not-set"
+  _flag_bypass_changelog_prompt="false"
+  _flag_deploy_commit_message="not-set"
   _commit_message="not-set"
 
 #	docker images
@@ -1089,13 +1094,16 @@ function App_DefineVariables {
   date_nano="$(date +%Y-%m-%d_%HH%Ms%S-%N)"
     date_sec="$(date +%Y-%m-%d_%HH%Ms%S)"
     date_min="$(date +%Y-%m-%d_%HH%M)"
+#
   date_hour="$(date +%Y-%m-%d_%HH)XX"
     date_day="$(date +%Y-%m-%d)"
   date_month="$(date +%Y-%m)-XX"
   date_year="$(date +%Y)-XX-XX"
+#	This is how it looks like:
             # 2017-02-22_10H24_14-500892448
             # 2017-02-22_10H24_14
             # 2017-02-22_10H24
+#
             # 2017-02-22_10HXX
             # 2017-02-22
             # 2017-02-XX
@@ -1111,12 +1119,8 @@ function main() {
 
 # Load variables
   App_DefineVariables
-  App_Configure_Custom_Path
 
-# Load custom Add-on
-  App_Load_Add_on
-
-# set empty input. The user must provide 1 to 3 attributes
+# Set empty attribute. The user must provide 1 to 3 attributes
   input_1=$1
   if [[ -z "$1" ]]; then    #if empty
     clear
@@ -1143,12 +1147,12 @@ function main() {
     input_4=$4
   fi
 
-# Load functions from .bashcheck.sh
+# Load functions via .bashcheck.sh
   script_init "$@"
   cron_init
   colour_init
 
-# Error if there are too many attributes
+# Ensure there are no more than three attrbutes
   App_Is_Input_4_empty_as_it_should
 
 ### optional
