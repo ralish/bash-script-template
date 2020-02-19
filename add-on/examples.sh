@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-function ex_array {
+function example_array {
   arr=( "hello" "world" "three" )
   
   for i in "${arr[@]}"; do
@@ -8,6 +8,6 @@ function ex_array {
   done
 }
 function banner {
-  figlet_message="Hey figlet"
+  figlet_message="Banner Test"
   App_figlet
 }
