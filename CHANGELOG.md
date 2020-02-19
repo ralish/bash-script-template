@@ -9,43 +9,47 @@ Status template:
 
 ## 0.10.6 (2020-02-18)
 ### ⚡️ Updates
-- [d1990cf](https://github.com/firepress-org/bashlava/commit/d1990cf) Update bashlava to version 0.10.6 /Dockerfile
-- [35c5f30](https://github.com/firepress-org/bashlava/commit/35c5f30) UPDATE: better handling of our paths + REMOVE unless logic App_Reset_Custom_path & App_Load_Add_on
-- [1de4515](https://github.com/firepress-org/bashlava/commit/1de4515) minor; rename message and example
-- [09cae43](https://github.com/firepress-org/bashlava/commit/09cae43) UPDATE: wip-sync-origin-from-upstream + version allow to have -r1
+- Better handling of our paths: very useful when you want to rename `bashlava.sh` See an example over https://github.com/pascalandy/mine-a-block-using-sha256. Also it's easier to manage in the case your path is not over `/usr/local/bin/`. 
+- Heavily tested `wip-sync-origin-from-upstream`. Still tip as it need better documentation.
+- `test` it now call a banner function from the `add-on`. It help to ensure it is well configured.
+- Version & tag will now accept something like 3.5.1-r4 (think release #4)
+ 
+### commits
+- [d1990cf](https://github.com/firepress-org/bashlava/commit/d1990cf) Update bashlava to version 0.10.6 /Dockerfile.
+- [35c5f30](https://github.com/firepress-org/bashlava/commit/35c5f30) UPDATE: better handling of our paths + REMOVE unless logic App_Reset_Custom_path & App_Load_Add_on. 
+- [09cae43](https://github.com/firepress-org/bashlava/commit/09cae43) UPDATE: wip-sync-origin-from-upstream + version allow to have -r1.
 
 ### 🔍 Compare
 - ... with previous release: [0.10.5 <> 0.10.6](https://github.com/firepress-org/bashlava/compare/0.10.5...0.10.6)
 
 ## 0.10.5 (2020-02-17)
 ### ⚡️ Updates
-- [230fbbf](https://github.com/firepress-org/bashlava/commit/230fbbf) UPDATE 'release" where 'edge' was sometime bypassed
+- [230fbbf](https://github.com/firepress-org/bashlava/commit/230fbbf) UPDATE `release` where `edge` was sometime bypassed
 
 ### 🔍 Compare
 - ... with previous release: [0.10.4 <> 0.10.5](https://github.com/firepress-org/bashlava/compare/0.10.4...0.10.5)
 
 ## 0.10.4 (2020-02-17)
 ### ⚡️ Updates
-- [077c45b](https://github.com/firepress-org/bashlava/commit/077c45b) update master-nosq
-- [2389ef2](https://github.com/firepress-org/bashlava/commit/2389ef2) ADD: Add compare message in CHANGELOG + fix typo + add log to fct: version
-- [872d22a](https://github.com/firepress-org/bashlava/commit/872d22a) FIX: removed some rules that were in conflict when using ‘deploy’
-- [786ffe9](https://github.com/firepress-org/bashlava/commit/786ffe9) UPDATE: make bashlava more idempotent
-- [c19b79e](https://github.com/firepress-org/bashlava/commit/c19b79e) CHANGE fct shortner is now gitio
+- [077c45b](https://github.com/firepress-org/bashlava/commit/077c45b) update `master-nosq`
+- [2389ef2](https://github.com/firepress-org/bashlava/commit/2389ef2) ADD: Add compare message in CHANGELOG + fix typo + add log to `version`
+- [872d22a](https://github.com/firepress-org/bashlava/commit/872d22a) FIX: removed some rules that were in conflict when using `deploy`
+- [786ffe9](https://github.com/firepress-org/bashlava/commit/786ffe9) UPDATE: make `bashlava` more idempotent. It will require a lot of work to make it fully idempotent.
+- [c19b79e](https://github.com/firepress-org/bashlava/commit/c19b79e) CHANGE fct `shortner` is now `gitio`
 - [7ca586b](https://github.com/firepress-org/bashlava/commit/7ca586b) UDPATE: various rules to minimize errors
 - [bf840cd](https://github.com/firepress-org/bashlava/commit/bf840cd) UPDATE: rename few fct + ADD rule to check if git repo is valid
-- [59c9ec0](https://github.com/firepress-org/bashlava/commit/59c9ec0) ADD init_dockerfile_ignore
-- [0e96cf0](https://github.com/firepress-org/bashlava/commit/0e96cf0) ADD: init_readme + regroup App rules
+- [59c9ec0](https://github.com/firepress-org/bashlava/commit/59c9ec0) ADD `init_dockerfile_ignore`
+- [0e96cf0](https://github.com/firepress-org/bashlava/commit/0e96cf0) ADD: `init_readme` + regroup `App_` rules
 
 ### 🔍 Compare
  ... with previous release: [0.10.3 <> 0.10.4](https://github.com/firepress-org/bashlava/compare/0.10.3...0.10.4)
 
 ## 0.10.3 (2020-02-17)
 ### ⚡️ Updates
-- [fc4ca34](https://github.com/firepress-org/bashlava/commit/fc4ca34) FIX: flags in fct master + better comments linting + README updates
+- [fc4ca34](https://github.com/firepress-org/bashlava/commit/fc4ca34) FIX: flags in `master` + better comments linting + README updates
 
 ## 0.10.2 (2020-02-16)
 ### ⚠️ Changed
-
 We can `deploy` now without `m`. Now, we can use `deploy` this way:
 
 - `bashlava.sh d- 3.5.2`
@@ -67,13 +71,12 @@ It's the highest level of abstraction we can think of for the whole release cycl
 
 ## 0.10.1 (2020-02-15)
 ### 🚀 New feat.
-
-Useful when we want to commit update on master without publishing a release and without updating the changelog.
+alias `m-m`: Useful when we want to commit update on master without publishing a release and without updating the changelog.
 
 - [a342bfd](https://github.com/firepress-org/bashlava/commit/a342bfd) ADD: fct master-merge (alias m-m)
 
 ### 🛑 Removed
-We can't specify the version anymore for these functions:
+To make it simpler, we can't specify the version anymore for these functions:
 
 - `m "FEAT: some message here`
 - `m-`
