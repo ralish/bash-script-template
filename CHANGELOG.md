@@ -7,6 +7,16 @@ Status template:
 
 # Releases
 
+## 0.10.6 (2020-02-18)
+### ⚡️ Updates
+- [d1990cf](https://github.com/firepress-org/bashlava/commit/d1990cf) Update bashlava to version 0.10.6 /Dockerfile
+- [35c5f30](https://github.com/firepress-org/bashlava/commit/35c5f30) UPDATE: better handling of our paths + REMOVE unless logic App_Reset_Custom_path & App_Load_Add_on
+- [1de4515](https://github.com/firepress-org/bashlava/commit/1de4515) minor; rename message and example
+- [09cae43](https://github.com/firepress-org/bashlava/commit/09cae43) UPDATE: wip-sync-origin-from-upstream + version allow to have -r1
+
+### 🔍 Compare
+- ... with previous release: [0.10.5 <> 0.10.6](https://github.com/firepress-org/bashlava/compare/0.10.5...0.10.6)
+
 ## 0.10.5 (2020-02-17)
 ### ⚡️ Updates
 - [230fbbf](https://github.com/firepress-org/bashlava/commit/230fbbf) UPDATE 'release" where 'edge' was sometime bypassed
