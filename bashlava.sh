@@ -85,10 +85,11 @@ function master {
 
 # if this function is running as a child of "deploy"
 # we need to overide input_2
+
   if [[ "${_flag_deploy_commit_message}" != "not-set" ]]; then
-    _commit_message=${_flag_deploy_commit_message}
+    _commit_message="${_flag_deploy_commit_message}"
   elif [[ "${_flag_deploy_commit_message}" == "not-set" ]]; then
-    _commit_message=${input_2}
+    _commit_message="${input_2}"
   else
     my_message="FATAL: Please open an issue for this behavior (err_f11)" App_Pink && App_Stop
   fi
