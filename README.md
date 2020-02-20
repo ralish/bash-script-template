@@ -8,17 +8,19 @@
 
 &nbsp;
 
+> BashLaVa makes your bash scripts a bunch of pieces of cakes.
+
 # BashLava
 
-BashLaVa makes your bash scripts a bunch of pieces of cakes. 
+BashLaVa is a utility-first bash framework. The idea is to abstract your workflow to minimize the time to do some repetitive actions.
 
-It's for developers that use git commands regularly. BashLaVa makes following git workflow a breeze without having to leave your terminal or use the GitHub GUI.
+It's for developers that use git commands regularly. BashLaVa makes following git workflow a breeze without having to leave your terminal or use GitHub GUI.
 
-In other word, **the Agile release cycle should be something you master. BashLaVa helps you to get there.**
+In other word, the the **agile release cycle** should be something you master. BashLaVa helps you big time to get there.
 
-Technically speaking, it's a CLI utility *(or a CLI aggregator)*. The idea is to abstract a workflow to minimize the time to do some repetitive actions.
+## Abstraction
 
-The abstraction is deep. In *expert-mode* *(it means, you know what you do no question asked)*, you can accomplish all these steps in **one command**:
+The abstraction is deep. In *expert-mode* *(it means, you really know what you do)*, you can accomplish all these steps in **one command**:
 
 Context: you made few commits on your DEV branch. You are ready to release. So you need to:
 
