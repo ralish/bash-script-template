@@ -7,6 +7,21 @@ Status template:
 
 # Releases
 
+## 0.10.7 (2020-02-26)
+### ⚡️ Updates
+- [1f6fe9d](https://github.com/firepress-org/bashlava/commit/1f6fe9d) Update bashlava to version 0.10.7 /Dockerfile
+- [1355ec4](https://github.com/firepress-org/bashlava/commit/1355ec4) FIX list-functions
+- [2d035e1](https://github.com/firepress-org/bashlava/commit/2d035e1) Add notes in BACKLOG
+- [e962379](https://github.com/firepress-org/bashlava/commit/e962379) fix typo in comments
+- [0d5de09](https://github.com/firepress-org/bashlava/commit/0d5de09) Update passgen
+- [14e6b56](https://github.com/firepress-org/bashlava/commit/14e6b56) UPDATE copy on README
+- [7f40961](https://github.com/firepress-org/bashlava/commit/7f40961) Add note to backlog + new Add-on examples
+- [255dfdb](https://github.com/firepress-org/bashlava/commit/255dfdb) Improve VAR handling
+- [27058f0](https://github.com/firepress-org/bashlava/commit/27058f0) Improve CHANGELOG copy
+
+### 🔍 Compare
+- ... with previous release: [0.10.6 <> 0.10.7](https://github.com/firepress-org/bashlava/compare/0.10.6...0.10.7)
+
 ## 0.10.6 (2020-02-18)
 ### ⚡️ Updates
 - Better handling of our paths: very useful when you want to rename `bashlava.sh` See an example over https://github.com/pascalandy/mine-a-block-using-sha256. Also it's easier to manage in the case your path is not over `/usr/local/bin/`. 
