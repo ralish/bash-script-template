@@ -1,5 +1,9 @@
 #!/usr/bin/env bash
 
+function passgen {
+  docker run --rm devmtl/alpine:3.11_2020-02-26_08H42s20_dec5798 sh "random7.sh"
+}
+
 function lint {
   docker run -it --rm \
     -v $(pwd)/Dockerfile:/Dockerfile:ro \
@@ -16,18 +20,4 @@ function lint_hado {
 
   echo && \
   docker run -v `pwd`/Dockerfile:/Dockerfile replicated/dockerfilelint /Dockerfile
-}
-
-function passgen {
-  # password generator. See also "passgen_long" These char are not part of the password to minimize human error: i,I,L,l,o,O,0
-  docker run ctr.run/github.com/firepress-org/alpine:master sh -c "/usr/local/bin/random3.sh";
-}
-
-function passgen_long {
-  # requires openssl
-  grp1=$(openssl rand -base64 32 | sed 's/[^123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghjkmnpqrstuvwxyz]//g' | cut -c11-14) && \
-  grp2=$(openssl rand -base64 48 | sed 's/[^123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghjkmnpqrstuvwxyz]//g' | cut -c2-50) && \
-  grp3=$(openssl rand -base64 32 | sed 's/[^123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghjkmnpqrstuvwxyz]//g' | cut -c21-24) && \
-  clear && \
-  echo "${grp1}_${grp2}_${grp3}"
 }
