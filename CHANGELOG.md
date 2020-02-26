@@ -7,6 +7,14 @@ Status template:
 
 # Releases
 
+## 0.11.0 (2020-02-26)
+### ⚡️ Updates
+- [4177e31](https://github.com/firepress-org/bashlava/commit/4177e31) Update bashlava to version 0.11.0 /Dockerfile
+- [5163200](https://github.com/firepress-org/bashlava/commit/5163200) ADD MAJOR FEAT: In Dockerfile we have release flag
+
+### 🔍 Compare
+- ... with previous release: [0.10.7 <> 0.11.0](https://github.com/firepress-org/bashlava/compare/0.10.7...0.11.0)
+
 ## 0.10.7 (2020-02-26)
 ### ⚡️ Updates
 - [1f6fe9d](https://github.com/firepress-org/bashlava/commit/1f6fe9d) Update bashlava to version 0.10.7 /Dockerfile
