@@ -51,21 +51,26 @@ function version {
 
 # version before
   App_Get_var_from_dockerfile
-  version_before=${app_version}
+  version_before=${app_release}
 
-# sometimes we push 3.15.2-r4, this will clean "-r4"
-  #tag_version_clean=$(echo ${input_2} | sed 's/-r.*//g')
+# Logic between 'version' and 'release'.
+# For docker projects like https://github.com/firepress-org/ghostfire,
+# there is a conflict where defining a version like 3.11-r2 doesn't work because the dockerfile will try to build 'alpine 3.11-r2'.
+# Therefore, we need to have a release flag. This allows us to have a clean release cycle.
+# sed will trim '-r2'
+  version_trim=$(echo ${input_2} | sed 's/-r.*//g')
 
-# apply update
-  sed -i '' "s/^ARG VERSION=.*$/ARG VERSION=\"$input_2\"/" Dockerfile
+# apply updates
+  sed -i '' "s/^ARG VERSION=.*$/ARG VERSION=\"${version_trim}\"/" Dockerfile
+  sed -i '' "s/^ARG RELEASE=.*$/ARG RELEASE=\"${input_2}\"/" Dockerfile
 
 # version after
   App_Get_var_from_dockerfile
-  version_after=${app_version}
+  version_after=${app_release}
 
   App_Get_var_from_dockerfile
   git add . &&\
-  git commit . -m "Update ${app_name} to version ${app_version} /Dockerfile" &&\
+  git commit . -m "Update ${app_name} to version ${app_release} /Dockerfile" &&\
   git push origin edge
 
   echo && my_message="run ci to check status of your built on Github Actions (if any)" App_Blue
@@ -148,11 +153,11 @@ function release {
   App_Get_var_from_dockerfile
 
 # push updates
-  git commit . -m "Update ${app_name} to version ${app_version} /CHANGELOG" &&\
+  git commit . -m "Update ${app_name} to version ${app_release} /CHANGELOG" &&\
   git push origin master &&\
 
 # Tag our release
-  git tag ${app_version} && git push --tags && echo
+  git tag ${app_release} && git push --tags && echo
 
 # prepared release
   release_message1="Refer to [CHANGELOG.md](https://github.com/${github_user}/${app_name}/blob/master/CHANGELOG.md) for details about this release."
@@ -160,20 +165,20 @@ function release {
 
 # push release
   hub release create -oc \
-    -m "${app_version}" \
+    -m "${app_release}" \
     -m "${release_message1}" \
     -m "${release_message2}" \
     -t "$(git rev-parse HEAD)" \
-    "${app_version}" &&\
+    "${app_release}" &&\
 
-  echo && my_message="https://github.com/${github_user}/${app_name}/releases/tag/${app_version}" App_Blue &&\
+  echo && my_message="https://github.com/${github_user}/${app_name}/releases/tag/${app_release}" App_Blue &&\
 
 # reset dev branch
   edge &&\
 
 # Let's cheers up a bit!
   clear && figlet_message="Good job!" App_figlet &&\
-  figlet_message="${app_version} is up." App_figlet
+  figlet_message="${app_release} is up." App_figlet
 }
 
 #
@@ -522,7 +527,8 @@ function version-read {
 
 function version-read-from-dockerfile {
   App_Get_var_from_dockerfile
-  my_message="${app_version} < version found in Dockerfile" App_Blue
+  my_message="${app_version} < VERSION found in Dockerfile" App_Blue
+  my_message="${app_release} < RELEASE found in Dockerfile" App_Blue
 }
 function help {
   figlet_message="bashLaVa" App_figlet
@@ -720,13 +726,13 @@ function App_Changelog_Update {
     grep tag_name | awk -F ': "' '{ print $2 }' | awk -F '",' '{ print $1 }')
 
   echo -e "### 🔍 Compare" >> ~/temp/tmpfile4
-  echo -e "- ... with previous release: [${second_latest_tag} <> ${app_version}](https://github.com/${github_user}/${app_name}/compare/${second_latest_tag}...${app_version})" >> ~/temp/tmpfile4
+  echo -e "- ... with previous release: [${second_latest_tag} <> ${app_release}](https://github.com/${github_user}/${app_name}/compare/${second_latest_tag}...${app_release})" >> ~/temp/tmpfile4
 # --- GENERATE COMPARE URL / END
 
 # start and create changelog updates
   echo -e "" > ~/temp/tmpfile
 # insert H2 title version
-  echo -e "## ${app_version} (${date_day})" >> ~/temp/tmpfile
+  echo -e "## ${app_release} (${date_day})" >> ~/temp/tmpfile
 # insert H3 Updates
   echo -e "### ⚡️ Updates" >> ~/temp/tmpfile
 # insert commits
@@ -932,6 +938,8 @@ function App_release_check_vars {
     my_message="ERROR: app_name is empty (ERR5691)" App_Pink App_Stop
   elif [[ -z "${app_version}" ]]; then
     my_message="ERROR: app_version is empty (ERR5692)" App_Pink App_Stop
+  elif [[ -z "${app_release}" ]]; then
+    my_message="ERROR: app_release is empty (ERR5692)" App_Pink App_Stop
   elif [[ -z "${git_repo_url}" ]]; then
     my_message="ERROR: git_repo_url is empty (ERR5693)" App_Pink App_Stop
   elif [[ -z "${release_message1}" ]]; then
@@ -960,17 +968,21 @@ function App_Get_var_from_dockerfile {
 # Extract vars from our Dockerfile
   app_name=$(cat Dockerfile | grep APP_NAME= | head -n 1 | grep -o '".*"' | sed 's/"//g')
   app_version=$(cat Dockerfile | grep VERSION= | head -n 1 | grep -o '".*"' | sed 's/"//g')
+  app_release=$(cat Dockerfile | grep RELEASE= | head -n 1 | grep -o '".*"' | sed 's/"//g')
   github_user=$(cat Dockerfile | grep GITHUB_USER= | head -n 1 | grep -o '".*"' | sed 's/"//g')
 
   if [[ -z "${app_name}" ]] ; then    #if empty
     clear
-    my_message="Can't find APP_NAME in the Dockerfile (ERR5679)" App_Pink && App_Stop
+    my_message="Can't find NAME in the Dockerfile (ERR5679)" App_Pink && App_Stop
   elif [[ -z "${app_version}" ]] ; then    #if empty
     clear
-    my_message="Can't find APP_VERSION in the Dockerfile (ERR5680)" App_Pink && App_Stop
+    my_message="Can't find VERSION in the Dockerfile (ERR5687)" App_Pink && App_Stop
+  elif [[ -z "${app_release}" ]] ; then    #if empty
+    clear
+    my_message="Can't find RELEASE in the Dockerfile (ERR5688)" App_Pink && App_Stop
   elif [[ -z "${github_user}" ]] ; then    #if empty
     clear
-    my_message="Can't find GITHUB_USER in the Dockerfile (ERR5680)" App_Pink && App_Stop
+    my_message="Can't find GITHUB_USER in the Dockerfile (ERR5689)" App_Pink && App_Stop
   fi
 }
 
