@@ -808,8 +808,9 @@ function App_Is_input_3 {
     my_message="FATAL: Please open an issue for this behavior (err_f18a)" App_Pink && App_Stop
   fi
 }
+
 function App_Is_input_2_empty_as_it_should {
-# Stop if 3 attributes are passed.
+# Stop if 2 attributes are passed.
   if [[ "${input_2}" != "not-set" ]]; then
       my_message="You cannot use two attributes for this function. See help (ERR5721)" App_Pink && App_Stop
   elif [[ "${input_2}" == "not-set" ]]; then
