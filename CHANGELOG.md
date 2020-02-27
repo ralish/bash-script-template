@@ -7,6 +7,13 @@ Status template:
 
 # Releases
 
+## 0.12.0 (2020-02-27)
+### ⚡️ Updates
+- [c4217d0](https://github.com/firepress-org/bashlava/commit/c4217d0) ADD: new flags in Dockerfile for better control on configs.
+
+### 🔍 Compare
+- ... with previous release: [0.11.0 <> 0.12.0](https://github.com/firepress-org/bashlava/compare/0.11.0...0.12.0)
+
 ## 0.11.0 (2020-02-26)
 ### ⚡️ Updates
 - [4177e31](https://github.com/firepress-org/bashlava/commit/4177e31) Update bashlava to version 0.11.0 /Dockerfile
