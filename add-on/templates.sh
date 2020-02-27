@@ -2,7 +2,7 @@
 
 function init_changelog {
 cat << EOF > CHANGELOG_template.md
-This changelog is based on this [template](https://github.com/firepress-org/bashlava/blob/master/add-on/templates.sh#L3). That's the way we release our code at FirePress ([blog post](https://firepress.org/en/software-and-ghost-updates/)). It's based on [keep a changelog](https://keepachangelog.com/en/1.0.0/) and it adheres to [semantic versioning](https://semver.org/spec/v2.0.0.html).
+We hope this **CHANGELOG** will make it easy to see what is happening with this project. Each release automatically generates/formats/updates this changeling thanks to [BashLaVa](https://github.com/firepress-org/bashlava). It uses the same « Agile Deployment Lifecycle » at FirePress. See our [blog post](https://firepress.org/en/how-do-we-update-hundreds-of-ghosts-websites-on-docker-swarm/) about it. It follows the [keep a changelog](https://keepachangelog.com/en/1.0.0/) spirit and adheres to [semantic versioning](https://semver.org/spec/v2.0.0.html).
 
 Status template:
 | ⚡️ Updates | 🚀 Added | ⚠️ Changed |
@@ -13,7 +13,7 @@ Status template:
 
 ## 0.0.0
 ### ⚡️ Updates
-- placeholder
+- Init changelog
 EOF
 my_message="File created: ${local_bashlava_path}/CHANGELOG_template.md" App_Green
 }
