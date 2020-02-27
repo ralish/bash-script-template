@@ -40,16 +40,9 @@ In. One. Command.
 
 &nbsp;
 
-## BashLaVa Demo - The full git workflow in 120 seconds!
+## BashLaVa Demo
 
-[![bashlava_2020-02-14](https://user-images.githubusercontent.com/6694151/74553076-95458680-4f24-11ea-9447-4882aaa20e19.jpg)](https://youtu.be/6difYNilhXo)
-
-For more explanations, check these videos:
-
-- [BashLaVa - Introduction (step-by-step explanations)](https://youtu.be/jzGva3p7TeY)
-- [Maintaining a real project with BashLaVA](https://youtu.be/J5ySPSTUgZA)
-- [How to import your own custom bash-scripts into BashLaVa](https://youtu.be/ezY2N2Bdux0)
-- [How to install BashLaVa on your Mac](https://youtu.be/g8pVr8-Cimw)
+Videos WIP
 
 When starting with BashLava, I recommend to use these four commands:
 
@@ -63,13 +56,13 @@ r
 
 **It also allows you**:
 
-- [quickly set your custom scripts](https://youtu.be/ezY2N2Bdux0)
+- quickly set your custom scripts (Videos WIP)
 - quickly write help function
 - hack around  as it's all built with bash
 
 ## Installation
 
-[Step-by-step on YouTube](https://youtu.be/g8pVr8-Cimw)
+Step-by-step on YouTube (video wip)
 
 - 1) git **clone** this repo
 
@@ -128,34 +121,51 @@ bashlava.sh list
 
    Core functions
 
+   Core functions
+
  c   ...... "commit" all changes + git push | usage: c "FEAT: new rule to avoid this glitch"
- v   ...... "version" update your app | usage: v 1.50.1 (+ no attribute)
- m   ...... "master" .. squash + rebase + merge edge to m + update the CHANGELOG | usage: m 3.5.1
- m-ns   ... "master" no squash + rebase + merge edge to m + update the CHANGELOG | usage: m 3.5.1
- r   ...... "release" generate CHANGELOG + push tag on m + push r on GitHub| usage: r 3.5.1
+ v   ...... "version" update your app | usage: v 1.50.1
+ m   ...... "master" (with squash) rebase + merge + update CHANGELOG | usage: m "UPDATE chap 32 + FIX typo"
+ m-   ..... "master-" like m but with (no squash) | (no attr)
+ r   ...... "release" + push tag + push release on GitHub | (no attr)
+
+
+   Expert mode
+
+ d   ...... "deploy" all steps (v,m,r) in one command (with squash) | usage: d 3.5.2 "UPDATE chap 32 + FIX typo"
+ d-   ..... "deploy" all steps (v,m-,r) in one command (no squash) | usage: d- 3.5.2
 
 
    Utilities functions
 
-  ci   ..... "continous integration" CI status from Github Actions (no attribute)
- cr   ..... "changelog read" (no attribute)
- d   ...... "diff" show me diff in my code (no attribute)
- e   ...... "edge" recrete a fresh edge branch from master (no attribute)
- h   ...... "help" alias are also set to: -h, --help, help (no attribute)
- hash   ... "hash" Show me the latest hash commit (no attribute)
- l   ...... "log" show me the latest commits (no attribute)
- list   ... "list" all core functions (no attribute)
- log   .... "log" Show me the lastest commits (no attribute)
- mdv   ..... "markdown viewer" | usage: mdv README.md
- oe   ..... "out edge" Basic git checkout (no attribute)
- om   ..... "out master" Basic git checkout (no attribute)
- rr   ..... "release read" Show release from Github (attribute are optionnal)
- s   ...... "status" show me if there is something to commit (no attribute)
- shorturl   "shortner" limited github repos | usage: shorturl firepress-org ghostfire (+ no attribute)
+ ci   ..... "continous integration" CI status from Github Actions (no attr)
+ cr   ..... "changelog read" (no attr)
+ diff   ... "diff" show me diff in my code (no attr)
+ e   ...... "edge" recrete a fresh edge branch from master (no attr)
+ gitio   .. "git.io shortner" work only with GitHub repos | usage: shorturl firepress-org ghostfire (opt attr)
+ h   ...... "help" alias are also set to: -h, --help, help (no attr)
+ hash   ... "hash" Show me the latest hash commit (no attr)
+ l   ...... "log" show me the latest commits (no attr)
+ list   ... "list" all core functions (no attr)
+ log   .... "log" Show me the lastest commits (no attr)
+ m-m   .... "master-merge" from edge. Does not update changelog | usage: m- "UPDATE chap 32 + FIX typo"
+ mdv   .... "markdown viewer" | usage: mdv README.md
+ oe   ..... "out edge" Basic git checkout (no attr)
+ om   ..... "out master" Basic git checkout (no attr)
+ rr   ..... "release read" Show release from Github (attr is opt)
+ s   ...... "status" show me if there is something to commit (no attr)
  sq   ..... "squash" commits | usage: sq 3 "Add fct xyz"
- test   ... "test" test if requirements for bashLaVa are meet (no attribute)
- tr   ..... "tag read" the actual tag (no attribute)
- vr   ..... "version read" Show app's version (no attribute)
+ test   ... "test" test if requirements for bashLaVa are meet (no attr)
+ tr   ..... "tag read" tag on master branch (no attr)
+ vr   ..... "version read" show app's version from Dockerfile (no attr)
+
+
+   Accronyms
+
+ attr ==> attribute(s)
+ opt ===> optional
+ m =====> master branch
+ e =====> edge branch (DEV branch if you prefer)
 ```
 
 </p>

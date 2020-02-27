@@ -4,26 +4,21 @@ As the project is young, instead of creating issues for FEATURE, BUG, etc., I'll
 
 ## 0) GLITCHES
 
-- For docker projects like alpine, I there is a conflict defining a where version like 3.11.2 doesn't work because alpine 3.11.2 is not a thing.
+To double check: no hardcoded custom values should exist bashlava.sh anymore. They are all in the Dockerfile.
 
 ## 1) NEXT FEATURES
-		
-Produce new videos:
-	- since `deploy` is simpler and without `m`
 
-ADD Var into Dockerfile
-	- bashlaval_executable
-	- local_path
-	- etc.
+Create videos tutorials:
+	- since `deploy` is simpler and without `m`
 
 Don't write tmp files onto disk!
 	- App_update_changelog: 
 	- help
 	- App_glow
-		  
-fct wip-sync-origin-from-upstream
 
 ADD `list-all` to see fat from add-on
+ 
+FCT wip-sync-origin-from-upstream
 
 add-on example: mining
 
@@ -31,5 +26,5 @@ add-on example: mining
 
 Can we generate a markdown "file" and use App_glow without never write on disk (this is how we do it at the moment).
 
-Make bash lava completly idempotent. Inspired by https://arslan.io/2019/07/03/how-to-write-idempotent-bash-scripts/
+Make bashLaVa completly idempotent. Inspired by https://arslan.io/2019/07/03/how-to-write-idempotent-bash-scripts/
 

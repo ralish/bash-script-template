@@ -14,8 +14,11 @@
 #
 # v   ...... "version"
 # m   ...... "master" (with squash)
-# m-   ..... "master" (no squash )
+# m-   ..... "master" (no squash)
 # r   ...... "release"
+#
+# d   ...... "deploy" (with squash)
+# d-   ..... "deploy" (no squash)
 #
 ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### #
           #
@@ -55,10 +58,16 @@ function version {
 
 # Logic between 'version' and 'release'.
 # For docker projects like https://github.com/firepress-org/ghostfire,
-# there is a conflict where defining a version like 3.11-r2 doesn't work because the dockerfile will try to build 'alpine 3.11-r2'.
+# there is a conflict where defining a version like 3.11-rc2 doesn't work because the dockerfile will try to build 'alpine 3.11-rc2'.
 # Therefore, we need to have a release flag. This allows us to have a clean release cycle.
-# sed will trim '-r2'
-  version_trim=$(echo ${input_2} | sed 's/-r.*//g')
+# sed will trim '-rc2'
+  if [[ "${version_with_rc}" == "false" ]]; then
+    version_trim=$(echo ${input_2} | sed 's/-r.*//g')
+  elif [[ "${version_with_rc}" != "false" ]]; then
+    version_trim=${input_2}
+  else
+    my_message="FATAL: Please open an issue for this behavior (err_f31)" App_Pink && App_Stop
+  fi
 
 # apply updates
   sed -i '' "s/^ARG VERSION=.*$/ARG VERSION=\"${version_trim}\"/" Dockerfile
@@ -492,11 +501,14 @@ function test-bashlava {
 
   figlet_message="bashLaVa" App_figlet
 
-  echo "\$1 value is: ${input_1}" &&\
-  echo "\$2 value is: ${input_2}" &&\
-  echo "\$3 value is: ${input_3}" &&\
-  echo "\$4 value is: ${input_4}" && echo &&\
+  echo "Attributes:" &&\
+  my_message="\$1 value is: ${input_1}" App_Blue &&\
+  my_message="\$2 value is: ${input_2}" App_Blue &&\
+  my_message="\$3 value is: ${input_3}" App_Blue &&\
+  my_message="\$4 value is: ${input_4}" App_Blue &&\
 
+  echo &&\
+  echo "OS:" &&\
   if [[ $(uname) == "Darwin" ]]; then
     my_message="Running on a Mac (Darwin)" App_Blue
   elif [[ $(uname) != "Darwin" ]]; then
@@ -505,10 +517,24 @@ function test-bashlava {
     my_message="FATAL: Please open an issue for this behavior (err_f12)" App_Pink && App_Stop
   fi
 
-  echo &&\
+  # will stop if a file is missing
   App_Are_files_existing
+
+  echo &&\
+  echo "App required on your local machine:" &&\
   App_Is_required_apps_installed
 
+  echo &&\
+  echo "Configs for this git repo:" &&\
+  my_message="${app_name} < app_name" App_Blue
+  my_message="${app_version} < app_version" App_Blue
+  my_message="${app_release} < app_release" App_Blue
+  my_message="${github_user} < github_user" App_Blue
+  my_message="${bashlava_executable} < bashlava_executable" App_Blue
+  my_message="${my_path} < my_path" App_Blue
+  my_message="${version_with_rc} < version_with_rc" App_Blue
+
+  echo &&\
   my_message="This banner below confirm that your add-on is well configured:" App_Blue
   banner
 }
@@ -786,7 +812,7 @@ function App_Is_commit_unpushed {
   if [[ $(git status | grep -c "nothing to commit") == "1" ]]; then
     echo "Good, lets continue" > /dev/null 2>&1
   elif [[ $(git status | grep -c "nothing to commit") != "1" ]]; then
-    my_message="You must push your commit(s) before doing a rebase (ERR5683)" App_Pink && App_Stop
+    my_message="You must push your commit(s) before doing this action (ERR5683)" App_Pink && App_Stop
   else
     my_message="FATAL: Please open an issue for this behavior (err_f16)" App_Pink && App_Stop
   fi
@@ -848,8 +874,8 @@ function App_Is_Input_4_empty_as_it_should {
 
 function App_Is_version_syntax_valid {
 # Version is limited to these characters: 1234567890.rR-
-# so we can do: '3.5.13-r3'
-  ver_striped=$(echo "${input_2}" | sed 's/[^0123456789.rR\-]//g')
+# so we can do: '3.5.13-r3' or '3.5.13-rc3'
+  ver_striped=$(echo "${input_2}" | sed 's/[^0123456789.rcRC\-]//g')
 
   if [[ "${input_2}" == "${ver_striped}" ]]; then
     echo "Version is valid, lets continue" > /dev/null 2>&1
@@ -970,19 +996,34 @@ function App_Get_var_from_dockerfile {
   app_version=$(cat Dockerfile | grep VERSION= | head -n 1 | grep -o '".*"' | sed 's/"//g')
   app_release=$(cat Dockerfile | grep RELEASE= | head -n 1 | grep -o '".*"' | sed 's/"//g')
   github_user=$(cat Dockerfile | grep GITHUB_USER= | head -n 1 | grep -o '".*"' | sed 's/"//g')
+  bashlava_executable=$(cat Dockerfile | grep BASHLAVA_EXECUTABLE= | head -n 1 | grep -o '".*"' | sed 's/"//g')
+  my_path=$(cat Dockerfile | grep MY_LOCAL_PATH= | head -n 1 | grep -o '".*"' | sed 's/"//g')
+  version_with_rc=$(cat Dockerfile | grep VERSION_WITH_RELEASE_CANDIDAT= | head -n 1 | grep -o '".*"' | sed 's/"//g')
 
+  # Validate vars are not empty
   if [[ -z "${app_name}" ]] ; then    #if empty
     clear
-    my_message="Can't find NAME in the Dockerfile (ERR5679)" App_Pink && App_Stop
+    my_message="Can't find NAME in the Dockerfile (ERR5581)" App_Pink && App_Stop
+
   elif [[ -z "${app_version}" ]] ; then    #if empty
     clear
-    my_message="Can't find VERSION in the Dockerfile (ERR5687)" App_Pink && App_Stop
+    my_message="Can't find VERSION in the Dockerfile (ERR5582)" App_Pink && App_Stop
+
   elif [[ -z "${app_release}" ]] ; then    #if empty
     clear
-    my_message="Can't find RELEASE in the Dockerfile (ERR5688)" App_Pink && App_Stop
+    my_message="Can't find RELEASE in the Dockerfile (ERR5583)" App_Pink && App_Stop
+
   elif [[ -z "${github_user}" ]] ; then    #if empty
     clear
-    my_message="Can't find GITHUB_USER in the Dockerfile (ERR5689)" App_Pink && App_Stop
+    my_message="Can't find GITHUB_USER in the Dockerfile (ERR5584)" App_Pink && App_Stop
+
+  elif [[ -z "${bashlava_executable}" ]] ; then    #if empty
+    clear
+    my_message="Can't find BASHLAVA_EXECUTABLE in the Dockerfile (ERR5585)" App_Pink && App_Stop
+
+  elif [[ -z "${my_path}" ]] ; then    #if empty
+    clear
+    my_message="Can't find MY_LOCAL_PATH in the Dockerfile (ERR5586)" App_Pink && App_Stop
   fi
 }
 
@@ -1034,8 +1075,7 @@ function App_Stop { echo -e "${col_pink} exit 1" && echo && exit 1
           #
 ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### #
 #
-# bashLaVa engine (lol)
-#   low-level logic
+# bashLaVa engine & low-level logic
 #
 ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### #
           #
@@ -1053,8 +1093,9 @@ function App_Reset_Custom_path {
 # Again, ${my_path}/bashlava_path point to a file on disk (not a variable)
   if [ ! -f ${my_path}/bashlava_path ]; then
     readlink $(which "${bashlava_executable}") > "${my_path}/bashlava_path_tmp"
+    rm ${my_path}/bashlava_path
     # this will strip "/bashlava.sh" from the absolute path
-    cat "${my_path}/bashlava_path_tmp" | sed 's/\/bashlava.sh//g' > "${my_path}/bashlava_path"
+    cat "${my_path}/bashlava_path_tmp" | sed "s/\/${bashlava_executable}//g" > "${my_path}/bashlava_path"
     # clean up
     rm ${my_path}/bashlava_path_tmp
   elif [ -f ${my_path}/bashlava_path ]; then
@@ -1065,15 +1106,14 @@ function App_Reset_Custom_path {
 }
 
 function App_DefineVariables {
-# Default var & path. Customize if need. Usefull if you want to have multiple instance of bashLaVa on your machine
-  bashlava_executable="bashlava.sh" # if you rename, rename it in App_Reset_Custom_path as well. 
-  my_path="/usr/local/bin"
+  App_Get_var_from_dockerfile
 
 # Reset if needed
   App_Reset_Custom_path
+  _bashlava_path="$(cat ${my_path}/bashlava_path)"
 
 # Set absolute path for the add-on scripts
-  local_bashlava_addon_path="$(cat ${my_path}/bashlava_path)/add-on"
+  local_bashlava_addon_path="${_bashlava_path}/add-on"
 
 # every scripts that are not under the main bashLaVa app, should be threated as an add-on.
 # It makes it easier to maintain the project, it minimises cluter, it minimise break changes, it makes it easy to accept PR, more modular, etc.
