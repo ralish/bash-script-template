@@ -996,9 +996,6 @@ function App_Get_var_from_dockerfile {
   app_version=$(cat Dockerfile | grep VERSION= | head -n 1 | grep -o '".*"' | sed 's/"//g')
   app_release=$(cat Dockerfile | grep RELEASE= | head -n 1 | grep -o '".*"' | sed 's/"//g')
   github_user=$(cat Dockerfile | grep GITHUB_USER= | head -n 1 | grep -o '".*"' | sed 's/"//g')
-  bashlava_executable=$(cat Dockerfile | grep BASHLAVA_EXECUTABLE= | head -n 1 | grep -o '".*"' | sed 's/"//g')
-  my_path=$(cat Dockerfile | grep MY_LOCAL_PATH= | head -n 1 | grep -o '".*"' | sed 's/"//g')
-  version_with_rc=$(cat Dockerfile | grep VERSION_WITH_RELEASE_CANDIDAT= | head -n 1 | grep -o '".*"' | sed 's/"//g')
 
   # Validate vars are not empty
   if [[ -z "${app_name}" ]] ; then    #if empty
@@ -1016,14 +1013,6 @@ function App_Get_var_from_dockerfile {
   elif [[ -z "${github_user}" ]] ; then    #if empty
     clear
     my_message="Can't find GITHUB_USER in the Dockerfile (ERR5484)" App_Pink && App_Stop
-
-  elif [[ -z "${bashlava_executable}" ]] ; then    #if empty
-    clear
-    my_message="Can't find BASHLAVA_EXECUTABLE in the Dockerfile (ERR5485)" App_Pink && App_Stop
-
-  elif [[ -z "${my_path}" ]] ; then    #if empty
-    clear
-    my_message="Can't find MY_LOCAL_PATH in the Dockerfile (ERR5486)" App_Pink && App_Stop
   fi
 }
 
