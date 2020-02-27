@@ -53,5 +53,3 @@ function stat { status
 
 function pass { passgen
 }
-function passfull { passgen
-}
