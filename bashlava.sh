@@ -1095,11 +1095,13 @@ function App_Reset_Custom_path {
 }
 
 function App_DefineVariables {
+# Hardcoded VAR
 # Default var & path. Customize if need. Usefull if you want
 # to have multiple instance of bashLaVa on your machine
   bashlava_executable="bashlava.sh"
   my_path="/usr/local/bin"
 
+# Hardcoded VAR
 # Does this app accept release candidates (ie. 3.5.1-rc1) in the _version? By default = false
 # When buidling docker images it better to not have rc in the version as breaks the pattern.
 # When not working with a docker build, feel free to put this flag as true.
@@ -1124,7 +1126,7 @@ function App_DefineVariables {
 # load your custom script in there:
   source "${local_bashlava_addon_path}/custom_scripts_entrypoint.sh"
 
-# reset flags
+# Set defaults for flags
   _flag_bypass_changelog_prompt="false"
   _flag_deploy_commit_message="not-set"
   _commit_message="not-set"
