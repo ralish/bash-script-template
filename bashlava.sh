@@ -52,6 +52,9 @@ function version {
   App_Is_input_2
   App_Is_version_syntax_valid
 
+  echo "${version_with_rc}" 
+  echo "checkpoint" && sleep 10
+
 # version before
   App_Get_var_from_dockerfile
   version_before=${app_release}
