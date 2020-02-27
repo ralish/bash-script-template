@@ -7,6 +7,14 @@ Status template:
 
 # Releases
 
+## 0.14.1 (2020-02-27)
+### ⚡️ Updates
+- [b9e33a0](https://github.com/firepress-org/bashlava/commit/b9e33a0) Update bashlava to version 0.14.1 /Dockerfile
+- [e823152](https://github.com/firepress-org/bashlava/commit/e823152) Minor update to changelog template
+
+### 🔍 Compare
+- ... with previous release: [0.14.0 <> 0.14.1](https://github.com/firepress-org/bashlava/compare/0.14.0...0.14.1)
+
 ## 0.14.0 (2020-02-27)
 ### ⚡️ Updates
 - [4a99438](https://github.com/firepress-org/bashlava/commit/4a99438) Update bashlava to version 0.14.0 /Dockerfile
