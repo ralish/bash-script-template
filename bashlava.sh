@@ -1003,27 +1003,27 @@ function App_Get_var_from_dockerfile {
   # Validate vars are not empty
   if [[ -z "${app_name}" ]] ; then    #if empty
     clear
-    my_message="Can't find NAME in the Dockerfile (ERR5581)" App_Pink && App_Stop
+    my_message="Can't find APP_NAME in the Dockerfile (ERR5481)" App_Pink && App_Stop
 
   elif [[ -z "${app_version}" ]] ; then    #if empty
     clear
-    my_message="Can't find VERSION in the Dockerfile (ERR5582)" App_Pink && App_Stop
+    my_message="Can't find VERSION in the Dockerfile (ERR5482)" App_Pink && App_Stop
 
   elif [[ -z "${app_release}" ]] ; then    #if empty
     clear
-    my_message="Can't find RELEASE in the Dockerfile (ERR5583)" App_Pink && App_Stop
+    my_message="Can't find RELEASE in the Dockerfile (ERR5483)" App_Pink && App_Stop
 
   elif [[ -z "${github_user}" ]] ; then    #if empty
     clear
-    my_message="Can't find GITHUB_USER in the Dockerfile (ERR5584)" App_Pink && App_Stop
+    my_message="Can't find GITHUB_USER in the Dockerfile (ERR5484)" App_Pink && App_Stop
 
   elif [[ -z "${bashlava_executable}" ]] ; then    #if empty
     clear
-    my_message="Can't find BASHLAVA_EXECUTABLE in the Dockerfile (ERR5585)" App_Pink && App_Stop
+    my_message="Can't find BASHLAVA_EXECUTABLE in the Dockerfile (ERR5485)" App_Pink && App_Stop
 
   elif [[ -z "${my_path}" ]] ; then    #if empty
     clear
-    my_message="Can't find MY_LOCAL_PATH in the Dockerfile (ERR5586)" App_Pink && App_Stop
+    my_message="Can't find MY_LOCAL_PATH in the Dockerfile (ERR5486)" App_Pink && App_Stop
   fi
 }
 
@@ -1106,7 +1106,16 @@ function App_Reset_Custom_path {
 }
 
 function App_DefineVariables {
-  App_Get_var_from_dockerfile
+# Default var & path. Customize if need. Usefull if you want
+# to have multiple instance of bashLaVa on your machine
+  bashlava_executable="bashlava.sh"
+  my_path="/usr/local/bin"
+
+# Does this app accept release candidates (ie. 3.5.1-rc1) in the _version? By default = false
+# When buidling docker images it better to not have rc in the version as breaks the pattern.
+# When not working with a docker build, feel free to put this flag as true.
+# default value is false
+  version_with_rc="false"
 
 # Reset if needed
   App_Reset_Custom_path
