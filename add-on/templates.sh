@@ -160,6 +160,8 @@ EOF
 my_message="File created: ${local_bashlava_path}/init_gitignore" App_Green
 }
 
+
+# optional as not everyone needs this option
 function init_dockerignore {
 cat << EOF > .dockerignore_template
 .cache
@@ -196,17 +198,4 @@ function init_readme {
 cat << EOF > README_template.md
 This README is still empty.
 EOF
-}
-
-# optional as not everyone needs this option
-function init_dockerfile_ignore {
-cat << EOF > .dockerfile_template
-.cache
-coverage
-dist
-node_modules
-npm-debug
-.git
-EOF
-
 }
