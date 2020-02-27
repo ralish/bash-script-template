@@ -7,6 +7,19 @@ Status template:
 
 # Releases
 
+## DRAFT
+
+Move back three flags from Dockerfile into bashlava (hardcoded). Why, because it make bashlava impossible to use without an associated Dockerfile. 
+
+### ⚡️ Updates
+- [4b523e5](https://github.com/firepress-org/bashlava/commit/4b523e5) Update Dockerfile template
+- [709445a](https://github.com/firepress-org/bashlava/commit/709445a) Improve comments for hardcoded default values
+- [5266da3](https://github.com/firepress-org/bashlava/commit/5266da3) Remove checks on vars
+- [0d06fcd](https://github.com/firepress-org/bashlava/commit/0d06fcd) move back three flags from Dockerfile into bashlava
+- [24d5c24](https://github.com/firepress-org/bashlava/commit/24d5c24) move back three flags into bashlava
+- [76f9a0d](https://github.com/firepress-org/bashlava/commit/76f9a0d) remove un-needed ‘init_dockerfile_ignore’
+- [ec9b905](https://github.com/firepress-org/bashlava/commit/ec9b905) remove alias passfull
+
 ## 0.12.0 (2020-02-27)
 ### ⚡️ Updates
 - [c4217d0](https://github.com/firepress-org/bashlava/commit/c4217d0) ADD: new flags in Dockerfile for better control on configs.
