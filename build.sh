@@ -3,11 +3,16 @@
 # Assembles the all-in-one template script by combining source.sh & script.sh
 
 # A better class of script...
+if [ -z "${DEBUG}" ]
+then
+  set +o xtrace          # DO NOT trace the execution of the script (debug)
+else
+  set -o xtrace          # DO trace the execution of the script (debug)
+fi
 set -o errexit          # Exit on most errors (see the manual)
 set -o errtrace         # Make sure any error trap is inherited
 set -o nounset          # Disallow expansion of unset variables
 set -o pipefail         # Use last non-zero exit code in a pipeline
-#set -o xtrace          # Trace the execution of the script (debug)
 
 # Main control flow
 function main() {
