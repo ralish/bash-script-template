@@ -718,6 +718,7 @@ function App_Changelog_Update {
     awk '$1=$1')"
 
 # copy logs in a file
+  mkdir -pv ~/temp
   echo -e "${git_logs}" > ~/temp/tmpfile2
 
 # --- Time to make the log pretty for the CHANGELOG
