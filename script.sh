@@ -7,12 +7,16 @@
 # writing several scripts! By pulling in the common functions you'll minimise
 # code duplication, as well as ease any potential updates to shared functions.
 
+# Enable xtrace if the DEBUG environment variable is set
+if [[ ${DEBUG-} =~ ^1|yes|true$ ]]; then
+    set -o xtrace       # Trace the execution of the script (debug)
+fi
+
 # A better class of script...
 set -o errexit          # Exit on most errors (see the manual)
 set -o errtrace         # Make sure any error trap is inherited
 set -o nounset          # Disallow expansion of unset variables
 set -o pipefail         # Use last non-zero exit code in a pipeline
-#set -o xtrace          # Trace the execution of the script (debug)
 
 # DESC: Usage help
 # ARGS: None

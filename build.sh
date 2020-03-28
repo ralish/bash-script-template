@@ -2,12 +2,16 @@
 
 # Assembles the all-in-one template script by combining source.sh & script.sh
 
+# Enable xtrace if the DEBUG environment variable is set
+if [[ ${DEBUG-} =~ ^1|yes|true$ ]]; then
+    set -o xtrace       # Trace the execution of the script (debug)
+fi
+
 # A better class of script...
 set -o errexit          # Exit on most errors (see the manual)
 set -o errtrace         # Make sure any error trap is inherited
 set -o nounset          # Disallow expansion of unset variables
 set -o pipefail         # Use last non-zero exit code in a pipeline
-#set -o xtrace          # Trace the execution of the script (debug)
 
 # Main control flow
 function main() {
@@ -39,9 +43,9 @@ function build_template() {
     source_file="$script_dir/source.sh"
     script_file="$script_dir/script.sh"
 
-    script_options="$(head -n 15 "$script_file" | tail -n 6)"
+    script_options="$(head -n 19 "$script_file" | tail -n 10)"
     source_data="$(tail -n +10 "$source_file" | head -n -1)"
-    script_data="$(tail -n +16 "$script_file")"
+    script_data="$(tail -n +20 "$script_file")"
 
     {
         printf '%s\n' "$shebang"

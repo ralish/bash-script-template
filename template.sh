@@ -4,12 +4,16 @@
 # combines the source.sh & script.sh files into a single script. If you want
 # your script to be entirely self-contained then this should be what you want!
 
+# Enable xtrace if the DEBUG environment variable is set
+if [[ ${DEBUG-} =~ ^1|yes|true$ ]]; then
+    set -o xtrace       # Trace the execution of the script (debug)
+fi
+
 # A better class of script...
 set -o errexit          # Exit on most errors (see the manual)
 set -o errtrace         # Make sure any error trap is inherited
 set -o nounset          # Disallow expansion of unset variables
 set -o pipefail         # Use last non-zero exit code in a pipeline
-#set -o xtrace          # Trace the execution of the script (debug)
 
 # DESC: Handler for unexpected errors
 # ARGS: $1 (optional): Exit code (defaults to 1)
