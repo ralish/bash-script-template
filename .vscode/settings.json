@@ -6,5 +6,9 @@
     // File paths to language mappings
     "files.associations": {
         ".shellcheckrc": "properties"
+    },
+
+    "[shellscript]": {
+        "editor.rulers": [79]
     }
 }
