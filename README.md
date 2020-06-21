@@ -5,6 +5,12 @@ bash-script-template
 
 A *Bash* scripting template incorporating best practices & several useful functions.
 
+- [Motivation](#motivation)
+- [Files](#files)
+- [Usage](#usage)
+- [Controversies](#controversies)
+- [License](#license)
+
 Motivation
 ----------
 

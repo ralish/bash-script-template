@@ -8,6 +8,10 @@
         ".shellcheckrc": "properties"
     },
 
+    // Markdown table of contents generation
+    "markdown.extension.toc.levels": "2..2",
+    "markdown.extension.toc.slugifyMode": "github",
+
     // Use EditorConfig for shfmt settings
     "shellformat.useEditorConfig": true,
 
