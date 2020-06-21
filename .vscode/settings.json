@@ -1,12 +1,12 @@
 {
-    // Important to disable for EditorConfig to apply correctly
-    // See: https://github.com/editorconfig/editorconfig-vscode/issues/153
-    "files.trimTrailingWhitespace": false,
-
     // File paths to language mappings
     "files.associations": {
         ".shellcheckrc": "properties"
     },
+
+    // Important to disable for EditorConfig to apply correctly
+    // See: https://github.com/editorconfig/editorconfig-vscode/issues/153
+    "files.trimTrailingWhitespace": false,
 
     // Markdown table of contents generation
     "markdown.extension.toc.levels": "2..2",
