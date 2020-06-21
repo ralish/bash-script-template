@@ -399,7 +399,6 @@ function run_as_root() {
     fi
 }
 
-
 # DESC: Usage help
 # ARGS: None
 # OUTS: None

@@ -8,7 +8,11 @@
         ".shellcheckrc": "properties"
     },
 
+    // Use EditorConfig for shfmt settings
+    "shellformat.useEditorConfig": true,
+
     "[shellscript]": {
+        "editor.formatOnSave": true,
         "editor.rulers": [79]
     }
 }

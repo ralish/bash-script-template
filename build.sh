@@ -45,7 +45,7 @@ function build_template() {
 
     script_options="$(head -n 19 "$script_file" | tail -n 10)"
     source_data="$(tail -n +10 "$source_file" | head -n -1)"
-    script_data="$(tail -n +20 "$script_file")"
+    script_data="$(tail -n +21 "$script_file")"
 
     {
         printf '%s\n' "$shebang"
