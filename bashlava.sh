@@ -609,8 +609,9 @@ function release-read {
   #
 #
 
-function wip-sync-origin-from-upstream {
+function rebase-theme {
 # Syncing a fork, update from a forked
+# wip-sync-origin-from-upstream
 
 # CONTEXT
 # In my case, it's useful as I paid for some Ghost templates.
@@ -627,12 +628,14 @@ function wip-sync-origin-from-upstream {
 ### ### ### ### ### ### ### ### ###
 # go to edge branch
   git checkout edge &&\
-# Add the remote, call it "upstream":
-  git remote add upstream git@github.com:pascalandy/nurui-from-vendor.git && git remote -v &&\
+# Add the remote, call it "upstream" (We do this only one time)
+  git remote add upstream git@github.com:pascalandy/shoji-from-vendor.git &&\
+  git remote -v &&\
 # Fetch all the branches of that remote into remote-tracking branches,
 # such as upstream/edge:
 # pulls all new commits made to upstream/edge
-  git fetch upstream && git pull upstream edge &&\
+  git fetch upstream &&\
+  git pull upstream edge --allow-unrelated-histories &&\
 # There are good chances that conflict might occur
   git diff --name-only --diff-filter=U
 
