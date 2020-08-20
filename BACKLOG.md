@@ -10,19 +10,24 @@ To double check: no hardcoded custom values should exist bashlava.sh anymore. Th
 
 ## 1) NEXT FEATURES
 
-Create videos tutorials:
+### Create videos tutorials:
 	- since `deploy` is simpler and without `m`
 
-Don't write tmp files onto disk!
+### Don't write tmp files onto disk as it can create issue on certain local set up.
 	- App_update_changelog: 
 	- help
 	- App_glow
 
-ADD `list-all` to see fat from add-on
- 
-FCT wip-sync-origin-from-upstream
+### Stop bash lava if docker is not running:
+```
+docker: Cannot connect to the Docker daemon at unix:///var/run/docker.sock. Is the docker daemon running?.
+```
 
-add-on example: mining
+### ADD `list-all` to see fat from add-on
+ 
+### FCT wip-sync-origin-from-upstream
+
+### add-on example: mining
 
 ## 2) NEED HELP
 
