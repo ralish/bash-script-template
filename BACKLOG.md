@@ -4,9 +4,15 @@ As the project is young, instead of creating issues for FEATURE, BUG, etc., I'll
 
 ## 0) GLITCHES
 
-Intermited issue where the CHANGELOG file is getting wiped out during the release. Related to "Don't write tmp files onto disk".
+### Intermitted issue where the CHANGELOG
+file is getting wiped out during the release. Related to "Don't write tmp files onto disk".
 
-To double check: no hardcoded custom values should exist bashlava.sh anymore. They are all in the Dockerfile.
+### To double check:
+no hardcoded custom values should exist bashlava.sh anymore. They are all in the Dockerfile.
+
+### bashlava_help.md
+
+is written on disk. This is not needed 
 
 ## 1) NEXT FEATURES
 
