@@ -462,11 +462,11 @@ function list-functions {
   title-utilities &&\
   cat ${my_path}/${bashlava_executable} | awk '/#util> /' | sed '$ d' | awk '{$1="";$3="";$4="";print $0}' | sort -k2 -n | sed '/\/usr\/local\/bin\//d' && echo
 
-  title-accronyms
-  echo " attr ==> attribute(s)"
-  echo " opt ===> optional"
-  echo " m =====> master branch"
-  echo " e =====> edge branch (DEV branch if you prefer)"
+  #title-accronyms
+  #echo " attr ==> attribute(s)"
+  #echo " opt ===> optional"
+  #echo " m =====> master branch"
+  #echo " e =====> edge branch (DEV branch if you prefer)"
 
 #cat ${my_path}/${bashlava_executable} | awk '/function /' | awk '{print $2}' | sort -k2 -n | sed '/App_/d' | sed '/main/d' | sed '/\/usr\/local\/bin\//d' | sed '/wip-/d'
 #If needed, you can list your add-on fct here as well. We don't list them by default to minimize cluter.
