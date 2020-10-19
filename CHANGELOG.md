@@ -7,8 +7,41 @@ Status template:
 
 # Releases
 
-## 0.14.4 (2020-10-19_10h56)
-- wip
+## 0.14.5 (2020-10-19)
+### ⚡️ Updates
+- [8ded67d](https://github.com/firepress-org/bashlava/commit/8ded67d) Update bashlava to version 0.14.5 /Dockerfile
+- [45a593a](https://github.com/firepress-org/bashlava/commit/45a593a) rollback deletion on the changelog
+
+### 🔍 Compare
+- ... with previous release: [0.14.4 <> 0.14.5](https://github.com/firepress-org/bashlava/compare/0.14.4...0.14.5)
+- 
+## 0.14.4 (2020-10-19)
+### ⚡️ Updates
+- [f18f0b3](https://github.com/firepress-org/bashlava/commit/f18f0b3) Update bashlava to version 0.14.4 /Dockerfile
+- [211c577](https://github.com/firepress-org/bashlava/commit/211c577) update release_message2 message
+
+### 🔍 Compare
+- ... with previous release: [0.14.3 <> 0.14.4](https://github.com/firepress-org/bashlava/compare/0.14.4...0.14.4)
+
+## 0.14.3 (2020-10-09)
+### ⚡️ Updates
+- [9412729](https://github.com/firepress-org/bashlava/commit/9412729) Update bashlava to version 0.14.3 /Dockerfile
+- [dda0ef3](https://github.com/firepress-org/bashlava/commit/dda0ef3) bypass title-accronyms
+- [cda2913](https://github.com/firepress-org/bashlava/commit/cda2913) update changelog
+- [233ad6](https://github.com/firepress-org/bashlava/commit/233ad6) add bashlava_help.md to gitignore 
+- [a5c323d](https://github.com/firepress-org/bashlava/commit/a5c323d) update our backlog
+- [f8189fa](https://github.com/firepress-org/bashlava/commit/f8189fa) rm fct title-accronyms
+- [8f4733d](https://github.com/firepress-org/bashlava/commit/8f4733d) Note to backlog
+
+### 🔍 Compare
+- ... with previous release: [0.14.2 <> 0.14.3](https://github.com/firepress-org/bashlava/compare/0.14.2...0.14.3)
+
+## 0.14.2 (2020-03-01)
+### ⚡️ Updates
+- [6be7715](https://github.com/firepress-org/bashlava/commit/6be7715) Update bashlava to version 0.14.2 /CHANGELOG
+
+### 🔍 Compare
+- ... with previous release: [0.14.1 <> 0.14.2](https://github.com/firepress-org/bashlava/compare/0.14.1...0.14.2)
 
 ## 0.14.1 (2020-02-27)
 ### ⚡️ Updates
