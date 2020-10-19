@@ -170,7 +170,7 @@ function release {
 
 # prepared release
   release_message1="Refer to [CHANGELOG.md](https://github.com/${github_user}/${app_name}/blob/master/CHANGELOG.md) for details about this release."
-  release_message2="Automatically released with [bashLaVa](https://github.com/firepress-org/bashlava)."
+  release_message2="Gracefully released using [bashLaVa](https://github.com/firepress-org/bashlava)."
 
 # push release
   hub release create -oc \
