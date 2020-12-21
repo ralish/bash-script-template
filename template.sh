@@ -136,7 +136,9 @@ function script_init() {
 # DESC: Initialise colour variables
 # ARGS: None
 # OUTS: Read-only variables with ANSI control codes
-# NOTE: If --no-colour was set the variables will be empty
+# NOTE: If --no-colour was set the variables will be empty. The output of the
+#       $ta_none variable after each tput is redundant during normal execution,
+#       but ensures the terminal output isn't mangled when running with xtrace.
 # shellcheck disable=SC2034
 function colour_init() {
     if [[ -z ${no_colour-} ]]; then
