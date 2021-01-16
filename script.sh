@@ -12,11 +12,17 @@ if [[ ${DEBUG-} =~ ^1|yes|true$ ]]; then
     set -o xtrace       # Trace the execution of the script (debug)
 fi
 
-# A better class of script...
-set -o errexit          # Exit on most errors (see the manual)
-set -o errtrace         # Make sure any error trap is inherited
-set -o nounset          # Disallow expansion of unset variables
-set -o pipefail         # Use last non-zero exit code in a pipeline
+# Only enable these shell behaviours if we're not being sourced
+# Approach via: https://stackoverflow.com/a/28776166/8787985
+if ! (return 0 2> /dev/null); then
+    # A better class of script...
+    set -o errexit      # Exit on most errors (see the manual)
+    set -o nounset      # Disallow expansion of unset variables
+    set -o pipefail     # Use last non-zero exit code in a pipeline
+fi
+
+# Enable errtrace or the error trap handler will not work as expected
+set -o errtrace         # Ensure the error trap handler is inherited
 
 # DESC: Usage help
 # ARGS: None
@@ -64,9 +70,6 @@ function parse_params() {
 # ARGS: $@ (optional): Arguments provided to the script
 # OUTS: None
 function main() {
-    # shellcheck source=source.sh
-    source "$(dirname "${BASH_SOURCE[0]}")/source.sh"
-
     trap script_trap_err ERR
     trap script_trap_exit EXIT
 
@@ -77,7 +80,13 @@ function main() {
     #lock_init system
 }
 
-# Make it rain
-main "$@"
+# shellcheck source=source.sh
+source "$(dirname "${BASH_SOURCE[0]}")/source.sh"
+
+# Invoke main with args if not sourced
+# Approach via: https://stackoverflow.com/a/28776166/8787985
+if ! (return 0 2> /dev/null); then
+    main "$@"
+fi
 
 # vim: syntax=sh cc=80 tw=79 ts=4 sw=4 sts=4 et sr
