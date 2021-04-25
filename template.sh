@@ -128,12 +128,13 @@ function script_exit() {
 #       caveat applies to both the $script_dir and $script_name variables.
 # shellcheck disable=SC2034
 function script_init() {
-    # Useful paths
+    # Useful variables
     readonly orig_cwd="$PWD"
-    readonly script_path="${BASH_SOURCE[0]}"
-    readonly script_dir="$(dirname "$script_path")"
-    readonly script_name="$(basename "$script_path")"
     readonly script_params="$*"
+    readonly script_path="${BASH_SOURCE[0]}"
+    script_dir="$(dirname "$script_path")"
+    script_name="$(basename "$script_path")"
+    readonly script_dir script_name
 
     # Important to always set as we use it in the exit handler
     # shellcheck disable=SC2155
@@ -232,7 +233,8 @@ function colour_init() {
 function cron_init() {
     if [[ -n ${cron-} ]]; then
         # Redirect all output to a temporary file
-        readonly script_output="$(mktemp --tmpdir "$script_name".XXXXX)"
+        script_output="$(mktemp --tmpdir "$script_name".XXXXX)"
+        readonly script_output
         exec 3>&1 4>&2 1> "$script_output" 2>&1
     fi
 }
