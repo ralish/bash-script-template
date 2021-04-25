@@ -122,6 +122,7 @@ function script_init() {
     readonly script_params="$*"
 
     # Important to always set as we use it in the exit handler
+    # shellcheck disable=SC2155
     readonly ta_none="$(tput sgr0 2> /dev/null || true)"
 }
 
@@ -131,7 +132,7 @@ function script_init() {
 # NOTE: If --no-colour was set the variables will be empty. The output of the
 #       $ta_none variable after each tput is redundant during normal execution,
 #       but ensures the terminal output isn't mangled when running with xtrace.
-# shellcheck disable=SC2034
+# shellcheck disable=SC2034,SC2155
 function colour_init() {
     if [[ -z ${no_colour-} ]]; then
         # Text attributes
