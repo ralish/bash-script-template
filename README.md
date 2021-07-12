@@ -3,6 +3,8 @@ bash-script-template
 
 [![license](https://img.shields.io/github/license/ralish/bash-script-template)](https://choosealicense.com/licenses/mit/)
 
+[![Open in Visual Studio Code](https://open.vscode.dev/badges/open-in-vscode.svg)](https://open.vscode.dev/ralish/bash-script-template)
+
 A *Bash* scripting template incorporating best practices & several useful functions.
 
 - [Motivation](#motivation)
