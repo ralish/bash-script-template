@@ -609,6 +609,11 @@ function release-read {
   #
 #
 
+# see also:
+#Duplicating a repository To duplicate a repository without forking it, 
+# you can run a special clone command, then mirror-push to the new repository.
+# https://docs.github.com/en/free-pro-team@latest/github/creating-cloning-and-archiving-repositories/duplicating-a-repository
+
 function rebase-theme {
 # Syncing a fork, update from a forked
 # wip-sync-origin-from-upstream
