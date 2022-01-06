@@ -1143,7 +1143,7 @@ function App_DefineVariables {
 
 #	docker images
   docker_img_figlet="devmtl/figlet:1.1"
-  docker_img_glow="devmtl/glow:0.2.0"
+  docker_img_glow="devmtl/glow:0.3.0"
 
 #	Define color for echo prompts:
   export col_std="\e[39m——>\e[39m"
