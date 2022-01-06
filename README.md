@@ -81,7 +81,7 @@ Assuming your $path is `/usr/local/bin`
 ## Requirements
 
 - A Mac. I didn't test BashLaVa on other systems. *Let's me know if you want to help for this :)*
-- [Docker](https://docs.docker.com/install/): (markdown viewer, password generator, lint checker, etc.)
+- [Docker](https://docs.docker.com/install/): (needed for markdown viewer, password generator, lint checker, etc.)
 - [Hub](https://github.com/github/hub#installation): needed to push release to Github.
 - nano (brew install nano): needed to edit your changelog when the system prompt.
 

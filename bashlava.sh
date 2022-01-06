@@ -526,6 +526,7 @@ function test-bashlava {
 
   echo &&\
   echo "Configs for this git repo:" &&\
+  App_Get_var_from_dockerfile &&\
   my_message="${app_name} < app_name" App_Blue
   my_message="${app_version} < app_version" App_Blue
   my_message="${app_release} < app_release" App_Blue
@@ -959,9 +960,9 @@ function App_Is_required_apps_installed {
     my_message="FATAL: Please open an issue for this behavior (err_f26)" App_Pink && App_Stop
   fi
 # docker
-  if [[ $(docker version | grep -c "Client: Docker Engine") == "1" ]]; then
+  if [[ $(docker version | grep -c "Docker Engine - Community") == "1" ]]; then
     my_message="$(docker --version) is installed." App_Blue
-  elif [[ $(docker version | grep -c "Client: Docker Engine") != "1" ]]; then
+  elif [[ $(docker version | grep -c "Docker Engine - Community") != "1" ]]; then
     my_message="Docker is not installed. https://github.com/firepress-org/bash-script-template#requirements" App_Pink
   else
     my_message="FATAL: Please open an issue for this behavior (err_f27)" App_Pink && App_Stop
@@ -1141,7 +1142,7 @@ function App_DefineVariables {
   _commit_message="not-set"
 
 #	docker images
-  docker_img_figlet="devmtl/figlet:1.0"
+  docker_img_figlet="devmtl/figlet:1.1"
   docker_img_glow="devmtl/glow:0.2.0"
 
 #	Define color for echo prompts:
