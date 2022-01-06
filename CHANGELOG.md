@@ -7,6 +7,16 @@ Status template:
 
 # Releases
 
+## 0.15.0 (2022-01-06)
+### ⚡️ Updates
+- [1230ad0](https://github.com/firepress-org/bashlava/commit/1230ad0) update
+- [aa129ee](https://github.com/firepress-org/bashlava/commit/aa129ee) Update bashlava to version 0.15.0 /Dockerfile
+- [796c490](https://github.com/firepress-org/bashlava/commit/796c490) update fct test-bashlava
+- [0d060a7](https://github.com/firepress-org/bashlava/commit/0d060a7) add comment
+
+### 🔍 Compare
+- ... with previous release: [0.14.6 <> 0.15.0](https://github.com/firepress-org/bashlava/compare/0.14.6...0.15.0)
+
 ## 0.14.6 (2020-10-19)
 ### ⚡️ Updates
 - [559dd58](https://github.com/firepress-org/bashlava/commit/559dd58) typo in CHANGELOG
