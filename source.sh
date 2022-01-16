@@ -350,6 +350,7 @@ function check_superuser() {
     if [[ $EUID -eq 0 ]]; then
         superuser=true
     elif [[ -z ${1-} ]]; then
+        # shellcheck disable=SC2310
         if check_binary sudo; then
             verbose_print 'Sudo: Updating cached credentials ...'
             if ! sudo -v; then
