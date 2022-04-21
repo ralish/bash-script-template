@@ -106,25 +106,6 @@ function master {
 # next step is to: 'release'
 }
 
-function master-nosq {
-  App_Is_edge
-  App_Is_commit_unpushed
-  App_Are_files_existing
-  App_Is_required_apps_installed
-
-  App_Show_version_from_three_sources
-
-# Update our local state
-  git checkout master &&\
-  git pull origin master &&\
-# rebase
-  git rebase edge &&\
-
-  App_Changelog_Update
-
-# next step is: release
-}
-
 function tag { #core> .... "tag" use release version as the tag version + push the tag + open the release page
   App_Are_files_existing
   App_Is_required_apps_installed
@@ -236,7 +217,7 @@ function deploy-nosq {
 
 # Let's do our full release cycle
   version
-  master-nosq
+  #master-nosq (deprecated)
   release
 }
 
@@ -273,9 +254,6 @@ function v { #core> ...... "version" update your app | usage: v 1.50.1
 }
 function m { #core> ...... "master" git pull + show logs"
   master
-}
-function m- { #core> ..... "master-" like m but with (no squash) | (no attr)
-  master-nosq
 }
 function r { #core> ...... "release" + push tag + push release on GitHub | (no attr)
   release
