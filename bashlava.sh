@@ -41,7 +41,7 @@ function commit {
 }
 
 function version {
-# The version is tracked in a Dockerfile (it's cool if your porject don't use docker)
+# The version is tracked in a Dockerfile (it's cool if your project don't use docker)
 # For BashLaVa, this Dockerfile is just a config-env file
   App_Is_edge
   App_Is_commit_unpushed
@@ -95,42 +95,14 @@ function master {
   App_Is_required_apps_installed
 
   App_Show_version_from_three_sources
-  App_Is_input_2
-
-# if this function is running as a child of "deploy"
-# we need to overide input_2
-
-  if [[ "${_flag_deploy_commit_message}" != "not-set" ]]; then
-    _commit_message="${_flag_deploy_commit_message}"
-  elif [[ "${_flag_deploy_commit_message}" == "not-set" ]]; then
-    _commit_message="${input_2}"
-  else
-    my_message="FATAL: Please open an issue for this behavior (err_f11)" App_Pink && App_Stop
-  fi
 
 # Update our local state
   git checkout master &&\
   git pull origin master &&\
+  log
 
-# by using mrg_edge_2_master we create one clean squashed commit
-# remove and create mrg_edge_2_master
-  git branch -D mrg_edge_2_master || true &&\
-  git checkout -b mrg_edge_2_master &&\
-# no need to push it to origin (local branch only)
-
-# merge & squash edge into mrg_edge_2_master
-  git merge --squash edge &&\
-  git commit . -m "${_commit_message} (squash)" &&\
-
-# back to master
-  git checkout master &&\
-# rebase (commits are already squashed at this point)
-  git rebase mrg_edge_2_master &&\
-# clean up
-  git branch -D mrg_edge_2_master || true &&\
-
-  App_Changelog_Update
-
+# App_Changelog_Update
+# next step is to: tag
 # next step is to: 'release'
 }
 
@@ -339,7 +311,7 @@ function h { #util> ...... "help" alias are also set to: -h, --help, help (no at
   help
 }
 function log { #util> .... "log" Show me the lastest commits (no attr)
-  git log --all --decorate --oneline --graph --pretty=oneline | head -n 20
+  git log --all --decorate --oneline --graph --pretty=oneline | head -n 6
 }
 function hash { #util> ... "hash" Show me the latest hash commit (no attr)
   git rev-parse HEAD && git rev-parse --short HEAD
@@ -963,7 +935,7 @@ function App_Is_required_apps_installed {
   if [[ $(docker version | grep -c "Docker Engine - Community") == "1" ]]; then
     my_message="$(docker --version) is installed." App_Blue
   elif [[ $(docker version | grep -c "Docker Engine - Community") != "1" ]]; then
-    my_message="Docker is not installed. https://github.com/firepress-org/bash-script-template#requirements" App_Pink
+    my_message="Docker is not running. https://github.com/firepress-org/bash-script-template#requirements" App_Warning
   else
     my_message="FATAL: Please open an issue for this behavior (err_f27)" App_Pink && App_Stop
   fi

@@ -4,8 +4,8 @@
 ###################################
 
 ARG APP_NAME="bashlava"
-ARG VERSION="0.15.0"
-ARG RELEASE="0.15.0"
+ARG VERSION="1.0.0"
+ARG RELEASE="1.0.0"
 ARG GITHUB_USER="firepress-org"
 
 ###################################
