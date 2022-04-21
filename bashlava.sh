@@ -120,43 +120,6 @@ function tag {
   open ${url_to_release}
 }
 
-function release {
-# at this point or changelog is clean.
-  App_Is_master
-  App_Are_files_existing
-  App_Is_required_apps_installed
-
-  App_Get_var_from_dockerfile
-
-# push updates
-  git commit . -m "Update ${app_name} to version ${app_release} /CHANGELOG" &&\
-  git push origin master &&\
-
-# Tag our release
-  git tag ${app_release} && git push --tags && echo
-
-# prepared release
-  release_message1="Refer to [CHANGELOG.md](https://github.com/${github_user}/${app_name}/blob/master/CHANGELOG.md) for details about this release."
-  release_message2="Gracefully released using [bashLaVa](https://github.com/firepress-org/bashlava)."
-
-# push release
-  hub release create -oc \
-    -m "${app_release}" \
-    -m "${release_message1}" \
-    -m "${release_message2}" \
-    -t "$(git rev-parse HEAD)" \
-    "${app_release}" &&\
-
-  echo && my_message="https://github.com/${github_user}/${app_name}/releases/tag/${app_release}" App_Blue &&\
-
-# reset dev branch
-  edge &&\
-
-# Let's cheers up a bit!
-  clear && figlet_message="Good job!" App_figlet &&\
-  figlet_message="${app_release} is up." App_figlet
-}
-
 #
   #
     #
@@ -197,7 +160,7 @@ function deploy {
 # Let's do our full release cycle
   version
   master
-  release
+  #release deprecated
 }
 
 function deploy-nosq {
