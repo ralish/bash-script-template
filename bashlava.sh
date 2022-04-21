@@ -14,7 +14,6 @@
 #
 # v   ...... "version"
 # m   ...... "master"
-# r   ...... "release"
 #
 ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### #
           #
@@ -163,9 +162,6 @@ function v { #core> ...... "version" update your app | usage: v 1.50.1
 }
 function m { #core> ...... "master" git pull + show logs
   master
-}
-function r { #core> ...... "release" + push tag + push release on GitHub | (no attr)
-  release
 }
 function rr { #util> ..... "release read" Show release from Github (attr is opt)
   release-read
