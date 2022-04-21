@@ -18,26 +18,6 @@ It's for developers that use git commands regularly. BashLaVa makes following gi
 
 In other word, the the **agile release cycle** should be something you master. BashLaVa helps you big time to get there.
 
-## Abstraction
-
-The abstraction is deep. In *expert-mode* *(it means, you really know what you do)*, you can accomplish all these steps in **one command**:
-
-Context: you made few commits on your DEV branch. You are ready to release. So you need to:
-
-1. **version** the project
-2. **squash** + **rebase** + **merge** code to master (not squashing is possible as well)
-3. Generate or **update the CHANGELOG**
-4. **tag** with version & **push tag** to master branch
-5. push the **release** on GitHub with a template message
-6. **reset** your DEV (edge) branch (to avoid any conflicts)
-7. Back to work for the next release!
-
-In. One. Command.
-
-&nbsp;
-
-![bashLaVa-help](https://user-images.githubusercontent.com/6694151/74569005-5ecd3300-4f47-11ea-9cbe-a41466b34229.jpg)
-
 &nbsp;
 
 ## BashLaVa Demo
@@ -53,20 +33,19 @@ m-
 r
 ```
 
-
 **It also allows you**:
 
 - quickly set your custom scripts (Videos WIP)
 - quickly write help function
-- hack around  as it's all built with bash
+- hack around as it's all built with bash
 
 ## Installation
 
 Step-by-step on YouTube (video wip)
 
-- 1) git **clone** this repo
+- 1. git **clone** this repo
 
-- 2) **create a symlink** to your PATH for both files.
+- 2. **create a symlink** to your PATH for both files.
 
 ```
 ln -s /Volumes/myuser/Github/firepress-org/bashlava/bashlava.sh /usr/local/bin/bashlava.sh
@@ -76,11 +55,11 @@ ln -s /Volumes/myuser/Github/firepress-org/bashlava/.bashcheck.sh /usr/local/bin
 
 Assuming your $path is `/usr/local/bin`
 
-- 3) **Test your installation**. run: `bashlava.sh test`
+- 3. **Test your installation**. run: `bashlava.sh test`
 
 ## Requirements
 
-- A Mac. I didn't test BashLaVa on other systems. *Let's me know if you want to help for this :)*
+- A Mac. I didn't test BashLaVa on other systems. _Let's me know if you want to help for this :)_
 - [Docker](https://docs.docker.com/install/): (needed for markdown viewer, password generator, lint checker, etc.)
 - [Hub](https://github.com/github/hub#installation): needed to push release to Github.
 - nano (brew install nano): needed to edit your changelog when the system prompt.
@@ -121,19 +100,10 @@ bashlava.sh list
 
    Core functions
 
-   Core functions
-
- c   ...... "commit" all changes + git push | usage: c "FEAT: new rule to avoid this glitch"
+ c   ...... "commit" all changes + git push | usage: c "FEAT: new rule to avoid this glitch
  v   ...... "version" update your app | usage: v 1.50.1
- m   ...... "master" (with squash) rebase + merge + update CHANGELOG | usage: m "UPDATE chap 32 + FIX typo"
- m-   ..... "master-" like m but with (no squash) | (no attr)
- r   ...... "release" + push tag + push release on GitHub | (no attr)
-
-
-   Expert mode
-
- d   ...... "deploy" all steps (v,m,r) in one command (with squash) | usage: d 3.5.2 "UPDATE chap 32 + FIX typo"
- d-   ..... "deploy" all steps (v,m-,r) in one command (no squash) | usage: d- 3.5.2
+ m   ...... "master" git pull + show logs
+ t   ...... "tag" it uses release version as the tag version + push the tag + open the release page
 
 
    Utilities functions
@@ -148,13 +118,13 @@ bashlava.sh list
  l   ...... "log" show me the latest commits (no attr)
  list   ... "list" all core functions (no attr)
  log   .... "log" Show me the lastest commits (no attr)
- m-m   .... "master-merge" from edge. Does not update changelog | usage: m- "UPDATE chap 32 + FIX typo"
+ m-m   .... "master-merge" from edge. Does not update changelog | usage: m- "UPDATE chap 32 + FIX typo
  mdv   .... "markdown viewer" | usage: mdv README.md
  oe   ..... "out edge" Basic git checkout (no attr)
  om   ..... "out master" Basic git checkout (no attr)
  rr   ..... "release read" Show release from Github (attr is opt)
  s   ...... "status" show me if there is something to commit (no attr)
- sq   ..... "squash" commits | usage: sq 3 "Add fct xyz"
+ sq   ..... "squash" commits | usage: sq 3 "Add fct xyz
  test   ... "test" test if requirements for bashLaVa are meet (no attr)
  tr   ..... "tag read" tag on master branch (no attr)
  vr   ..... "version read" show app's version from Dockerfile (no attr)
@@ -176,7 +146,6 @@ bashlava.sh list
 If you are looking for an alternative to WordPress, [Ghost](https://firepress.org/en/faq/#what-is-ghost) might be the CMS you are looking for. Check out our [hosting plans](https://firepress.org/en).
 
 ![ghost-v2-review](https://user-images.githubusercontent.com/6694151/64218253-f144b300-ce8e-11e9-8d75-312a2b6a3160.gif)
-
 
 ## Why, Contributing, License
 
@@ -203,7 +172,7 @@ The power of communities pull request and forks means that `1 + 1 = 3`. You can 
 4. Push to the branch: `git push origin my-new-feature`
 5. Submit a pull request
 
-Check this post for more details: [Contributing to our Github project](https://pascalandy.com/blog/contributing-to-our-github-project/). Also, by contributing you agree to the [Contributor Code of Conduct on GitHub](https://pascalandy.com/blog/contributor-code-of-conduct-on-github/). 
+Check this post for more details: [Contributing to our Github project](https://pascalandy.com/blog/contributing-to-our-github-project/). Also, by contributing you agree to the [Contributor Code of Conduct on GitHub](https://pascalandy.com/blog/contributor-code-of-conduct-on-github/).
 
 ## License
 

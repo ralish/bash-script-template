@@ -39,14 +39,6 @@ input_2="bashlava_help.md"
 App_glow && rm bashlava_help.md || true
 }
 
-function title-expert-mode {
-cat <<EOF > bashlava_help.md
-# Expert mode
-EOF
-input_2="bashlava_help.md"
-App_glow && rm bashlava_help.md || true
-}
-
 function help-installation {
 cat <<EOF > bashlava_help.md
 # help-installation

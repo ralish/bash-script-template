@@ -123,26 +123,6 @@ function tag {
           #
 ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### #
 #
-# GIT WORKFLOW (Expert mode)
-# Do the full agile release cycle in one command (no prompt)
-#
-### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### #
-          #
-        #
-      #
-    #
-  #
-#
-
-
-#
-  #
-    #
-      #
-        #
-          #
-### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### #
-#
 # OFFICIAL SHORTCUTS
 #
 ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### #
@@ -327,9 +307,6 @@ function list-functions {
 
   title-core &&\
   cat ${my_path}/${bashlava_executable} | awk '/#core> /' | sed '$ d' | awk '{$1="";$3="";$4="";print $0}' | sed '/\/usr\/local\/bin\//d' && echo &&\
-
-  title-expert-mode &&\
-  cat ${my_path}/${bashlava_executable} | awk '/#exp> /' | sed '$ d' | awk '{$1="";$3="";$4="";print $0}' | sed '/\/usr\/local\/bin\//d' && echo &&\
 
   title-utilities &&\
   cat ${my_path}/${bashlava_executable} | awk '/#util> /' | sed '$ d' | awk '{$1="";$3="";$4="";print $0}' | sort -k2 -n | sed '/\/usr\/local\/bin\//d' && echo
