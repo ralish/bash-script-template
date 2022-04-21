@@ -106,7 +106,7 @@ function master {
 # next step is to: 'release'
 }
 
-function tag { #core> .... "tag" use release version as the tag version + push the tag + open the release page
+function tag {
   App_Are_files_existing
   App_Is_required_apps_installed
 
@@ -288,6 +288,9 @@ function m-m { #util> .... "master-merge" from edge. Does not update changelog |
 }
 function sq { #util> ..... "squash" commits | usage: sq 3 "Add fct xyz"
   squash
+}
+function t { #core> ...... "tag" use release version as the tag version + push the tag + open the release page
+  tag
 }
 function e { #util> ...... "edge" recrete a fresh edge branch from master (no attr)
   edge
