@@ -139,50 +139,6 @@ function tag {
   #
 #
 
-function deploy {
-  App_Is_edge
-  App_Is_commit_unpushed
-  App_Are_files_existing
-  App_Is_required_apps_installed
-
-  App_Is_input_2
-  App_Is_version_syntax_valid
-
-# must have a message (to squash commit)
-  App_Is_input_3
-
-# bypass CHANGELOG prompt
-  _flag_bypass_changelog_prompt="true"
-
-# inject message to work with fct 'master'
-  _flag_deploy_commit_message=${input_3}
-
-# Let's do our full release cycle
-  version
-  master
-  #release deprecated
-}
-
-function deploy-nosq {
-  App_Is_edge
-  App_Is_commit_unpushed
-  App_Are_files_existing
-  App_Is_required_apps_installed
-
-  App_Is_input_2
-  App_Is_version_syntax_valid
-
-# must NOT have a message
-  App_Is_input_3_empty_as_it_should
-
-# bypass CHANGELOG prompt
-  _flag_bypass_changelog_prompt="true"
-
-# Let's do our full release cycle
-  version
-  #master-nosq (deprecated)
-  release
-}
 
 #
   #
@@ -202,20 +158,14 @@ function deploy-nosq {
   #
 #
 
-function d { #exp> ...... "deploy" all steps (v,m,r) in one command (with squash) | usage: d 3.5.2 "UPDATE chap 32 + FIX typo"
-  deploy
-}
-function d- { #exp> ..... "deploy" all steps (v,m-,r) in one command (no squash) | usage: d- 3.5.2
-  deploy-nosq
-}
-function c { #core> ...... "commit" all changes + git push | usage: c "FEAT: new rule to avoid this glitch"
+function c { #core> ...... "commit" all changes + git push | usage: c "FEAT: new rule to avoid this glitch
   #core>
   commit
 }
 function v { #core> ...... "version" update your app | usage: v 1.50.1
   version
 }
-function m { #core> ...... "master" git pull + show logs"
+function m { #core> ...... "master" git pull + show logs
   master
 }
 function r { #core> ...... "release" + push tag + push release on GitHub | (no attr)
@@ -246,13 +196,13 @@ function oe { #util> ..... "out edge" Basic git checkout (no attr)
 function l { #util> ...... "log" show me the latest commits (no attr)
   log
 }
-function m-m { #util> .... "master-merge" from edge. Does not update changelog | usage: m- "UPDATE chap 32 + FIX typo"
+function m-m { #util> .... "master-merge" from edge. Does not update changelog | usage: m- "UPDATE chap 32 + FIX typo
   master-merge
 }
-function sq { #util> ..... "squash" commits | usage: sq 3 "Add fct xyz"
+function sq { #util> ..... "squash" commits | usage: sq 3 "Add fct xyz
   squash
 }
-function t { #core> ...... "tag" use release version as the tag version + push the tag + open the release page
+function t { #core> ...... "tag" it uses release version as the tag version + push the tag + open the release page
   tag
 }
 function e { #util> ...... "edge" recrete a fresh edge branch from master (no attr)
