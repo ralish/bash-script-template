@@ -13,12 +13,8 @@
 # c   ...... "commit"
 #
 # v   ...... "version"
-# m   ...... "master" (with squash)
-# m-   ..... "master" (no squash)
+# m   ...... "master"
 # r   ...... "release"
-#
-# d   ...... "deploy" (with squash)
-# d-   ..... "deploy" (no squash)
 #
 ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### #
           #
@@ -546,8 +542,6 @@ function rebase-theme {
 # Once all conflicts are resolved
   bashlava.sh c "Fixed conflicts / merged from 'nurui-from-vendor'"
 
-# go for the full release cycle 'deploy'
-  d- 3.5.1
 }
 
 
