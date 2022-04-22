@@ -1,28 +1,5 @@
 #!/usr/bin/env bash
 
-#
-  #
-    #
-      #
-        #
-          #
-### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### #
-#
-# GIT WORKFLOW
-#
-# c   ...... "commit"
-#
-# v   ...... "version"
-# m   ...... "master"
-#
-### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### #
-          #
-        #
-      #
-    #
-  #
-#
-
 function commit {
 # if no attribute were past, well... let's see what changed:
   if [[ "${input_2}" == "not-set" ]]; then
@@ -83,17 +60,18 @@ function version {
 # next step is to: 'm' or 'm-'
 }
 
-function master {
+function mainbranch {
   App_Is_edge
   App_Is_commit_unpushed
   App_Are_files_existing
   App_Is_required_apps_installed
+  App_Get_var_from_dockerfile
 
   App_Show_version_from_three_sources
 
 # Update our local state
-  git checkout master &&\
-  git pull origin master &&\
+  git checkout ${default_branch} &&\
+  git pull origin ${default_branch} &&\
   log
 
 # App_Changelog_Update
@@ -140,13 +118,13 @@ function c { #core> ...... "commit" all changes + git push | usage: c "FEAT: new
 function v { #core> ...... "version" update your app | usage: v 1.50.1
   version
 }
-function m { #core> ...... "master" git pull + show logs
-  master
+function m { #core> ...... "mainbranch or main" branch git pull + show logs
+  mainbranch
 }
 function rr { #util> ..... "release read" Show release from Github (attr is opt)
   release-read
 }
-function tr { #util> ..... "tag read" tag on master branch (no attr)
+function tr { #util> ..... "tag read" tag on mainbranch (no attr)
   App_Is_input_2_empty_as_it_should
   tag-read
 }
@@ -159,8 +137,9 @@ function ci { #util> ..... "continous integration" CI status from Github Actions
   App_Is_input_2_empty_as_it_should
   continuous-integration-status
 }
-function om { #util> ..... "out master" Basic git checkout (no attr)
-  git checkout master
+function om { #util> ..... "out to mainbranch Basic git checkout (no attr)
+  App_Get_var_from_dockerfile
+  git checkout ${default_branch}
 }
 function oe { #util> ..... "out edge" Basic git checkout (no attr)
   git checkout edge
@@ -174,7 +153,7 @@ function sq { #util> ..... "squash" commits | usage: sq 3 "Add fct xyz
 function t { #core> ...... "tag" it uses release version as the tag version + push the tag + open the release page
   tag
 }
-function e { #util> ...... "edge" recrete a fresh edge branch from master (no attr)
+function e { #util> ...... "edge" recrete a fresh edge branch from mainbranch (no attr)
   edge
 }
 function s { #util> ...... "status" show me if there is something to commit (no attr)
@@ -244,7 +223,7 @@ function edge {
   git branch -D edge || true &&\
   git checkout -b edge &&\
   git push --set-upstream origin edge -f &&\
-  my_message="<edge> was freshly branched out from master" App_Blue
+  my_message="<edge> was freshly branched out from ${default_branch}" App_Blue
 }
 
 function squash {
@@ -275,14 +254,8 @@ function list-functions {
   title-utilities &&\
   cat ${my_path}/${bashlava_executable} | awk '/#util> /' | sed '$ d' | awk '{$1="";$3="";$4="";print $0}' | sort -k2 -n | sed '/\/usr\/local\/bin\//d' && echo
 
-  #title-accronyms
-  #echo " attr ==> attribute(s)"
-  #echo " opt ===> optional"
-  #echo " m =====> master branch"
-  #echo " e =====> edge branch (DEV branch if you prefer)"
-
-#cat ${my_path}/${bashlava_executable} | awk '/function /' | awk '{print $2}' | sort -k2 -n | sed '/App_/d' | sed '/main/d' | sed '/\/usr\/local\/bin\//d' | sed '/wip-/d'
-#If needed, you can list your add-on fct here as well. We don't list them by default to minimize cluter.
+  #cat ${my_path}/${bashlava_executable} | awk '/function /' | awk '{print $2}' | sort -k2 -n | sed '/App_/d' | sed '/main/d' | sed '/\/usr\/local\/bin\//d' | sed '/wip-/d'
+  #If needed, you can list your add-on fct here as well. We don't list them by default to minimize cluter.
 }
 
 function shortner-url {
@@ -355,7 +328,7 @@ function test-bashlava {
 
 function tag-read { 
   latest_tag="$(git describe --tags --abbrev=0)"
-  my_message="${latest_tag} < tag version found on master branch" App_Blue
+  my_message="${latest_tag} < tag version found on mainbranch" App_Blue
 }
 function status {
   git status
@@ -478,10 +451,7 @@ function rebase-theme {
 
 # Once all conflicts are resolved
   bashlava.sh c "Fixed conflicts / merged from 'nurui-from-vendor'"
-
 }
-
-
 
 function wip-pr {
 # tk work in progress
@@ -497,11 +467,11 @@ function wip-pr {
   hub pull-request -b "${submit_pr_to}" -h "${submit_pr_from}" -m "${hub_message}"
 
 # Something went wrong?
-# Reset to Upstream. This will delete all your local changes to master
-  #git reset --hard upstream/master
+# Reset to Upstream. This will delete all your local changes to mainbranch
+  #git reset --hard upstream/${default_branch}
 
-# take care, this will delete all your changes on your forked master
-  #git push origin master --force
+# take care, this will delete all your changes on your forked mainbranch
+  #git push origin ${default_branch} --force
 }
 
 
@@ -526,7 +496,7 @@ function wip-pr {
 #
 
 function App_Changelog_Update {
-  App_Is_master
+  App_Is_mainbranch
   App_RemoveTmpFiles
 
 
@@ -610,12 +580,12 @@ function App_RemoveTmpFiles {
   rm ~/temp/tmpfile4 > /dev/null 2>&1
 }
 
-function App_Is_master {
+function App_Is_mainbranch {
   currentBranch=$(git rev-parse --abbrev-ref HEAD)
-  if [[ "${currentBranch}" == "master" ]]; then
+  if [[ "${currentBranch}" == "${default_branch}" ]]; then
     echo "Good, lets continue" > /dev/null 2>&1
   else
-    my_message="You must be on <master> branch to perform this action (ERR5681)" App_Pink
+    my_message="You must be on <${default_branch}> branch to perform this action (ERR5681)" App_Pink
   fi
 }
 function App_Is_edge {
@@ -817,23 +787,28 @@ function App_Get_var_from_dockerfile {
   app_version=$(cat Dockerfile | grep VERSION= | head -n 1 | grep -o '".*"' | sed 's/"//g')
   app_release=$(cat Dockerfile | grep RELEASE= | head -n 1 | grep -o '".*"' | sed 's/"//g')
   github_user=$(cat Dockerfile | grep GITHUB_USER= | head -n 1 | grep -o '".*"' | sed 's/"//g')
+  default_branch=$(cat Dockerfile | grep DEFAULT_BRANCH= | head -n 1 | grep -o '".*"' | sed 's/"//g')
 
   # Validate vars are not empty
   if [[ -z "${app_name}" ]] ; then    #if empty
     clear
-    my_message="Can't find APP_NAME in the Dockerfile (ERR5481)" App_Pink && App_Stop
+    my_message="Can't find variable APP_NAME in the Dockerfile (ERR5481)" App_Pink && App_Stop
 
   elif [[ -z "${app_version}" ]] ; then    #if empty
     clear
-    my_message="Can't find VERSION in the Dockerfile (ERR5482)" App_Pink && App_Stop
+    my_message="Can't find variable VERSION in the Dockerfile (ERR5482)" App_Pink && App_Stop
 
   elif [[ -z "${app_release}" ]] ; then    #if empty
     clear
-    my_message="Can't find RELEASE in the Dockerfile (ERR5483)" App_Pink && App_Stop
+    my_message="Can't find variable RELEASE in the Dockerfile (ERR5483)" App_Pink && App_Stop
 
   elif [[ -z "${github_user}" ]] ; then    #if empty
     clear
-    my_message="Can't find GITHUB_USER in the Dockerfile (ERR5484)" App_Pink && App_Stop
+    my_message="Can't find variable GITHUB_USER in the Dockerfile (ERR5484)" App_Pink && App_Stop
+  
+  elif [[ -z "${default_branch}" ]] ; then    #if empty
+    clear
+    my_message="Can't find variable DEFAULT_BRANCH in the Dockerfile (ERR5485)" App_Pink && App_Stop
   fi
 }
 
