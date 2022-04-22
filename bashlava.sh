@@ -83,7 +83,7 @@ function tag {
   App_Are_files_existing
   App_Is_required_apps_installed
 
-  App_Get_var_from_dockerfilebashlava.sh help
+  App_Get_var_from_dockerfile
 
   git tag ${app_release} && git push --tags && echo
 
