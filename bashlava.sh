@@ -168,9 +168,6 @@ function oe { #util> ..... "out edge" Basic git checkout (no attr)
 function l { #util> ...... "log" show me the latest commits (no attr)
   log
 }
-function m-m { #util> .... "master-merge" from edge. Does not update changelog | usage: m- "UPDATE chap 32 + FIX typo
-  master-merge
-}
 function sq { #util> ..... "squash" commits | usage: sq 3 "Add fct xyz
   squash
 }
@@ -230,39 +227,6 @@ function list { #util> ... "list" all core functions (no attr)
     #
   #
 #
-
-function master-merge {
-  App_Is_edge
-  App_Is_commit_unpushed
-  App_Are_files_existing
-  App_Is_required_apps_installed
-
-  App_Is_input_2
-
-# Update our local state
-  git checkout master &&\
-  git pull origin master &&\
-
-# by using mrg_edge_2_master we create one clean squashed commit
-# remove and create mrg_edge_2_master
-  git branch -D mrg_edge_2_master || true &&\
-  git checkout -b mrg_edge_2_master &&\
-  # no need to push it to origin (local branch only)
-
-# merge & squash edge into mrg_edge_2_master
-  git merge --squash edge &&\
-  git commit . -m "${input_2} (squash)" &&\
-
-# back to master
-  git checkout master &&\
-# rebase (commits are already squashed at this point)
-  git rebase mrg_edge_2_master &&\
-  git push origin master &&\
-
-# clean up
-  git branch -D mrg_edge_2_master || true &&\
-  edge
-}
 
 function changelog-read {
   input_2="CHANGELOG.md"
