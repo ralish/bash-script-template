@@ -3,4 +3,4 @@
 gh pr create \
   --fill \
   --assignee "@me" \
-  --local-head --base master 
+  --base firepress-org/bashlava 
