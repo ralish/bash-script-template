@@ -3,4 +3,4 @@
 gh pr create \
   --fill
   --assignee "@me" \
-  --base "https://github.com/firepress-org/bashlava/tree/master" \
+  --base "https://github.com/firepress-org/bashlava/tree/master"
