@@ -220,7 +220,11 @@ function edge {
 # as I'm the only person using 'edge'.
   App_Is_commit_unpushed
 
-  git branch -D edge || true &&\
+  # delete branch
+  git branch -d edge || true &&\
+  # delete branch so there is no need to use the github GUI to delete it
+  git push origin --delete edge || true &&\
+
   git checkout -b edge &&\
   git push --set-upstream origin edge -f &&\
   my_message="<edge> was freshly branched out from ${default_branch}" App_Blue
