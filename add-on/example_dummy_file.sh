@@ -3,4 +3,4 @@
 gh pr create \
   --fill \
   --assignee "@me" \
-  --base master 
+  --local-head --base master 
