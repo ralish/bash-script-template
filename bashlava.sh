@@ -74,9 +74,7 @@ function mainbranch {
   git pull origin ${default_branch} &&\
   log
 
-# App_Changelog_Update
-# next step is to: tag
-# next step is to: 'release'
+# next step is to: tag and release
 }
 
 function tag {
@@ -87,9 +85,7 @@ function tag {
 
   git tag ${app_release} && git push --tags && echo
 
-# We use the github release GUI to create a release
-  url_to_release="https://github.com/firepress-org/ghostfire/releases/new"
-  my_message="Go to: ${url_to_release} to publish release." App_Blue
+  my_message="Next, publish release over: ${url_to_release}" App_Blue
   open ${url_to_release}
 }
 
@@ -772,6 +768,7 @@ function App_release_check_vars {
   url_to_check=${git_repo_url}
   App_Curlurl
 }
+
 function App_Curlurl {
 # must receive var: url_to_check
   UPTIME_TEST=$(curl -Is ${url_to_check} | grep -io OK | head -1);
@@ -792,27 +789,38 @@ function App_Get_var_from_dockerfile {
   app_release=$(cat Dockerfile | grep RELEASE= | head -n 1 | grep -o '".*"' | sed 's/"//g')
   github_user=$(cat Dockerfile | grep GITHUB_USER= | head -n 1 | grep -o '".*"' | sed 's/"//g')
   default_branch=$(cat Dockerfile | grep DEFAULT_BRANCH= | head -n 1 | grep -o '".*"' | sed 's/"//g')
+  github_org=$(cat Dockerfile | grep GITHUB_ORG= | head -n 1 | grep -o '".*"' | sed 's/"//g')
+  dockerhub_user=$(cat Dockerfile | grep DOCKERHUB_USER= | head -n 1 | grep -o '".*"' | sed 's/"//g')
+  github_registery=$(cat Dockerfile | grep GITHUB_REGISTRY= | head -n 1 | grep -o '".*"' | sed 's/"//g')
+
+  # needed for `fct tag`
+  url_to_release="https://github.com/${github_user}/${app_name}/releases/new"
 
   # Validate vars are not empty
   if [[ -z "${app_name}" ]] ; then    #if empty
     clear
     my_message="Can't find variable APP_NAME in the Dockerfile (ERR5481)" App_Pink && App_Stop
-
   elif [[ -z "${app_version}" ]] ; then    #if empty
     clear
     my_message="Can't find variable VERSION in the Dockerfile (ERR5482)" App_Pink && App_Stop
-
   elif [[ -z "${app_release}" ]] ; then    #if empty
     clear
     my_message="Can't find variable RELEASE in the Dockerfile (ERR5483)" App_Pink && App_Stop
-
   elif [[ -z "${github_user}" ]] ; then    #if empty
     clear
     my_message="Can't find variable GITHUB_USER in the Dockerfile (ERR5484)" App_Pink && App_Stop
-  
   elif [[ -z "${default_branch}" ]] ; then    #if empty
     clear
     my_message="Can't find variable DEFAULT_BRANCH in the Dockerfile (ERR5485)" App_Pink && App_Stop
+  elif [[ -z "${github_org}" ]] ; then    #if empty
+    clear
+    my_message="Can't find variable GITHUB_ORG in the Dockerfile (ERR5486)" App_Pink && App_Stop
+  elif [[ -z "${dockerhub_user}" ]] ; then    #if empty
+    clear
+    my_message="Can't find variable DOCKERHUB_USER in the Dockerfile (ERR5487)" App_Pink && App_Stop
+  elif [[ -z "${github_registery}" ]] ; then    #if empty
+    clear
+    my_message="Can't find variable GITHUB_REGISTRY in the Dockerfile (ERR5488)" App_Pink && App_Stop
   fi
 }
 
