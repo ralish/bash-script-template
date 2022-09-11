@@ -1,6 +1,7 @@
 {
     // File paths to language mappings
     "files.associations": {
+        // ShellCheck
         ".shellcheckrc": "properties"
     },
 
