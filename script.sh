@@ -29,7 +29,7 @@ set -o errtrace         # Ensure the error trap handler is inherited
 # OUTS: None
 function script_usage() {
     cat << EOF
-usage: $0 [options] openaudible_library_dir organised_library_dir
+usage: $(basename "$0") [options] openaudible_library_dir organised_library_dir
      -h|--help                  Displays this help
      -v|--verbose               Displays verbose output
     -nc|--no-colour             Disables colour output
