@@ -417,7 +417,7 @@ function run_as_root() {
 # OUTS: None
 function script_usage() {
     cat << EOF
-Usage:
+usage: $0 [options] openaudible_library_dir organised_library_dir
      -h|--help                  Displays this help
      -v|--verbose               Displays verbose output
     -nc|--no-colour             Disables colour output
@@ -430,6 +430,12 @@ EOF
 # OUTS: Variables indicating command-line parameters and options
 function parse_params() {
     local param
+    openaudible_library_dir=
+    organised_library_dir=
+    if [[ $# -eq 0 ]]; then
+        script_usage
+        exit 0
+    fi
     while [[ $# -gt 0 ]]; do
         param="$1"
         shift
@@ -448,10 +454,99 @@ function parse_params() {
                 cron=true
                 ;;
             *)
-                script_exit "Invalid parameter was provided: $param" 1
+                if [[ -z "$openaudible_library_dir" ]]; then
+                    openaudible_library_dir=$(realpath "$param")
+                    if [[ ! -d "$openaudible_library_dir" ]]; then
+                        script_exit "Provided openaudible_library_dir is not a directory: $openaudible_library_dir" 1
+                    fi
+                elif [[ -z "$organised_library_dir" ]]; then
+                    organised_library_dir=$(realpath "$param")
+                    if [[ ! -d "$organised_library_dir" ]]; then
+                        script_exit "Provided organised_library_dir is not a directory: $organised_library_dir" 1
+                    fi
+                else
+                    script_exit "Invalid parameter was provided: $param" 1
+                fi
                 ;;
         esac
     done
+    if [[ -z "$openaudible_library_dir" ]]; then
+        script_exit "Required parameter openaudible_library_dir was not provided" 1
+    fi
+    if [[ -z "$organised_library_dir" ]]; then
+        script_exit "Required parameter organised_library_dir was not provided" 1
+    fi
+}
+
+# DESC: Check if all required dependencies are installed
+# ARGS: None
+# OUTS: None
+function check_dependencies() {
+    check_binary jq true
+    check_binary inotifywait true
+    check_binary sed true
+    check_binary realpath true
+    check_binary basename true
+}
+
+# DESC: Create organised link
+# ARGS: $1 (required): Source file
+#       $2 (required): Target root
+# OUTS: None
+function handle_file() {
+    if [[ $# -lt 2 ]]; then
+        script_exit 'Missing required argument to handle_file()!' 2
+    fi
+
+    local filename_with_extension=$(basename "$1")
+    local filename="${filename_with_extension%.*}"
+
+    local book_json=$(cat "$openaudible_library_dir/books.json" | \
+      jq -r --arg filename "$filename" '.[] | select(.filename == $filename)')
+    if [[ -z "$book_json" ]]; then
+        pretty_print "No entry in $openaudible_library_dir/books.json for $filename" \
+          "$fg_red"
+        return
+    fi
+
+    local author=$(jq --raw-output '.author' <<< "$book_json")
+
+    local link_target="${2}/${author}/"
+
+    local series_name=$(jq -r '.series_name | select(. != null)' \
+      <<< "$book_json")
+    if [[ ! -z "$series_name" ]]; then
+        local series_sequence=$(jq --raw-output '.series_sequence' \
+          <<< "$book_json")
+        local link_target="${link_target}${series_name}/Book ${series_sequence} - "
+    fi
+
+    local release_year=$(jq -r '.release_date' <<< "$book_json" | \
+      sed -r 's/^([[:digit:]]{4})-([[:digit:]]{2})-([[:digit:]]{2})$/\1/')
+    local narrated_by=$(jq -r '.narrated_by' <<< "$book_json")
+    local link_target="${link_target}${release_year} - ${filename} {${narrated_by}}/${filename_with_extension}"
+
+    link "$1" "$link_target"
+}
+
+# DESC: Hardlink source to target
+# ARGS: $1 (required): Source file
+#       $2 (required): Target file
+# OUTS: None
+function link() {
+    if [[ $# -lt 2 ]]; then
+        script_exit 'Missing required argument to link()!' 2
+    fi
+
+    if [[ -f "$2" ]]; then
+        pretty_print "Target $2 already exists" "$fg_yellow"
+        return
+    fi
+
+    mkdir --parents "$(dirname "$2")"
+
+    pretty_print "Linking $1 to $2" "$fg_green"
+    ln "$1" "$2"
 }
 
 # DESC: Main control flow
@@ -465,7 +560,29 @@ function main() {
     parse_params "$@"
     cron_init
     colour_init
-    #lock_init system
+    check_dependencies
+
+    if [[ ! -f "$openaudible_library_dir/books.json" ]]; then
+        script_exit "Could not find books.json in $openaudible_library_dir!" 1
+    fi
+
+    pretty_print "Linking files from $openaudible_library_dir/books to $organised_library_dir" \
+      "$fg_white"
+
+    for file in "$openaudible_library_dir"/books/*; do
+        verbose_print "Handling $file" "$fg_white"
+        handle_file "$file" "$organised_library_dir"
+    done
+
+    pretty_print "Listening for changes in $openaudible_library_dir/books" \
+      "$fg_white"
+
+    while read file; do
+        verbose_print "Handling $file" "$fg_white"
+        handle_file "$file" "$organised_library_dir"
+    done < <(inotifywait --monitor --quiet \
+      --event create --event moved_to \
+      --format %w%f ${openaudible_library_dir}/books)
 }
 
 # Invoke main with args if not sourced
