@@ -128,9 +128,12 @@ function handle_file() {
     local series_name=$(jq -r '.series_name | select(. != null)' \
       <<< "$book_json")
     if [[ ! -z "$series_name" ]]; then
-        local series_sequence=$(jq --raw-output '.series_sequence' \
+        local link_target="${link_target}${series_name}/"
+        local series_sequence=$(jq --raw-output '.series_sequence | select(. != null)' \
           <<< "$book_json")
-        local link_target="${link_target}${series_name}/Book ${series_sequence} - "
+        if [[ ! -z "$series_sequence" ]]; then
+            local link_target="${link_target}Book ${series_sequence} - "
+        fi
     fi
 
     local release_year=$(jq -r '.release_date' <<< "$book_json" | \
@@ -151,13 +154,13 @@ function link() {
     fi
 
     if [[ -f "$2" ]]; then
-        pretty_print "Target $2 already exists" "$fg_yellow"
+        pretty_print "Link $1 => $2 already exists" "$fg_yellow"
         return
     fi
 
     mkdir --parents "$(dirname "$2")"
 
-    pretty_print "Linking $1 to $2" "$fg_green"
+    pretty_print "Linking $1 => $2" "$fg_green"
     ln "$1" "$2"
 }
 
