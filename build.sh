@@ -36,9 +36,8 @@ function build_template() {
 
     shebang="#!/usr/bin/env bash"
     header="
-# A best practices Bash script template with many useful functions. This file
-# combines the source.sh & script.sh files into a single script. If you want
-# your script to be entirely self-contained then this should be what you want!"
+# A simple script which mirrors a openaudible library into a more organised
+# library by hardlinking avilable media."
 
     source_file="$script_dir/source.sh"
     script_file="$script_dir/script.sh"

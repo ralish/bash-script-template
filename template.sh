@@ -1,8 +1,7 @@
 #!/usr/bin/env bash
 
-# A best practices Bash script template with many useful functions. This file
-# combines the source.sh & script.sh files into a single script. If you want
-# your script to be entirely self-contained then this should be what you want!
+# A simple script which mirrors a openaudible library into a more organised
+# library by hardlinking avilable media.
 
 # Enable xtrace if the DEBUG environment variable is set
 if [[ ${DEBUG-} =~ ^1|yes|true$ ]]; then
