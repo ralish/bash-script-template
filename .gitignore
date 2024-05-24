@@ -38,3 +38,6 @@ temp/
 # Testing
 source/
 target/
+
+# Build files
+template.sh
