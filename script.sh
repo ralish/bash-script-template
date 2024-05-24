@@ -31,6 +31,7 @@ function script_usage() {
     cat << EOF
 usage: $(basename "$0") [options] openaudible_library_dir organised_library_dir
      -h|--help                  Displays this help
+     -c|--copy                  Copy files insted of hardlinking
      -v|--verbose               Displays verbose output
     -nc|--no-colour             Disables colour output
     -cr|--cron                  Run silently unless we encounter an error
@@ -42,8 +43,6 @@ EOF
 # OUTS: Variables indicating command-line parameters and options
 function parse_params() {
     local param
-    openaudible_library_dir=
-    organised_library_dir=
     if [[ $# -eq 0 ]]; then
         script_usage
         exit 0
@@ -56,6 +55,9 @@ function parse_params() {
                 script_usage
                 exit 0
                 ;;
+            -c | --copy)
+                copy=true
+                ;;
             -v | --verbose)
                 verbose=true
                 ;;
@@ -66,27 +68,25 @@ function parse_params() {
                 cron=true
                 ;;
             *)
-                if [[ -z "$openaudible_library_dir" ]]; then
+                if [[ -z "${openaudible_library_dir-}" ]]; then
                     openaudible_library_dir=$(realpath "$param")
-                    if [[ ! -d "$openaudible_library_dir" ]]; then
-                        script_exit "Provided openaudible_library_dir is not a directory: $openaudible_library_dir" 1
-                    fi
-                elif [[ -z "$organised_library_dir" ]]; then
+                elif [[ -z "${organised_library_dir-}" ]]; then
                     organised_library_dir=$(realpath "$param")
-                    if [[ ! -d "$organised_library_dir" ]]; then
-                        script_exit "Provided organised_library_dir is not a directory: $organised_library_dir" 1
-                    fi
                 else
                     script_exit "Invalid parameter was provided: $param" 1
                 fi
                 ;;
         esac
     done
-    if [[ -z "$openaudible_library_dir" ]]; then
+    if [[ -z "${openaudible_library_dir-}" ]]; then
         script_exit "Required parameter openaudible_library_dir was not provided" 1
+    elif [[ ! -d "$openaudible_library_dir" ]]; then
+        script_exit "Provided openaudible_library_dir is not a directory: $openaudible_library_dir" 1
     fi
-    if [[ -z "$organised_library_dir" ]]; then
+    if [[ -z "${organised_library_dir-}" ]]; then
         script_exit "Required parameter organised_library_dir was not provided" 1
+    elif [[ ! -d "$organised_library_dir" ]]; then
+        script_exit "Provided organised_library_dir is not a directory: $organised_library_dir" 1
     fi
 }
 
@@ -96,9 +96,6 @@ function parse_params() {
 function check_dependencies() {
     check_binary jq true
     check_binary inotifywait true
-    check_binary sed true
-    check_binary realpath true
-    check_binary basename true
 }
 
 # DESC: Create organised link
@@ -161,7 +158,11 @@ function link() {
     mkdir --parents "$(dirname "$2")"
 
     pretty_print "Linking $1 => $2" "$fg_green"
-    ln "$1" "$2"
+    if [[ -z ${copy-} ]]; then
+        ln "$1" "$2"
+    else
+        cp --archive "$1" "$2"
+    fi
 }
 
 # DESC: Main control flow
@@ -179,6 +180,10 @@ function main() {
 
     if [[ ! -f "$openaudible_library_dir/books.json" ]]; then
         script_exit "Could not find books.json in $openaudible_library_dir!" 1
+    fi
+
+    if [[ -n ${copy-} ]]; then
+        verbose_print "Copying instead of linking" "$fg_yellow"
     fi
 
     pretty_print "Linking files from $openaudible_library_dir/books to $organised_library_dir" \
