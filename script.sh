@@ -59,12 +59,15 @@ function parse_params() {
                 copy=true
                 ;;
             -v | --verbose)
+                # shellcheck disable=SC2034
                 verbose=true
                 ;;
             -nc | --no-colour)
+                # shellcheck disable=SC2034
                 no_colour=true
                 ;;
             -cr | --cron)
+                # shellcheck disable=SC2034
                 cron=true
                 ;;
             *)
@@ -107,36 +110,44 @@ function handle_file() {
         script_exit 'Missing required argument to handle_file()!' 2
     fi
 
-    local filename_with_extension=$(basename "$1")
+    local filename_with_extension
+    filename_with_extension=$(basename "$1")
     local filename="${filename_with_extension%.*}"
 
-    local book_json=$(cat "$openaudible_library_dir/books.json" | \
-      jq -r --arg filename "$filename" '.[] | select(.filename == $filename)')
+    local book_json
+    book_json=$(jq -r --arg filename "$filename" \
+      '.[] | select(.filename == $filename)' \
+      < "$openaudible_library_dir/books.json")
     if [[ -z "$book_json" ]]; then
+        # shellcheck disable=SC2154
         pretty_print "No entry in $openaudible_library_dir/books.json for $filename" \
           "$fg_red"
         return
     fi
 
-    local author=$(jq --raw-output '.author' <<< "$book_json")
+    local author
+    author=$(jq --raw-output '.author' <<< "$book_json")
 
     local link_target="${2}/${author}/"
 
-    local series_name=$(jq -r '.series_name | select(. != null)' \
-      <<< "$book_json")
-    if [[ ! -z "$series_name" ]]; then
-        local link_target="${link_target}${series_name}/"
-        local series_sequence=$(jq --raw-output '.series_sequence | select(. != null)' \
+    local series_name
+    series_name=$(jq -r '.series_name | select(. != null)' <<< "$book_json")
+    if [[ -n "$series_name" ]]; then
+        link_target="${link_target}${series_name}/"
+        local series_sequence
+        series_sequence=$(jq --raw-output '.series_sequence | select(. != null)' \
           <<< "$book_json")
-        if [[ ! -z "$series_sequence" ]]; then
-            local link_target="${link_target}Book ${series_sequence} - "
+        if [[ -n "$series_sequence" ]]; then
+            link_target="${link_target}Book ${series_sequence} - "
         fi
     fi
 
-    local release_year=$(jq -r '.release_date' <<< "$book_json" | \
+    local release_year
+    release_year=$(jq -r '.release_date' <<< "$book_json" | \
       sed -r 's/^([[:digit:]]{4})-([[:digit:]]{2})-([[:digit:]]{2})$/\1/')
-    local narrated_by=$(jq -r '.narrated_by' <<< "$book_json")
-    local link_target="${link_target}${release_year} - ${filename} {${narrated_by}}/${filename_with_extension}"
+    local narrated_by
+    narrated_by=$(jq -r '.narrated_by' <<< "$book_json")
+    link_target="${link_target}${release_year} - ${filename} {${narrated_by}}/${filename_with_extension}"
 
     link "$1" "$link_target"
 }
@@ -151,12 +162,14 @@ function link() {
     fi
 
     if [[ -f "$2" ]]; then
+        # shellcheck disable=SC2154
         pretty_print "Link $1 => $2 already exists" "$fg_yellow"
         return
     fi
 
     mkdir --parents "$(dirname "$2")"
 
+    # shellcheck disable=SC2154
     pretty_print "Linking $1 => $2" "$fg_green"
     if [[ -z ${copy-} ]]; then
         ln "$1" "$2"
@@ -186,6 +199,7 @@ function main() {
         verbose_print "Copying instead of linking" "$fg_yellow"
     fi
 
+    # shellcheck disable=SC2154
     pretty_print "Linking files from $openaudible_library_dir/books to $organised_library_dir" \
       "$fg_white"
 
@@ -197,15 +211,17 @@ function main() {
     pretty_print "Listening for changes in $openaudible_library_dir/books" \
       "$fg_white"
 
-    while read file; do
+    inotifywait --monitor --quiet \
+      --event create --event moved_to \
+      --format %w%f "${openaudible_library_dir}/books" |
+    while read -r file; do
         verbose_print "Handling $file" "$fg_white"
         handle_file "$file" "$organised_library_dir"
-    done < <(inotifywait --monitor --quiet \
-      --event create --event moved_to \
-      --format %w%f ${openaudible_library_dir}/books)
+    done
 }
 
 # shellcheck source=source.sh
+# shellcheck disable=SC1091
 source "$(dirname "${BASH_SOURCE[0]}")/source.sh"
 
 # Invoke main with args if not sourced
