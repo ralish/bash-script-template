@@ -24,6 +24,7 @@ set -o errtrace         # Ensure the error trap handler is inherited
 # DESC: Handler for unexpected errors
 # ARGS: $1 (optional): Exit code (defaults to 1)
 # OUTS: None
+# RETS: None
 function script_trap_err() {
     local exit_code=1
 
@@ -71,6 +72,7 @@ function script_trap_err() {
 # DESC: Handler for exiting the script
 # ARGS: None
 # OUTS: None
+# RETS: None
 function script_trap_exit() {
     cd "$orig_cwd"
 
@@ -92,6 +94,7 @@ function script_trap_exit() {
 # ARGS: $1 (required): Message to print on exit
 #       $2 (optional): Exit code (defaults to 0)
 # OUTS: None
+# RETS: None
 # NOTE: The convention used in this script for exit codes is:
 #       0: Normal exit
 #       1: Abnormal exit due to external error
@@ -123,6 +126,7 @@ function script_exit() {
 #       $script_name: The file name of the script
 #       $script_params: The original parameters provided to the script
 #       $ta_none: The ANSI control code to reset all text attributes
+# RETS: None
 # NOTE: $script_path only contains the path that was used to call the script
 #       and will not resolve any symlinks which may be present in the path.
 #       You can use a tool like realpath to obtain the "true" path. The same
@@ -145,6 +149,7 @@ function script_init() {
 # DESC: Initialise colour variables
 # ARGS: None
 # OUTS: Read-only variables with ANSI control codes
+# RETS: None
 # NOTE: If --no-colour was set the variables will be empty. The output of the
 #       $ta_none variable after each tput is redundant during normal execution,
 #       but ensures the terminal output isn't mangled when running with xtrace.
@@ -231,6 +236,7 @@ function colour_init() {
 # DESC: Initialise Cron mode
 # ARGS: None
 # OUTS: $script_output: Path to the file stdout & stderr was redirected to
+# RETS: None
 function cron_init() {
     if [[ -n ${cron-} ]]; then
         # Redirect all output to a temporary file
@@ -243,6 +249,7 @@ function cron_init() {
 # DESC: Acquire script lock
 # ARGS: $1 (optional): Scope of script execution lock (system or user)
 # OUTS: $script_lock: Path to the directory indicating we have the script lock
+# RETS: None
 # NOTE: This lock implementation is extremely simple but should be reliable
 #       across all platforms. It does *not* support locking a script with
 #       symlinks or multiple hardlinks as there's no portable way of doing so.
@@ -271,6 +278,7 @@ function lock_init() {
 #                      escape code or one of the prepopulated colour variables.
 #       $3 (optional): Set to any value to not append a new line to the message
 # OUTS: None
+# RETS: None
 function pretty_print() {
     if [[ $# -lt 1 ]]; then
         script_exit 'Missing required argument to pretty_print()!' 2
@@ -295,6 +303,7 @@ function pretty_print() {
 # DESC: Only pretty_print() the provided string if verbose mode is enabled
 # ARGS: $@ (required): Passed through to pretty_print() function
 # OUTS: None
+# RETS: None
 function verbose_print() {
     if [[ -n ${verbose-} ]]; then
         pretty_print "$@"
@@ -305,6 +314,7 @@ function verbose_print() {
 # ARGS: $1 (required): Path(s) to join with the second argument
 #       $2 (optional): Path(s) to join with the first argument
 # OUTS: $build_path: The constructed path
+# RETS: None
 # NOTE: Heavily inspired by: https://unix.stackexchange.com/a/40973
 function build_path() {
     if [[ $# -lt 1 ]]; then
@@ -338,6 +348,8 @@ function build_path() {
 # ARGS: $1 (required): Name of the binary to test for existence
 #       $2 (optional): Set to any value to treat failure as a fatal error
 # OUTS: None
+# RETS: 0 (true) if dependency was found, otherwise 1 (false) if failure is not
+#       being treated as a fatal error.
 function check_binary() {
     if [[ $# -lt 1 ]]; then
         script_exit 'Missing required argument to check_binary()!' 2
@@ -359,6 +371,7 @@ function check_binary() {
 # DESC: Validate we have superuser access as root (via sudo if requested)
 # ARGS: $1 (optional): Set to any value to not attempt root access via sudo
 # OUTS: None
+# RETS: 0 (true) if superuser credentials were acquired, otherwise 1 (false)
 function check_superuser() {
     local superuser
     if [[ $EUID -eq 0 ]]; then
@@ -393,6 +406,7 @@ function check_superuser() {
 # ARGS: $1 (optional): Set to zero to not attempt execution via sudo
 #       $@ (required): Passed through for execution as root user
 # OUTS: None
+# RETS: None
 function run_as_root() {
     if [[ $# -eq 0 ]]; then
         script_exit 'Missing required argument to run_as_root()!' 2
@@ -415,6 +429,7 @@ function run_as_root() {
 # DESC: Usage help
 # ARGS: None
 # OUTS: None
+# RETS: None
 function script_usage() {
     cat << EOF
 Usage:
@@ -428,6 +443,7 @@ EOF
 # DESC: Parameter parser
 # ARGS: $@ (optional): Arguments provided to the script
 # OUTS: Variables indicating command-line parameters and options
+# RETS: None
 function parse_params() {
     local param
     while [[ $# -gt 0 ]]; do
@@ -457,6 +473,7 @@ function parse_params() {
 # DESC: Main control flow
 # ARGS: $@ (optional): Arguments provided to the script
 # OUTS: None
+# RETS: None
 function main() {
     trap script_trap_err ERR
     trap script_trap_exit EXIT

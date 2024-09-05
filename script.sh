@@ -27,6 +27,7 @@ set -o errtrace         # Ensure the error trap handler is inherited
 # DESC: Usage help
 # ARGS: None
 # OUTS: None
+# RETS: None
 function script_usage() {
     cat << EOF
 Usage:
@@ -40,6 +41,7 @@ EOF
 # DESC: Parameter parser
 # ARGS: $@ (optional): Arguments provided to the script
 # OUTS: Variables indicating command-line parameters and options
+# RETS: None
 function parse_params() {
     local param
     while [[ $# -gt 0 ]]; do
@@ -69,6 +71,7 @@ function parse_params() {
 # DESC: Main control flow
 # ARGS: $@ (optional): Arguments provided to the script
 # OUTS: None
+# RETS: None
 function main() {
     trap script_trap_err ERR
     trap script_trap_exit EXIT
