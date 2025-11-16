@@ -22,7 +22,7 @@ Files
 -----
 
 | File            | Description                                                                                     |
-| --------------- |------------------------------------------------------------------------------------------------ |
+| --------------- | ----------------------------------------------------------------------------------------------- |
 | **template.sh** | A fully self-contained script which combines `source.sh` & `script.sh`                          |
 | **source.sh**   | Designed for sourcing into scripts; contains only those functions unlikely to need modification |
 | **script.sh**   | Sample script which sources in `source.sh` and contains those functions likely to be modified   |
