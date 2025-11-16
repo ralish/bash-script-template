@@ -1,6 +1,6 @@
 # ShellCheck settings
 #
-# Last reviewed release: v0.10.0
+# Last reviewed release: v0.11.0
 
 # List of optional checks to enable
 enable=all

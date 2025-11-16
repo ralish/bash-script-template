@@ -9,6 +9,9 @@
     // See: https://github.com/editorconfig/editorconfig-vscode/issues/153
     "files.trimTrailingWhitespace": false,
 
+    // JSON code formatting
+    "json.format.keepLines": true,
+
     // Markdown table of contents generation
     "markdown.extension.toc.levels": "2..2",
     "markdown.extension.toc.slugifyMode": "github",
@@ -16,8 +19,35 @@
     // Use EditorConfig for shfmt settings
     "shellformat.useEditorConfig": true,
 
-    "[shellscript]": {
+    // Let ShellCheck follow source directives
+    "shellcheck.customArgs": ["-x"],
+
+    "[json][jsonc]": {
+        "editor.rulers": [79],
+
+        "editor.defaultFormatter": "vscode.json-language-features"
+    },
+
+    "[markdown]": {
+        "editor.defaultFormatter": "yzhang.markdown-all-in-one",
         "editor.formatOnSave": true,
-        "editor.rulers": [79]
+
+        "editor.codeActionsOnSave": {
+            "source.fixAll.markdownlint": "explicit"
+        },
+
+        // Trailing whitespace has special meaning
+        "files.trimTrailingWhitespace": false
+    },
+
+    "[shellscript]": {
+        "editor.rulers": [79],
+
+        "editor.defaultFormatter": "foxundermoon.shell-format",
+        "editor.formatOnSave": true,
+
+        "editor.codeActionsOnSave": {
+            "source.fixAll.shellcheck": "explicit"
+        }
     }
 }
