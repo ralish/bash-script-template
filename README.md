@@ -83,7 +83,7 @@ My personal view is that the benefits of `errexit` outweigh its disadvantages. M
 
 ### nounset (*set -u*)
 
-By enabling `set -u` (or the equivalent `set -o nounset`) the script will exit if an attempt is made to expand an unset variable. This can be useful both for detecting typos as well as potentially premature usage of variables which were expected to have been set earlier. The controvery here arises in that many Bash scripting coding idioms rely on referencing unset variables, which in the absence of this option are perfectly valid. Further discussion on this option can be found in [BashFAQ/112](https://mywiki.wooledge.org/BashFAQ/112).
+By enabling `set -u` (or the equivalent `set -o nounset`) the script will exit if an attempt is made to expand an unset variable. This can be useful both for detecting typos as well as potentially premature usage of variables which were expected to have been set earlier. The controversy here arises in that many Bash scripting coding idioms rely on referencing unset variables, which in the absence of this option are perfectly valid. Further discussion on this option can be found in [BashFAQ/112](https://mywiki.wooledge.org/BashFAQ/112).
 
 This option is enabled for the same reasons as described above for `errexit`.
 

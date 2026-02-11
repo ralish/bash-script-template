@@ -13,6 +13,15 @@ set -o errtrace         # Make sure any error trap is inherited
 set -o nounset          # Disallow expansion of unset variables
 set -o pipefail         # Use last non-zero exit code in a pipeline
 
+# Trap to clean up temporary file on exit
+trap cleanup EXIT
+
+cleanup() {
+    if [[ -n ${tmp_file-} && -f ${tmp_file-} ]]; then
+        rm -f "$tmp_file"
+    fi
+}
+
 # Main control flow
 function main() {
     # shellcheck source=source.sh
@@ -55,11 +64,13 @@ function build_template() {
         printf '%s\n' "$script_data"
     } > template.sh
 
+    local tmp_file
     tmp_file="$(mktemp /tmp/template.XXXXXX)"
     sed -e '/# shellcheck source=source\.sh/{N;N;d;}' \
         -e 's/BASH_SOURCE\[1\]/BASH_SOURCE[0]/' \
         template.sh > "$tmp_file"
     mv "$tmp_file" template.sh
+    tmp_file=""  # Clear variable so cleanup doesn't try to remove it
     chmod +x template.sh
 }
 
