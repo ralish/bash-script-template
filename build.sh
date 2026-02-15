@@ -19,10 +19,19 @@ function main() {
     source "$(dirname "${BASH_SOURCE[0]}")/source.sh"
 
     trap "script_trap_err" ERR
-    trap "script_trap_exit" EXIT
+    trap "build_cleanup" EXIT
 
     script_init "$@"
     build_template
+}
+
+# Exit trap handler to remove temporary file if present
+function build_cleanup() {
+    if [[ -f ${tmp_file:-} ]]; then
+        rm "$tmp_file"
+    fi
+
+    script_trap_exit
 }
 
 # This is quite brittle, but it does work. I appreciate the irony given it's
