@@ -18,8 +18,8 @@ function main() {
     # shellcheck source=source.sh
     source "$(dirname "${BASH_SOURCE[0]}")/source.sh"
 
-    trap "script_trap_err" ERR
-    trap "build_cleanup" EXIT
+    trap script_trap_err ERR
+    trap build_cleanup EXIT
 
     script_init "$@"
     build_template
@@ -43,11 +43,11 @@ function build_template() {
     local source_file script_file
     local script_options source_data script_data
 
-    shebang="#!/usr/bin/env bash"
-    header="
+    shebang='#!/usr/bin/env bash'
+    header='
 # A best practices Bash script template with many useful functions. This file
 # combines the source.sh & script.sh files into a single script. If you want
-# your script to be entirely self-contained then this should be what you want!"
+# your script to be entirely self-contained then this should be what you want!'
 
     source_file="$script_dir/source.sh"
     script_file="$script_dir/script.sh"
